@@ -1,12 +1,11 @@
 # README
 ## Prerequisites
 You need to have `yarn` and `npm` installed on your computer. Please download and install the latest versions:
-- Nodejs: v9.11.1
-- Yarn: v1.6.0
+- [Nodejs](https://nodejs.org/en/ "Nodejs"): v9.11.1
+- [Yarn](https://yarnpkg.com/en/ "Yarn"): v1.6.0
 
 ## Installation
 Please follow the instructions below to setup the project on your local machine.
-
 ```sh
 git clone https://github.com/DavisGuohua-xie/DirtyBit.git cseproject110
 cd cseproject110
