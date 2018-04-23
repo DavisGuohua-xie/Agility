@@ -14,4 +14,39 @@ yarn install
 
 Now execute `yarn start` and open `localhost:3000` in your browser to see the webpage.
 
-NOTE: DO NOT UPDATE ANY PACKAGES AS THE PROJECT MAY HORRIBLY BREAK.
+**NOTE: DO NOT UPDATE ANY PACKAGES AS THE PROJECT MAY HORRIBLY BREAK.**
+
+## Basic Project Structure
+
+```sh
+├── config
+├── public
+├── scripts
+└── src
+    ├── actions
+    ├── components
+    ├── img
+    ├── reducers
+    ├── selectors
+    ├── store
+    └── styles
+```
+
+`config`: Build configuration files
+
+`public`: Base HTML file exists
+
+`src/actions`: Define actions for `redux`
+
+`src/componenents`: All React components should be placed here
+
+`src/img`: Any image files
+
+`src/reducers`: Define reducer functions here
+
+`src/selectors`: Define selector functions -- functions that process redux store 
+data before returning data back to React
+
+`src/store`: Define store configuration
+
+`src/styles`: All CSS goes here
