@@ -9,7 +9,7 @@ import React from 'react';
 import { Route, Switch } from 'react-router';
 
 // Module root components
-import Homepage from './Homepage';
+import Homepage from './components/Homepage';
 import PageNotFound from './components/common/PageNotFound';
 
 export default (

@@ -7,7 +7,7 @@ import registerServiceWorker from './registerServiceWorker';
 import configureStore from './store/configureStore';
 
 // root component
-import App from './App';
+import App from './components/App';
 
 // global css
 import './styles/index.css';
