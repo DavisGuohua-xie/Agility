@@ -17,9 +17,9 @@ export default class Api {
   }
 
 
-  createNewAccount(username, password, success, failure){
+  createNewAccount(username, password, email, success, failure){
     //Can do pre processing here....
-    this.authAPI.createNewAccount(username, password, success, failure);
+    this.authAPI.createNewAccount(username, password, email, success, failure);
   }
 
   login(username, password, success, failure){

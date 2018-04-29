@@ -22,8 +22,9 @@ export default class LoginPage extends Component {
      // alert('creating user with username: ' + this.state.username + "and password " + this.state.password);
     let username = this.state.username;
     let password = this.state.password;
+    let email = this.state.email;
 
-    this.api.createNewAccount(username, password, function(user){
+    this.api.createNewAccount(username, password, email, function(user){
       alert("created new account!");
     }, function(user, error){
       alert("Could not create a new account!" + error);
@@ -40,6 +41,11 @@ export default class LoginPage extends Component {
     this.setState({password: password})
   }
 
+  handleEmailChange(e){
+    let email = e.target.value;
+    this.setState({email: email})
+  }
+
 
 
 
@@ -48,7 +54,8 @@ export default class LoginPage extends Component {
     //Will getting username and password data
     this.state = {
       username: "",
-      password: ""
+      password: "",
+      email: ""
     }
 
     this.api = new API()
@@ -57,10 +64,9 @@ export default class LoginPage extends Component {
     this.handleCreateAccount = this.handleCreateAccount.bind(this);
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
+    this.handleEmailChange = this.handleEmailChange.bind(this);
 
   }
-
-
 
 
      render(){
@@ -70,6 +76,7 @@ export default class LoginPage extends Component {
           <form>
              Username: <input onChange={this.handleUsernameChange} type="text"/><br></br>
              Password: <input onChange={this.handlePasswordChange}type="text"/><br></br>
+             Email: <input onChange={this.handleEmailChange} type="text"/><br></br>
           </form>
 
           <button onClick={this.handleLogin}>Login </button>
