@@ -5,17 +5,14 @@ import Config from './Config'
 export default class ApiController{
 
 constructor(){
-this.ParseSingleton = Parse;
-this.ParseSingleton.initialize(Config.APP_ID);
-this.ParseSingleton.serverURL = Config.SERVER_URL;
-
+Parse.initialize(Config.APP_ID);
+Parse.serverURL = Config.SERVER_URL;
 }
-
 
 createNewAccount(username, password, successHandler, errorHandler){
 
 //Create new parse user
-   var user = new this.ParseSingleton.User();
+   var user = new Parse.User();
    user.set("username", username);
    user.set("password", password);
 
@@ -37,6 +34,10 @@ createNewAccount(username, password, successHandler, errorHandler){
 
 
     user.signUp(null, {success: successHandler, error: errorHandler});
+}
+
+login(username, password, successHandler, errorHandler){
+  Parse.User.logIn(username, password, {success: successHandler, error: errorHandler})
 }
 
 
