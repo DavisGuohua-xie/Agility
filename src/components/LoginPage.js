@@ -1,18 +1,33 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom'
+import API from '../api/Api'
 
 
-export class LoginPage extends Component {
+export default class LoginPage extends Component {
 
 
   handleLogin(){
-    alert('user logged in with username: ' + this.state.username + "and password: "  + this.state.password );
+    // alert('user logged in with username: ' + this.state.username + "and password: "  + this.state.password );
+    let username = this.state.username;
+    let password = this.state.password;
 
+    this.api.login(username, password, function(user){
+      alert("succesfully logged in user: " + user)
+    }, function(user, error){
+      alert("cannot sign in user b/c ../ " + error)
+    })
 
   }
 
   handleCreateAccount(){
-    alert('creating user with username: ' + this.state.username + "and password " + this.state.password);
+     // alert('creating user with username: ' + this.state.username + "and password " + this.state.password);
+    let username = this.state.username;
+    let password = this.state.password;
+
+    this.api.createNewAccount(username, password, function(user){
+      alert("created new account!");
+    }, function(user, error){
+      alert("Could not create a new account!" + error);
+    });
   }
 
   handleUsernameChange(e){
@@ -35,6 +50,8 @@ export class LoginPage extends Component {
       username: "",
       password: ""
     }
+
+    this.api = new API()
 
     this.handleLogin = this.handleLogin.bind(this);
     this.handleCreateAccount = this.handleCreateAccount.bind(this);
