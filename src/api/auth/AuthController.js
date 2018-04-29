@@ -3,9 +3,11 @@ import Parse from 'parse'
 
 export default class AuthController {
 
+  /*
   constructor(){
 
   }
+  */
 
   createNewAccount(username, password, email, successHandler, errorHandler){
 
