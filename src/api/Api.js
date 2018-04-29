@@ -19,15 +19,33 @@ export default class Api {
 
   createNewAccount(username, password, email, success, failure){
     //Can do pre processing here....
+
+    // TODO: update page instead of alerting the user
+    if (username.length === 0) {
+      alert("username cannot be empty.");
+      return;
+    }
+
+    if (password.length < 8) {
+      alert("password must be at least 8 characters long.");
+      return;
+    }
+
     this.authAPI.createNewAccount(username, password, email, success, failure);
   }
 
   login(username, password, success, failure){
     //Can do preprocessing here...
+    if (username.length === 0) {
+      alert("username cannot be empty.");
+      return;
+    }
+
+    if (password.length === 0) {
+      alert("password cannot be empty.");
+      return;
+    }
+
     this.authAPI.login(username, password, success, failure);
   }
-
-
-
-
 }
