@@ -6,7 +6,7 @@ export const authActions = {
   register
 };
 
-function login(username, password) {
+function login(username, password, history) {
   return dispatch => {
     dispatch(request({ username }));
 
@@ -14,13 +14,11 @@ function login(username, password) {
       user => {
         dispatch(success(user));
         console.log(user);
-        alert('successfully logged in.');
-        //history.push('/');
+        history.push('/');
       },
       error => {
         dispatch(failure(error));
         console.log(error);
-        alert('error logging in: ' + error);
       }
     );
   };
@@ -41,14 +39,14 @@ function logout() {
   return { type: types.LOGOUT };
 }
 
-function register(username, password, email) {
+function register(username, password, email, history) {
   return dispatch => {
     dispatch(request(username));
 
     authAPI.register(username, password, email).then(
       user => {
         dispatch(success());
-        // history.push('/login');
+        history.push('/');
         localStorage.setItem('token', user.attributes.sessionToken);
       },
       error => {

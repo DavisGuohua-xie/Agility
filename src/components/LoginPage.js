@@ -28,7 +28,7 @@ class LoginPage extends Component {
     const { dispatch } = this.props;
 
     if (username && password) {
-        dispatch(authActions.login(username, password));
+        dispatch(authActions.login(username, password, this.props.history));
       }
     }
 
