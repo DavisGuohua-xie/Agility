@@ -14,7 +14,7 @@ function login(username, password) {
       user => {
         dispatch(success(user));
         console.log(user);
-        alert('successfully logged in.')
+        alert('successfully logged in.');
         //history.push('/');
       },
       error => {
@@ -49,9 +49,11 @@ function register(username, password, email) {
       user => {
         dispatch(success());
         // history.push('/login');
+        localStorage.setItem('token', user.attributes.sessionToken);
       },
       error => {
         dispatch(failure(error));
+        console.log(error);
       }
     );
   };

@@ -13,6 +13,7 @@ function login(username, password) {
     {
       // success callback
       success: user => {
+        localStorage.setItem('token', user.attributes.sessionToken);
         return user;
       }
     },
@@ -26,6 +27,7 @@ function login(username, password) {
 }
 
 function logout() {
+  localStorage.removeItem('token');
   return;
 }
 
@@ -37,6 +39,7 @@ function register(username, password, email) {
 
   return user.signUp(null, {
     success: user => {
+      localStorage.setItem('token', user.attributes.sessionToken);
       return user;
     },
     error: error => {
