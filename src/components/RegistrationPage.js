@@ -17,11 +17,11 @@ class RegistrationPage extends Component {
       sent: false
     };
 
-    this.handleLogin = this.handleLogin.bind(this);
+    this.handleRegistration = this.handleRegistration.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
 
-  handleLogin(e) {    
+  handleRegistration(e) {    
     e.preventDefault();
 
     this.setState({sent: true});
@@ -51,7 +51,7 @@ class RegistrationPage extends Component {
           <br />
         </form>
 
-        <button onClick={this.handleLogin}>Login </button>
+        <button onClick={this.handleRegistration}>Login </button>
       </div>
     );
   }
