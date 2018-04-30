@@ -60,5 +60,5 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-const connectedLoginPage = withRouter(connect(null,   mapDispatchToProps)(LoginPage));
+const connectedLoginPage = withRouter(connect(null, mapDispatchToProps)(LoginPage));
 export { connectedLoginPage as LoginPage };
