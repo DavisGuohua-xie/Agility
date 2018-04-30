@@ -3,16 +3,19 @@ import Parse from 'parse'
 
 export default class AuthController {
 
+  /*
   constructor(){
 
   }
+  */
 
-  createNewAccount(username, password, successHandler, errorHandler){
+  createNewAccount(username, password, email, successHandler, errorHandler){
 
   //Create new parse user
      var user = new Parse.User();
      user.set("username", username);
      user.set("password", password);
+     user.set("email", email);
 
   //Handle case where no completion handlers are defined
     var defaultSuccess = function(user){

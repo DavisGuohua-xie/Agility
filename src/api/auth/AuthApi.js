@@ -6,9 +6,9 @@ constructor(){
   this.authController = new AuthController()
 }
 
-createNewAccount(username, password, success, failure){
+createNewAccount(username, password, email, success, failure){
   //Can do pre processing here....
-  this.authController.createNewAccount(username, password, success, failure);
+  this.authController.createNewAccount(username, password, email, success, failure);
 }
 
 login(username, password, success, failure){
