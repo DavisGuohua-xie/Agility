@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { authActions } from '../actions/authActions';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 
 class LoginPage extends Component {
@@ -9,7 +10,7 @@ class LoginPage extends Component {
     super(props);
 
     // reset login status
-    this.props.dispatch(authActions.logout());
+    this.props.actions.logout();
     this.state = {
       username: "",
       password: "",
@@ -25,10 +26,9 @@ class LoginPage extends Component {
 
     this.setState({sent: true});
     const {username, password} = this.state;
-    const { dispatch } = this.props;
 
     if (username && password) {
-        dispatch(authActions.login(username, password, this.props.history));
+        this.props.actions.login(username, password, this.props.history);
       }
     }
 
@@ -54,10 +54,11 @@ class LoginPage extends Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapDispatchToProps(dispatch) {
   return { 
+    actions: bindActionCreators(authActions, dispatch)
   };
 }
 
-const connectedLoginPage = withRouter(connect(mapStateToProps)(LoginPage));
+const connectedLoginPage = withRouter(connect(null,   mapDispatchToProps)(LoginPage));
 export { connectedLoginPage as LoginPage };

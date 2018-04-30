@@ -6,7 +6,7 @@ export default function authReducer(state = initialState, action) {
     case types.LOGIN_REQUEST:
       return state.merge({logging_in: true});
     case types.LOGIN_SUCCESS:
-      return state.merge({logging_in: false, logged_in: true, token: action.token});
+      return state.merge({logging_in: false, logged_in: true});
     case types.LOGIN_FAILURE:
       return state.merge({logging_in: false});
     case types.LOGOUT:

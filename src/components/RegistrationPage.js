@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { authActions } from '../actions/authActions';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 
 class RegistrationPage extends Component {
@@ -9,7 +10,7 @@ class RegistrationPage extends Component {
     super(props);
 
     // reset login status
-    this.props.dispatch(authActions.logout());
+    this.props.actions.logout();
     this.state = {
       username: "",
       password: "",
@@ -26,10 +27,9 @@ class RegistrationPage extends Component {
 
     this.setState({sent: true});
     const {username, password, email} = this.state;
-    const { dispatch } = this.props;
 
     if (username && password && email) {
-        dispatch(authActions.register(username, password, email));
+        this.props.actions.register(username, password, email, this.props.history);
       }
     }
 
@@ -51,16 +51,17 @@ class RegistrationPage extends Component {
           <br />
         </form>
 
-        <button onClick={this.handleRegistration}>Login </button>
+        <button onClick={this.handleRegistration}>Register</button>
       </div>
     );
   }
 }
 
-function mapStateToProps(state) {
+function mapDispatchToProps(dispatch) {
   return { 
+      actions: bindActionCreators(authActions, dispatch)
   };
 }
 
-const connectedRegistrationPage = withRouter(connect(mapStateToProps)(RegistrationPage));
+const connectedRegistrationPage = withRouter(connect(null, mapDispatchToProps)(RegistrationPage));
 export { connectedRegistrationPage as RegistrationPage };

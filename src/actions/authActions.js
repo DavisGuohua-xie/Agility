@@ -46,6 +46,7 @@ function register(username, password, email, history) {
     authAPI.register(username, password, email).then(
       user => {
         dispatch(success());
+        console.log(user);
         history.push('/');
         localStorage.setItem('token', user.attributes.sessionToken);
       },
