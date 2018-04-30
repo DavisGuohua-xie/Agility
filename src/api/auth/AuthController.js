@@ -1,5 +1,5 @@
 import Parse from 'parse'
-
+//This class is where all the authentication logic goes...
 
 export default class AuthController {
 
@@ -30,12 +30,13 @@ export default class AuthController {
       errorHandler = defaultFailure;
     }
 
-
+     //SuccessHandler function is called if sign up is good/
+     //Error handler function is called if sign up is bad.
       user.signUp(null, {success: successHandler, error: errorHandler});
   }
 
   login(username, password, successHandler, errorHandler){
-    //Logs in user if successful returns error otherwise
+    //Logs in user if and successfully rem returns error otherwise
     Parse.User.logIn(username, password, {success: successHandler, error: errorHandler})
   }
 }

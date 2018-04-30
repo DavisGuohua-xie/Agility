@@ -2,9 +2,9 @@
 
 
 var config = {
-  APP_ID: "myAppId",
-  MASTER_KEY:"myMasterKey",
-  SERVER_URL:"http://cse110exampleparse.herokuapp.com/parse"
+  APP_ID: "PUT YOUR APP ID HERE",
+  MASTER_KEY:"PUT YOUR MASTER KEY HERE",
+  SERVER_URL:"PUT YOUR SERVER URL HERE"
 }
 
 

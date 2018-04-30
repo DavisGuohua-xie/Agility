@@ -1,7 +1,7 @@
 import AuthController from './AuthController'
 
 export default class AuthApi{
-
+//Auth controller actually has the authentication logic
 constructor(){
   this.authController = new AuthController()
 }

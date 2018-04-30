@@ -45,7 +45,7 @@ export default class LoginPage extends Component {
 
   constructor(props){
     super(props);
-    //Will getting username and password data
+    //For getting username and password data
     this.state = {
       username: "",
       password: ""
