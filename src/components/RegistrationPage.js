@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { authActions } from '../actions/authActions';
 import { connect } from 'react-redux';
 
-class LoginPage extends Component {
+class RegistrationPage extends Component {
 
   constructor(props) {
     super(props);
@@ -12,6 +12,7 @@ class LoginPage extends Component {
     this.state = {
       username: "",
       password: "",
+      email: "",
       sent: false
     };
 
@@ -19,17 +20,15 @@ class LoginPage extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
-  handleLogin(e) {
-    // alert('user logged in with username: ' + this.state.username + "and password: "  + this.state.password );
-    
+  handleLogin(e) {    
     e.preventDefault();
 
     this.setState({sent: true});
-    const {username, password} = this.state;
+    const {username, password, email} = this.state;
     const { dispatch } = this.props;
 
-    if (username && password) {
-        dispatch(authActions.login(username, password));
+    if (username && password && email) {
+        dispatch(authActions.register(username, password, email));
       }
     }
 
@@ -41,11 +40,13 @@ class LoginPage extends Component {
   render() {
     return (
       <div>
-        <h1>Login Page</h1>
+        <h1>Registration Page</h1>
         <form>
           Username: <input onChange={this.handleChange} name="username" type="text" />
           <br />
           Password: <input onChange={this.handleChange} name="password" type="password" />
+          <br />
+          Email: <input onChange={this.handleChange} name="email" type="email" />
           <br />
         </form>
 
@@ -60,5 +61,5 @@ function mapStateToProps(state) {
   };
 }
 
-const connectedLoginPage = connect(mapStateToProps)(LoginPage);
-export { connectedLoginPage as LoginPage };
+const connectedRegistrationPage = connect(mapStateToProps)(RegistrationPage);
+export { connectedRegistrationPage as RegistrationPage };
