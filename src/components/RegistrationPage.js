@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { authActions } from '../actions/authActions';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 
 class RegistrationPage extends Component {
 
@@ -61,5 +62,5 @@ function mapStateToProps(state) {
   };
 }
 
-const connectedRegistrationPage = connect(mapStateToProps)(RegistrationPage);
+const connectedRegistrationPage = withRouter(connect(mapStateToProps)(RegistrationPage));
 export { connectedRegistrationPage as RegistrationPage };

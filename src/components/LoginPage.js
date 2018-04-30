@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { authActions } from '../actions/authActions';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 
 class LoginPage extends Component {
 
@@ -19,9 +20,7 @@ class LoginPage extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
-  handleLogin(e) {
-    // alert('user logged in with username: ' + this.state.username + "and password: "  + this.state.password );
-    
+  handleLogin(e) {    
     e.preventDefault();
 
     this.setState({sent: true});
@@ -60,5 +59,5 @@ function mapStateToProps(state) {
   };
 }
 
-const connectedLoginPage = connect(mapStateToProps)(LoginPage);
+const connectedLoginPage = withRouter(connect(mapStateToProps)(LoginPage));
 export { connectedLoginPage as LoginPage };
