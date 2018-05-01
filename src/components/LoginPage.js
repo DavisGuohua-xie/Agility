@@ -43,9 +43,63 @@ export default class LoginPage extends Component {
         let password = this.state.registerPassword;
         let email = this.state.registerEmail;
 
+<<<<<<< HEAD
         if (username && password && email) {
           this.props.actions.register(username, password, email, this.props.history);
         }
+=======
+  handleLogin(){
+    // alert('user logged in with username: ' + this.state.username + "and password: "  + this.state.password );
+    let username = this.state.username;
+    let password = this.state.password;
+
+    this.api.login(username, password, function(user){
+      alert("succesfully logged in user: " + user)
+    }, function(user, error){
+      alert("cannot sign in user b/c ../ " + error)
+    })
+
+  }
+
+  handleCreateAccount(){
+     // alert('creating user with username: ' + this.state.username + "and password " + this.state.password);
+    let username = this.state.username;
+    let password = this.state.password;
+    let email = this.state.email;
+
+    this.api.createNewAccount(username, password, email, function(user){
+      alert("created new account!");
+    }, function(user, error){
+      alert("Could not create a new account!" + error);
+    });
+  }
+
+  handleUsernameChange(e){
+    let username = e.target.value;
+    this.setState({username: username})
+  }
+
+  handlePasswordChange(e){
+    let password = e.target.value;
+    this.setState({password: password})
+  }
+
+  handleEmailChange(e){
+    let email = e.target.value;
+    this.setState({email: email})
+  }
+
+
+
+
+  constructor(props){
+    super(props);
+    //For getting username and password data
+    this.state = {
+      username: "",
+      password: "",
+      email: ""
+>>>>>>> origin/authentication
     }
 
     handleInputChange(e) {
