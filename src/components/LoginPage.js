@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import API from '../api/Api'
-
+import LoginForm1 from './login/LoginForm1';
 
 export default class LoginPage extends Component {
 
@@ -19,7 +19,7 @@ export default class LoginPage extends Component {
   }
 
   handleCreateAccount(){
-     // alert('creating user with username: ' + this.state.username + "and password " + this.state.password);
+    // alert('creating user with username: ' + this.state.username + "and password " + this.state.password);
     let username = this.state.username;
     let password = this.state.password;
     let email = this.state.email;
@@ -31,23 +31,14 @@ export default class LoginPage extends Component {
     });
   }
 
-  handleUsernameChange(e){
-    let username = e.target.value;
-    this.setState({username: username})
+  handleInputChange(e){
+    let value = e.target.value;
+    this.setState({[e.target.name]: value});
   }
 
-  handlePasswordChange(e){
-    let password = e.target.value;
-    this.setState({password: password})
+  handleToggle() {
+    this.setState({isOpen: !this.state.isOpen});
   }
-
-  handleEmailChange(e){
-    let email = e.target.value;
-    this.setState({email: email})
-  }
-
-
-
 
   constructor(props){
     super(props);
@@ -55,34 +46,27 @@ export default class LoginPage extends Component {
     this.state = {
       username: "",
       password: "",
-      email: ""
+      email: "",
+      isOpen: false
     }
 
     this.api = new API()
 
     this.handleLogin = this.handleLogin.bind(this);
     this.handleCreateAccount = this.handleCreateAccount.bind(this);
-    this.handleUsernameChange = this.handleUsernameChange.bind(this);
-    this.handlePasswordChange = this.handlePasswordChange.bind(this);
-    this.handleEmailChange = this.handleEmailChange.bind(this);
-
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleToggle = this.handleToggle.bind(this);
   }
 
 
-     render(){
-       return (
-         <div>
-          <h1>Login Page</h1>
-          <form>
-             Username: <input onChange={this.handleUsernameChange} type="text"/><br></br>
-             Password: <input onChange={this.handlePasswordChange}type="text"/><br></br>
-             Email: <input onChange={this.handleEmailChange} type="text"/><br></br>
-          </form>
-
-          <button onClick={this.handleLogin}>Login </button>
-          <button onClick={this.handleCreateAccount}>Create Account</button>
-
-         </div>)
-     }
+    render(){
+      return <LoginForm1 
+          onInputChange={this.handleInputChange} 
+          onLogin={this.handleLogin} 
+          onCreateAccount={this.handleCreateAccount} 
+          onToggle={this.handleToggle}
+          isOpen={this.state.isOpen}
+      />;
+    }
 
 }
