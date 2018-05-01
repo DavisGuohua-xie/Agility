@@ -1,3 +1,13 @@
+.container {
+    height: 100%;
+    display: grid;
+}
+
+.center {
+    margin: auto;
+    text-align: center;
+}
+
 .pageContainer {
     margin-top: 100px;
     margin-left: 30%;
@@ -46,10 +56,17 @@
     background-color: #EDEFF0;
     color: black;
     border-color: #808080;
+}
+
+.formgroup {
+    text-align: left;
+}
+
+@media(max-width: 720px) {
 
 }
 
-.hrCenterText {
+/*.hrCenterText {
     line-height: 1em;
     position: relative;
     outline: 0;
@@ -81,4 +98,4 @@
     
     color: #818078;
     background-color: #fcfcfa;
-  }
+} */
