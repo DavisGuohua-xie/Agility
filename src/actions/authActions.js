@@ -14,7 +14,7 @@ function login(username, password, history) {
       user => {
         dispatch(success(user));
         console.log(user);
-        history.push('/');
+        history.push("/");
       },
       error => {
         dispatch(failure(error));
@@ -34,9 +34,33 @@ function login(username, password, history) {
   }
 }
 
-function logout() {
-  authAPI.logout();
-  return { type: types.LOGOUT };
+function logout(history) {
+  return dispatch => {
+    dispatch(request());
+    console.log("signing out...");
+
+    authAPI.logout().then(
+      res => {
+        dispatch(success());
+        console.log("signed out.");
+        history.push('/');
+      },
+      error => {
+        dispatch(failure());
+        console.log("error signing out!"); // this shouldn't happen...
+      }
+    );
+  };
+
+  function request() {
+    return { type: types.LOGOUT_REQUEST };
+  }
+  function success() {
+    return { type: types.LOGOUT_SUCCESS };
+  }
+  function failure() {
+    return { type: types.LOGOUT_FAILURE };
+  }
 }
 
 function register(username, password, email, history) {
@@ -47,8 +71,7 @@ function register(username, password, email, history) {
       user => {
         dispatch(success());
         console.log(user);
-        history.push('/');
-        localStorage.setItem('token', user.attributes.sessionToken);
+        history.push("/");
       },
       error => {
         dispatch(failure(error));
