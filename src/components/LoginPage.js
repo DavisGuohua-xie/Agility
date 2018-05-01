@@ -1,58 +1,81 @@
-import React, { Component } from "react";
-import { authActions } from '../actions/authActions';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { withRouter } from 'react-router';
+import React, {
+    Component
+} from 'react';
+import API from '../api/Api'
+import LoginForm1 from './login/LoginForm1';
 
-class LoginPage extends Component {
-
+export default class LoginPage extends Component {
+  
   constructor(props) {
-    super(props);
+        super(props);
+    
+        this.state = {
+            username: "",
+            password: "",
+            email: "",
+            isOpenReg: false,
+            isOpenForgot: false
+        }
 
-    // reset login status
-    this.props.actions.logout();
-    this.state = {
-      username: "",
-      password: "",
-      sent: false
-    };
 
-    this.handleLogin = this.handleLogin.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-  }
+        this.handleLogin = this.handleLogin.bind(this);
+        this.handleCreateAccount = this.handleCreateAccount.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleToggleForgot = this.handleToggleForgot.bind(this);
+        this.handleToggleReg = this.handleToggleReg.bind(this);
+    }
+  
+    handleLogin() {
+        let username = this.state.username;
+        let password = this.state.password;
 
-  handleLogin(e) {    
-    e.preventDefault();
-
-    this.setState({sent: true});
-    const {username, password} = this.state;
-
-    if (username && password) {
-        this.props.actions.login(username, password, this.props.history);
-      }
+        if (username && password) {
+          this.props.actions.login(username, password, this.props.history);
+        }
     }
 
-  handleChange(e) {
-    const {name, value} = e.target;
-    this.setState({ [name]: value });
-  }
+    handleCreateAccount() {
+        let username = this.state.username;
+        let password = this.state.password;
+        let email = this.state.email;
 
-  render() {
-    return (
-      <div>
-        <h1>Login Page</h1>
-        <form>
-          Username: <input onChange={this.handleChange} name="username" type="text" />
-          <br />
-          Password: <input onChange={this.handleChange} name="password" type="password" />
-          <br />
-        </form>
+        if (username && password && email) {
+          this.props.actions.register(username, password, email, this.props.history);
+        }
+    }
 
-        <button onClick={this.handleLogin}>Login </button>
-      </div>
-    );
-  }
+    handleInputChange(e) {
+        let value = e.target.value;
+        this.setState({
+            [e.target.name]: value
+        });
+    }
+
+    handleToggleReg() {
+        this.setState({
+            isOpenReg: !this.state.isOpenReg
+        });
+    }
+
+    handleToggleForgot() {
+        this.setState({
+            isOpenForgot: !this.state.isOpenForgot
+        });
+    }
+
+    render() {
+        return <LoginForm1 
+            onInputChange={this.handleInputChange}
+            onLogin={this.handleLogin}
+            onCreateAccount={this.handleCreateAccount}
+            onToggleForgot={this.handleToggleForgot}
+            isOpenForgot={this.state.isOpenForgot}
+            onToggleReg={this.handleToggleReg}
+            isOpenReg={this.state.isOpenReg}
+          />;
+    }
 }
+
 
 function mapDispatchToProps(dispatch) {
   return { 
