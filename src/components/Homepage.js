@@ -5,8 +5,18 @@
  * Date: 04/22/2018
  */
 import React from 'react';
+import NavBar from './common/Navbar';
 
 
-const Homepage = () => <h1>This project is built with React + Redux + react-router</h1>;
+class Homepage extends React.Component {
+
+    render() {
+        return (
+            <div>
+                <NavBar/>
+            </div>
+        )
+    }
+}
 
 export default Homepage;
