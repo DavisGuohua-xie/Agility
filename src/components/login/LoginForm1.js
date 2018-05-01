@@ -31,9 +31,9 @@ const LoginForm1 = props => {
                     </FormGroup>
                 </Form>
                 <a className={styles.forgotPass} onClick={props.onToggleForgot}>Forgot password?</a>
-                <Button type="submit" color="primary" className={styles.customBtn} onClick={props.onLogin}>Log in</Button>
-                <Button type="submit" color="primary" className={`${styles.customBtn} ${styles.registerButton}`} 
-                    onClick={props.onToggleReg}>Register</Button>
+                <Button type="submit" color="primary" className={styles.customBtn} onClick={props.onLogin} disabled={props.ajaxRequested}>Log in</Button>
+                <Button type="submit" color="primary" className={`${styles.customBtn} ${styles.registerButton}` } 
+                    onClick={props.onToggleReg} disabled={props.ajaxRequested}>Register</Button>
 
 
                 {/* 
@@ -75,13 +75,13 @@ const LoginForm1 = props => {
 
                             <FormGroup>
                                 <Label for="registerPassword">Password</Label>
-                                <Input type="email" name="registerPassword" id="registerPassword" 
+                                <Input type="password" name="registerPassword" id="registerPassword" 
                                     placeholder="Password" onChange={props.onInputChange}/>
                             </FormGroup>
                         </Form>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="primary" onClick={props.onCreateAccount}>Create Account</Button>{' '}
+                        <Button color="primary" onClick={props.onCreateAccount} disabled={props.ajaxRequested}>Create Account</Button>{' '}
                         <Button color="secondary" onClick={props.onToggleReg}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
