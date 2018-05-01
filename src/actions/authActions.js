@@ -1,5 +1,7 @@
 import { authAPI } from "../server/authAPI";
 import * as types from "./actionTypes";
+import * as ajaxActions from './ajaxActions';
+
 export const authActions = {
   login,
   logout,
@@ -8,6 +10,7 @@ export const authActions = {
 
 function login(username, password, history) {
   return dispatch => {
+    dispatch(ajaxActions.ajaxBegin());
     dispatch(request({ username }));
 
     authAPI.login(username, password).then(
@@ -36,6 +39,7 @@ function login(username, password, history) {
 
 function logout(history) {
   return dispatch => {
+    dispatch(ajaxActions.ajaxBegin());
     dispatch(request());
     console.log("signing out...");
 
@@ -65,6 +69,7 @@ function logout(history) {
 
 function register(username, password, email, history) {
   return dispatch => {
+    dispatch(ajaxActions.ajaxBegin());
     dispatch(request(username));
 
     authAPI.register(username, password, email).then(

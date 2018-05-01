@@ -1,7 +1,11 @@
 import React, {
     Component
 } from 'react';
-import API from '../api/Api'
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {withRouter} from 'react-router';
+import {authActions} from '../actions/authActions';
+
 import LoginForm1 from './login/LoginForm1';
 
 export default class LoginPage extends Component {
@@ -35,9 +39,9 @@ export default class LoginPage extends Component {
     }
 
     handleCreateAccount() {
-        let username = this.state.username;
-        let password = this.state.password;
-        let email = this.state.email;
+        let username = this.state.registerUsername;
+        let password = this.state.registerPassword;
+        let email = this.state.registerEmail;
 
         if (username && password && email) {
           this.props.actions.register(username, password, email, this.props.history);
@@ -64,6 +68,7 @@ export default class LoginPage extends Component {
     }
 
     render() {
+        console.log(this.props.ajaxCalls);
         return <LoginForm1 
             onInputChange={this.handleInputChange}
             onLogin={this.handleLogin}
@@ -72,6 +77,7 @@ export default class LoginPage extends Component {
             isOpenForgot={this.state.isOpenForgot}
             onToggleReg={this.handleToggleReg}
             isOpenReg={this.state.isOpenReg}
+            ajaxRequested={this.props.ajaxCalls > 0}
           />;
     }
 }
@@ -83,5 +89,12 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-const connectedLoginPage = withRouter(connect(null, mapDispatchToProps)(LoginPage));
+function mapStateToProps(state, ownProps) {
+    console.log(state);
+    return {
+        ajaxCalls: state.ajaxCallsInProgress
+    }
+}
+
+const connectedLoginPage = withRouter(connect(mapStateToProps, mapDispatchToProps)(LoginPage));
 export { connectedLoginPage as LoginPage };
