@@ -20,6 +20,12 @@ import routes from './routes';
 import "bootstrap-material-design/dist/js/bootstrap-material-design.min.js";
 import 'bootstrap-material-design/js/bootstrapMaterialDesign.js'*/
 
+// parse
+import Parse from 'parse';
+import parsecfg from './server/parsecfg';
+
+Parse.initialize(parsecfg.APP_ID, parsecfg.MASTER_KEY);
+Parse.serverURL = parsecfg.SERVER_URL;
 
 const store = configureStore();
 
