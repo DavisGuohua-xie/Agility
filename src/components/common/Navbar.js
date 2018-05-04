@@ -6,11 +6,12 @@ import {
     NavbarBrand,
     Nav,
     NavItem,
-    NavLink,
     UncontrolledDropdown,
     DropdownToggle,
     DropdownMenu,
     DropdownItem } from 'reactstrap';
+
+import {Link} from 'react-router-dom';
   
 
 import styles from '../../styles/navbar.module.css';
@@ -32,31 +33,32 @@ export default class NavBar extends React.Component {
       render() {
         return (
           <div>
-            <Navbar color="light" light expand="md">
-              <NavbarBrand href="/">reactstrap</NavbarBrand>
+            <Navbar color="dark" dark expand="md">
+              <NavbarBrand href="/">Agility</NavbarBrand>
               <NavbarToggler onClick={this.toggle} />
+              
+              <Nav className={styles.navbarCenter} navbar>
+                <NavItem>
+                    <Link to="/" className="nav-link">Project Name</Link>
+                  </NavItem>
+              </Nav>
+              
               <Collapse isOpen={this.state.isOpen} navbar>
                 <Nav className="ml-auto" navbar>
                   <NavItem>
-                    <NavLink href="/components/">Components</NavLink>
-                  </NavItem>
-                  <NavItem>
-                    <NavLink href="https://github.com/reactstrap/reactstrap">GitHub</NavLink>
+                    <Link to="/chat" className="nav-link">Chat</Link>
                   </NavItem>
                   <UncontrolledDropdown nav inNavbar>
                     <DropdownToggle nav caret>
-                      Options
+                      Name
                     </DropdownToggle>
                     <DropdownMenu right>
                       <DropdownItem>
-                        Option 1
-                      </DropdownItem>
-                      <DropdownItem>
-                        Option 2
+                        My Account
                       </DropdownItem>
                       <DropdownItem divider />
                       <DropdownItem>
-                        Reset
+                        Logout
                       </DropdownItem>
                     </DropdownMenu>
                   </UncontrolledDropdown>
