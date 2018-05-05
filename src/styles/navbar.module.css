@@ -5,3 +5,16 @@
     top: 8px;
     overflow-x: hidden;
 }
+
+.dropdownItem:focus {
+    outline: none;
+}
+
+.navbarBrand {
+    color: #fff;
+}
+
+.navbarBrand:hover {
+    color: #fff;
+    text-decoration: none;
+}

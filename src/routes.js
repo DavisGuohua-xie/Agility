@@ -13,6 +13,7 @@ import {Homepage} from './components/Homepage';
 import { LoginPage } from './components/LoginPage';
 import { RegistrationPage } from './components/RegistrationPage';
 import { LogoutPage } from './components/LogoutPage';
+import {SettingsPage} from './components/SettingsPage';
 import PageNotFound from './components/common/PageNotFound';
 
 export default (
@@ -21,6 +22,7 @@ export default (
         <Route exact path="/login" component={LoginPage}/>
         <Route exact path="/register" component={RegistrationPage}/>
         <Route exact path="/logout" component={LogoutPage} />
+        <Route exact path="/myaccount" component={SettingsPage}/>
         <Route path="*" component={PageNotFound} />
     </Switch>
 );

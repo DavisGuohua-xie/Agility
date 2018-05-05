@@ -42,7 +42,7 @@ export default class NavBar extends React.Component {
       return (
         <div>
           <Navbar color="dark" dark expand="md">
-            <NavbarBrand href="/">Agility</NavbarBrand>
+            <Link to="/" className={styles.navbarBrand}><NavbarBrand>Agility</NavbarBrand></Link>
             <NavbarToggler onClick={this.toggle} />
             
             <Nav className={styles.navbarCenter} navbar>
@@ -61,11 +61,11 @@ export default class NavBar extends React.Component {
                     Name
                   </DropdownToggle>
                   <DropdownMenu right>
-                    <DropdownItem>
-                      My Account
+                    <DropdownItem className={styles.dropdownItem}>
+                      <Link to="/myaccount" style={{textDecoration: 'none', color: '#212529'}}>My Account</Link>
                     </DropdownItem>
                     <DropdownItem divider />
-                    <DropdownItem>
+                    <DropdownItem className={styles.dropdownItem}>
                       Logout
                     </DropdownItem>
                   </DropdownMenu>

@@ -1,5 +1,26 @@
 .listContainer {
-    margin-top: 100px;
+    margin-top: 40px;
     display: flex;
     flex-wrap: wrap;
+}
+
+.projectHeader {
+    margin-top: 20px;
+}
+
+.btnDiv {
+    display: flex;
+    justify-content: flex-end;
+}
+
+@media (max-width: 574px) {
+    .listContainer {
+        justify-content: space-around;
+    }
+}
+
+@media (max-width: 768px) {
+    .listContainer {
+        justify-content: space-around;
+    }
 }
