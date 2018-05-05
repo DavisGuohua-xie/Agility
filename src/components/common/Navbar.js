@@ -42,7 +42,7 @@ export default class NavBar extends React.Component {
       return (
         <div>
           <Navbar color="dark" dark expand="md">
-            <Link to="/" className={styles.navbarBrand}><NavbarBrand>Agility</NavbarBrand></Link>
+            <Link to="/" className={`${styles.navbarBrand} navbar-brand`}>Agility</Link>
             <NavbarToggler onClick={this.toggle} />
             
             <Nav className={styles.navbarCenter} navbar>

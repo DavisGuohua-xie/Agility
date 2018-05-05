@@ -31,8 +31,8 @@ class Homepage extends React.Component {
     render() {
         return (
             <div>
-                <NavBar/>
-                <ProjectListComponent projects={projs}/>
+                <NavBar  projName="Project name"/>
+                <ProjectListComponent projects={projs}/> {/* TODO: project list will be sent over by server */}
             </div>
         )
     }

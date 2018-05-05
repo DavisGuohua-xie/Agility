@@ -13,13 +13,13 @@
 
 @media (max-width: 469px) {
     .projectItem {
-        margin: auto 20px 20px 20px;
         width: 100%;
     }
 }
 
-@media (max-width: 574px) and (min-width: 470px) {
+@media (max-width: 574px) {
     .projectItem {
-        width: 40%;
+        width: 100%;
+        margin: auto 20px 20px 20px;
     }
 }
