@@ -1,0 +1,18 @@
+.projectItem {
+    border: 1px solid black;
+    height: 150px;
+    width: 200px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+}
+
+.projectName {
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+@media (max-width: 469px) {
+    .projectItem {
+        margin: auto;
+    }
+}

@@ -9,7 +9,7 @@ import React from 'react';
 import { Route, Switch } from 'react-router';
 
 // Module root components
-import Homepage from './components/Homepage';
+import {Homepage} from './components/Homepage';
 import { LoginPage } from './components/LoginPage';
 import { RegistrationPage } from './components/RegistrationPage';
 import { LogoutPage } from './components/LogoutPage';
