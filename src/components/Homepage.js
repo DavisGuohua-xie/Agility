@@ -6,6 +6,7 @@
  */
 import React from 'react';
 
+
 const Homepage = () => <h1>This project is built with React + Redux + react-router</h1>;
 
 export default Homepage;
