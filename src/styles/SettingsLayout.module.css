@@ -1,0 +1,11 @@
+.containerDiv {
+    display: flex;
+}
+
+.profilePicDiv {
+    flex: 3;
+}
+
+.formDiv {
+    flex: 2;
+}
