@@ -1,0 +1,34 @@
+.singleMessage {
+    border: 2px solid #dedede;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 20px;
+    word-wrap: break-word;
+}
+
+/* Darker chat container */
+.darker {
+    border-color: #ccc;
+    background-color: #ddd;
+    text-align: right;
+}
+
+/* Clear floats */
+.singleMessage::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+/* Style time text */
+.timeRight {
+    float: right;
+    color: #aaa;
+}
+
+/* Style time text */
+.timeLeft {
+    float: left;
+    color: #999;
+}

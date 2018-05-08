@@ -26,10 +26,16 @@ class ChatPage extends Component {
 
 
     render() {
+        let msgList = [{
+            message: "Test message",
+            sent_at: new Date(),
+            sent_by: 'sdafasd232', // id
+            sent_by_name: 'Gary the Great'
+        }];
         return (
             <div style={{height: '100%'}}>
                 <NavBar projName='Project name'/>
-                <ChatLayout/>
+                <ChatLayout messageList={msgList} me={{id: 'random'}}/>
             </div>
         );
     }
