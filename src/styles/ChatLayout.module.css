@@ -1,0 +1,29 @@
+.layoutContainer {
+    display: flex;
+    height: calc(100% - 56px);
+    width: 100vw;
+}
+
+.sidebarContent {
+    flex: 1;
+    background-color: green;
+}
+
+.mainChatContent {
+    flex: 4;
+}
+
+.mainChatContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.inputArea {
+}
+
+.chatContainerHeader {
+    height: 50px;
+    background-color: lightblue;
+}
