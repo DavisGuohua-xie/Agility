@@ -5,13 +5,30 @@
 }
 
 .sidebarContent {
-    flex: 1;
+    position: absolute;
+    left: 0;
+    height: calc(100% - 56px);
+    z-index: 100;
     color: #e2e2e2;
+    width: 200px;
     background-color: #333333;
+    transition: left .5s;
+}
+
+.hide {
+    left: -200px;
+}
+
+.close {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 20px;
+    cursor: pointer;
 }
 
 .mainChatContent {
-    flex: 4;
+    flex: 1;
 }
 
 .mainChatContainer {
@@ -60,12 +77,6 @@
     background-color: #606060;
 }
 
-.fas {
-    display: none;
-    text-align: left;
-    font-size: 20px;
-}
-
 .chatContainerHeader p {
     display: inline-block;
     position: absolute;
@@ -74,17 +85,12 @@
     font-size: 20px;
 }
 
+.toggleBtn {
+    float: left;
+}
+
 @media screen and (max-width: 649px) {
     .sidebarContent {
-        flex: 1;
-        z-index: 2;
-    }
-
-    .mainChatContent {
-        flex: 2;
-    }
-
-    .fas {
-        display: unset; 
+        z-index: 100;
     }
 }

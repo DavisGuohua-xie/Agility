@@ -39,7 +39,7 @@ class ChatPage extends Component {
                 sent_by_name: 'Gary the Great' // TODO: need to add to db
             }],
             currUser: {id: 'random'},
-            sidebarOpen: true
+            sidebarOpen: false
         };
 
         this.toggleSidebar = this.toggleSidebar.bind(this);

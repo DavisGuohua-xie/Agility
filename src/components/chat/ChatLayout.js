@@ -1,7 +1,5 @@
 import React from 'react';
 
-import {slide as Menu} from 'react-burger-menu';
-
 import {ChatMessage} from './ChatMessage';
 
 import styles from '../../styles/ChatLayout.module.css';
@@ -11,9 +9,12 @@ import styles from '../../styles/ChatLayout.module.css';
  * TODO: This component is expecting a list of messages from ChatPage.js as 'messageList' prop.
  */
 const ChatLayout = props => {
+    let sidebarVisible = props.sidebarOpen ? '' : styles.hide;
+
     return (
         <div className={styles.layoutContainer}>
-            <div className={styles.sidebarContent}>
+            <div className={`${styles.sidebarContent} ${sidebarVisible}`}>
+                <i className={`fas fa-times ${styles.close}`} onClick={props.toggleSidebar}></i>
                 <div className={styles.groupChannels}>
                     <p className={styles.channelHeader}>Channels</p>
                     <ul className={styles.channelList}>
@@ -33,7 +34,10 @@ const ChatLayout = props => {
                 <div className={styles.mainChatContainer}>
                     <div>
                         <div className={styles.chatContainerHeader}>
-                            <i className={`fas fa-bars ${styles.fas}`}></i> <p>PERSON</p>
+                            <button className={`${styles.toggleBtn} btn`} onClick={props.toggleSidebar}>
+                                <i className={`fas fa-bars`}></i>
+                            </button>
+                            <p>PERSON</p>
                         </div>
                         <div className={styles.messageContent}>
                             {props.messageList.map((msg, index) => <ChatMessage key={index} message={msg}/>)}
