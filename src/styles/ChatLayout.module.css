@@ -6,7 +6,8 @@
 
 .sidebarContent {
     flex: 1;
-    background-color: green;
+    color: #e2e2e2;
+    background-color: #333333;
 }
 
 .mainChatContent {
@@ -24,4 +25,66 @@
 .chatContainerHeader {
     height: 50px;
     background-color: lightblue;
+}
+
+.groupChannels {
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.channelHeader {
+    margin-left: 10px;
+}
+
+.channelList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.channelItem {
+    padding: 5px 0 5px 10px;
+}
+
+.channelHeader {
+    margin-bottom: 0;
+    font-weight: 500;
+}
+
+.messageContent {
+    overflow-y: auto;
+}
+
+.channelItem:hover {
+    cursor: pointer;
+    background-color: #606060;
+}
+
+.fas {
+    display: none;
+    text-align: left;
+    font-size: 20px;
+}
+
+.chatContainerHeader p {
+    display: inline-block;
+    position: absolute;
+    left: 50%;
+    transform: translateX(50%);
+    font-size: 20px;
+}
+
+@media screen and (max-width: 649px) {
+    .sidebarContent {
+        flex: 1;
+        z-index: 2;
+    }
+
+    .mainChatContent {
+        flex: 2;
+    }
+
+    .fas {
+        display: unset; 
+    }
 }

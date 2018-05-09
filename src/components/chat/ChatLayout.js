@@ -1,5 +1,7 @@
 import React from 'react';
 
+import {slide as Menu} from 'react-burger-menu';
+
 import {ChatMessage} from './ChatMessage';
 
 import styles from '../../styles/ChatLayout.module.css';
@@ -13,11 +15,17 @@ const ChatLayout = props => {
         <div className={styles.layoutContainer}>
             <div className={styles.sidebarContent}>
                 <div className={styles.groupChannels}>
-                group channels
+                    <p className={styles.channelHeader}>Channels</p>
+                    <ul className={styles.channelList}>
+                        {props.groups.map(group => <li key={group.id} className={styles.channelItem}>{group.name}</li>)}
+                    </ul>
                 </div>
                 
                 <div className={styles.directChannels}>
-                DM channels
+                    <p className={styles.channelHeader}>Direct Messages</p>
+                    <ul className={styles.channelList}>
+                        {props.dms.map(group => <li key={group.id} className={styles.channelItem}>{group.name}</li>)}
+                    </ul>
                 </div>
             </div>
             
@@ -25,7 +33,7 @@ const ChatLayout = props => {
                 <div className={styles.mainChatContainer}>
                     <div>
                         <div className={styles.chatContainerHeader}>
-                            PERSON <small>@PERSONusername</small>
+                            <i className={`fas fa-bars ${styles.fas}`}></i> <p>PERSON</p>
                         </div>
                         <div className={styles.messageContent}>
                             {props.messageList.map((msg, index) => <ChatMessage key={index} message={msg}/>)}
