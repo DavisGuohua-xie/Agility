@@ -7,7 +7,8 @@
 .sidebarContent {
     position: absolute;
     left: 0;
-    height: calc(100% - 56px);
+    height: calc(100% - 56px - 50px); /* 100% - navbar height - subheader height */
+    margin-top: 50px; /* account for subheader height */
     z-index: 100;
     color: #e2e2e2;
     width: 200px;
@@ -36,12 +37,12 @@
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
-    padding: 0 10px 0 10px;
 }
 
 .chatContainerHeader {
     height: 50px;
     background-color: lightblue;
+    text-align: center;
 }
 
 .groupChannels {
@@ -79,18 +80,20 @@
 
 .chatContainerHeader p {
     display: inline-block;
-    position: absolute;
-    left: 50%;
-    transform: translateX(50%);
-    font-size: 20px;
+    margin-left: 10px;
+    font-size: 2em;
 }
 
-.toggleBtn {
-    float: left;
+.inputArea {
+    margin: 0 10px 0 10px;
 }
 
-@media screen and (max-width: 649px) {
+@media screen and (min-width: 500px) {
     .sidebarContent {
-        z-index: 100;
+        width: 300px;
+    }
+
+    .hide {
+        left: -300px;
     }
 }

@@ -13,7 +13,7 @@ const ChatLayout = props => {
 
     return (
         <div className={styles.layoutContainer}>
-            <div className={`${styles.sidebarContent} ${sidebarVisible}`}>
+            <div className={`${styles.sidebarContent} ${sidebarVisible}`} id='sidebar'>
                 <i className={`fas fa-times ${styles.close}`} onClick={props.toggleSidebar}></i>
                 <div className={styles.groupChannels}>
                     <p className={styles.channelHeader}>Channels</p>
@@ -33,12 +33,20 @@ const ChatLayout = props => {
             <div className={styles.mainChatContent}>
                 <div className={styles.mainChatContainer}>
                     <div>
-                        <div className={styles.chatContainerHeader}>
-                            <button className={`${styles.toggleBtn} btn`} onClick={props.toggleSidebar}>
-                                <i className={`fas fa-bars`}></i>
+                        
+                        {/*<div className={styles.chatContainerHeader}>
+                            <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#sidebar" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
+                                <span className="navbar-toggler-icon"></span>
                             </button>
                             <p>PERSON</p>
-                        </div>
+                        </div>*/}
+
+                        <nav className="navbar navbar-dark bg-dark">
+                            <button onClick={props.toggleSidebar} className="navbar-toggler" type="button" data-toggle="collapse" data-target="#sidebar" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
+                                <span className="navbar-toggler-icon"></span>
+                            </button>
+                        </nav>
+
                         <div className={styles.messageContent}>
                             {props.messageList.map((msg, index) => <ChatMessage key={index} message={msg}/>)}
                         </div>
