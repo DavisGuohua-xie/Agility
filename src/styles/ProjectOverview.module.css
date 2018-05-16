@@ -1,0 +1,34 @@
+.menuButton {
+    border: 1px solid black;
+    display: inline-block;
+    position: relative;
+    left: 20px;
+    top: 10px;
+    padding: 5px;
+    background-color: white;
+    transition: 0.25s;
+}
+
+.menuButton span {
+    font-weight: 400;
+}
+
+.menuButton:hover {
+    background-color: #b5b5b5;
+    transition: 0.25s;
+    cursor: pointer;
+}
+
+.layoutContainer {
+    display: flex;
+    height: calc(100% - 56px - 40px);
+}
+
+.sidebar {
+    flex: 1;
+    border-right: 1px solid black;
+}
+
+.mainContent {
+    flex: 4;
+}

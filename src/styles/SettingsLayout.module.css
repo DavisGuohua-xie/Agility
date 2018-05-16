@@ -9,3 +9,20 @@
 .formDiv {
     flex: 2;
 }
+
+@media screen and (max-width: 768px) {
+    .containerDiv {
+        display: unset;
+    }
+
+    .profilePicDiv {
+        flex: 1;
+        display: block;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .notif > div {
+        display: block;
+    }
+}

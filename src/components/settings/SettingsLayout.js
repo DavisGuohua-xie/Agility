@@ -40,7 +40,7 @@ const SettingsLayout = props => {
 
                         <FormGroup>
                             <Label htmlFor='username'>Username</Label>
-                            <Input type="text" name="username" id="username" value={props.username} disabled/>
+                            <Input type="text" name="username" id="username" value={props.username} readOnly />
                         </FormGroup>
 
                         <FormGroup>
@@ -49,10 +49,10 @@ const SettingsLayout = props => {
                             <Input type="confpassword" name="confpassword" id="confpassword" placeholder='Confirm new password' onChange={props.onValueChange}/>
                         </FormGroup>
 
-                        <div className="input-group mb-3">
+                        <div className={`input-group mb-3 ${styles.notif}`}>
                             <div className="input-group-prepend">
                                 <label className="input-group-text" htmlFor="emailNotif">
-                                    Update summary email notification frequency
+                                    Summary email frequency
                                 </label>
                             </div>
                             <select className="custom-select" id="emailNotif" name='emailFreq' onChange={props.onValueChange} value={props.emailFreq ? props.emailFreq : '0'}>
