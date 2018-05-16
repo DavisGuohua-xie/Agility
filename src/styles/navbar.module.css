@@ -1,0 +1,20 @@
+.navbarCenter {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 8px;
+    overflow-x: hidden;
+}
+
+.dropdownItem:focus {
+    outline: none;
+}
+
+.navbarBrand {
+    color: #fff;
+}
+
+.navbarBrand:hover {
+    color: #fff;
+    text-decoration: none;
+}

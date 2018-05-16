@@ -31,7 +31,9 @@ const LoginForm1 = props => {
                     </FormGroup>
                 </Form>
                 <a className={styles.forgotPass} onClick={props.onToggleForgot}>Forgot password?</a>
-                <Button type="submit" color="primary" className={styles.customBtn} onClick={props.onLogin} disabled={props.ajaxRequested}>Log in</Button>
+                <Button type="submit" color="primary" className={styles.customBtn} onClick={props.onLogin} disabled={props.ajaxRequested}>
+                    {props.ajaxRequested ? "Logging in..." : "Login"}
+                </Button>
                 <Button type="submit" color="primary" className={`${styles.customBtn} ${styles.registerButton}` } 
                     onClick={props.onToggleReg} disabled={props.ajaxRequested}>Register</Button>
 

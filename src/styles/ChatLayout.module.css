@@ -1,0 +1,99 @@
+.layoutContainer {
+    display: flex;
+    height: calc(100% - 56px);
+    width: 100vw;
+}
+
+.sidebarContent {
+    position: absolute;
+    left: 0;
+    height: calc(100% - 56px - 50px); /* 100% - navbar height - subheader height */
+    margin-top: 50px; /* account for subheader height */
+    z-index: 100;
+    color: #e2e2e2;
+    width: 200px;
+    background-color: #333333;
+    transition: left .5s;
+}
+
+.hide {
+    left: -200px;
+}
+
+.close {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.mainChatContent {
+    flex: 1;
+}
+
+.mainChatContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.chatContainerHeader {
+    height: 50px;
+    background-color: lightblue;
+    text-align: center;
+}
+
+.groupChannels {
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.channelHeader {
+    margin-left: 10px;
+}
+
+.channelList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.channelItem {
+    padding: 5px 0 5px 10px;
+}
+
+.channelHeader {
+    margin-bottom: 0;
+    font-weight: 500;
+}
+
+.messageContent {
+    overflow-y: auto;
+}
+
+.channelItem:hover {
+    cursor: pointer;
+    background-color: #606060;
+}
+
+.chatContainerHeader p {
+    display: inline-block;
+    margin-left: 10px;
+    font-size: 2em;
+}
+
+.inputArea {
+    margin: 0 10px 0 10px;
+}
+
+@media screen and (min-width: 500px) {
+    .sidebarContent {
+        width: 300px;
+    }
+
+    .hide {
+        left: -300px;
+    }
+}
