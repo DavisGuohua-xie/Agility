@@ -40,10 +40,6 @@ export const ProjectOverview = props => {
                 </span>
             </div>
 
-            <div className={styles.sidebar}>
-                side
-            </div>
-
             <div className={styles.mainContent}>
                 <Container fluid>
                     <Row>

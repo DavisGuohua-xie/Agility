@@ -6,7 +6,7 @@ export const OverviewSubnav = props => {
     const tasklistActive = props.active === 1 ? 'active nav-link' : 'nav-link';
 
     return (
-        <ul className="nav nav-tabs nav-fill" style={{height: '40px'}}>
+        <ul className="nav nav-tabs" style={{height: '40px'}}>
             <li className="nav-item" onClick={props.onTabChange} data-tab={0}>
                 <Link className={overviewActive} to="/overview">Overview</Link>
             </li>
