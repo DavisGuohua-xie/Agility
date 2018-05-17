@@ -1,5 +1,6 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
+import {Button} from 'reactstrap';
 
 export const OverviewSubnav = props => {
     const overviewActive = props.active === 0 ? 'active nav-link' : 'nav-link';
@@ -7,6 +8,9 @@ export const OverviewSubnav = props => {
 
     return (
         <ul className="nav nav-tabs" style={{height: '40px'}}>
+            <Button style={{margin: '2px'}} onClick={props.toggleSidebar} hidden={props.docked ? true : null}>
+                Members <i className="fas fa-users"></i>
+            </Button>
             <li className="nav-item" onClick={props.onTabChange} data-tab={0}>
                 <Link className={overviewActive} to="/overview">Overview</Link>
             </li>
