@@ -24,6 +24,8 @@ import MemberSidebarItem from './common/MemberSidebarItem';
 
 import styles from '../styles/ProjectOverviewPage.module.css';
 
+import { Parse } from 'parse';
+
 const mql = window.matchMedia(`(min-width: 900px)`);
 
 /* TODO: delete mock proj member data */
@@ -60,6 +62,11 @@ class ProjectOverviewPage extends React.Component {
         this.toggleSidebar = this.toggleSidebar.bind(this);
         this.mediaQueryChanged = this.mediaQueryChanged.bind(this);
         this.generateSidebar = this.generateSidebar.bind(this);
+
+        var currentUser = Parse.User.current();
+        if (!currentUser) {
+            this.props.history.push("/login");
+        }
     }
 
     componentWillMount() {

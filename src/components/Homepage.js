@@ -9,6 +9,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {withRouter} from 'react-router';
 import * as projActions from '../actions/projActions';
+import {Parse} from 'parse';
 
 import NavBar from './common/Navbar';
 import ProjectListComponent from './home/ProjectListComponent';
@@ -26,6 +27,11 @@ class Homepage extends React.Component {
 
     constructor(props) {
         super(props);
+
+        var currentUser = Parse.User.current();
+        if (!currentUser) {
+            this.props.history.push("/login");
+        }
     }
 
     render() {

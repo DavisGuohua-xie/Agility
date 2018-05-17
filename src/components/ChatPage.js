@@ -19,6 +19,8 @@ import * as chatActions from '../actions/chatActions';
 import NavBar from './common/Navbar';
 import ChatLayout from './chat/ChatLayout';
 
+import Parse from 'parse';
+
 class ChatPage extends Component {
     constructor(props) {
         super(props);
@@ -43,6 +45,11 @@ class ChatPage extends Component {
         };
 
         this.toggleSidebar = this.toggleSidebar.bind(this);
+
+        var currentUser = Parse.User.current();
+        if (!currentUser) {
+            this.props.history.push("/login");
+        }
     }
 
     toggleSidebar() {

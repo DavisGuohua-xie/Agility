@@ -3,8 +3,18 @@ import { authActions } from "../actions/authActions";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withRouter } from "react-router";
-
+import { Parse } from 'parse';
 class LogoutPage extends Component {
+
+  constructor(props) {
+    super(props);
+    
+    var currentUser = Parse.User.current();
+        if (!currentUser) {
+            this.props.history.push("/login");
+        }
+  }
+
   componentWillMount() {
     this.props.actions.logout(this.props.history);
   }
