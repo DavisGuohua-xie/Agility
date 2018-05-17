@@ -20,8 +20,29 @@ import NavBar from './common/Navbar';
 
 import {OverviewSubnav} from './common/OverviewSubnav';
 import {ProjectOverview} from './project/ProjectOverview';
+import MemberSidebarItem from './common/MemberSidebarItem';
+
+import styles from '../styles/ProjectOverviewPage.module.css';
 
 const mql = window.matchMedia(`(min-width: 900px)`);
+
+/* TODO: delete mock proj member data */
+const members = [
+    {fname: 'Joe', lname: 'Schmo'},
+    {fname: 'Joe', lname: 'Schmo'},
+    {fname: 'Joe', lname: 'Schasdfasdfamo'},
+    {fname: 'Joe', lname: 'Schmo'},
+    {fname: 'Joe', lname: 'Schasdfasdfamo'},
+    {fname: 'Joe', lname: 'Schmo'},
+    {fname: 'Joe', lname: 'Schasdfasdfamo'},
+    {fname: 'Joe', lname: 'Schmo'},
+    {fname: 'Joe', lname: 'Schasdfasdfamo'},
+    {fname: 'Joe', lname: 'Schmo'},
+    {fname: 'Joe', lname: 'Schasdfasdfamo'},
+    {fname: 'Joe', lname: 'Schmo'},
+    {fname: 'Joe', lname: 'Schasdfasdfamo'},
+    {fname: 'Joe', lname: 'Schmo'} 
+];
 
 class ProjectOverviewPage extends React.Component {
     constructor(props) {
@@ -32,11 +53,13 @@ class ProjectOverviewPage extends React.Component {
             sidebarOpen: false,
             mql: mql,
             docked: props.docked,
-            open: props.open
+            open: props.open,
+            members: members
         };
         this.setActive = this.setActive.bind(this);
         this.toggleSidebar = this.toggleSidebar.bind(this);
         this.mediaQueryChanged = this.mediaQueryChanged.bind(this);
+        this.generateSidebar = this.generateSidebar.bind(this);
     }
 
     componentWillMount() {
@@ -52,27 +75,38 @@ class ProjectOverviewPage extends React.Component {
         this.setState({sidebarDocked: this.state.mql.matches});
     }    
 
-    toggleSidebar(open) {
+    toggleSidebar(open) {        
         this.setState({sidebarOpen: open});
     }
 
     setActive(e) {
         this.setState({active: e.target.dataset.tab});
     }
+
+    generateSidebar() {
+        // TODO: generate list of project members for DM-ing
+
+        return (
+            <ul className={styles.sidebarUL}>
+                {this.state.members.map( (person, index) => <MemberSidebarItem 
+                    fname={person.fname} lname={person.lname} key={index}/>)}
+            </ul>
+        );
+    }
     
     //
     render() {
-        let sidebarContent = <h1>sidebar!</h1>;
+        let sidebarContent = this.generateSidebar();
+
         return (
             <div style={{height: '100%'}}>
                 <NavBar projName="Project" />
-                <OverviewSubnav active={this.state.active}/>
                 <Sidebar sidebar={sidebarContent}
                     open={this.state.sidebarOpen}
                     docked={this.state.sidebarDocked}
-                    onSetOpen={this.onSetSidebarOpen}
-                    styles={{root: {top: '96px'}}}>
-                    
+                    onSetOpen={this.toggleSidebar}
+                    styles={{root: {top: '56px', overflowY: 'auto'}, content: {overflowY: 'auto'}, overlay: {top: '56px'}, sidebar: {backgroundColor: 'white', width: 250}}}>
+                    <OverviewSubnav active={this.state.active} toggleSidebar={this.toggleSidebar} docked={this.state.sidebarDocked}/>
                     <ProjectOverview onSidebarToggle={this.toggleSidebar}/>
                 </Sidebar>
             </div>

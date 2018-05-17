@@ -1,0 +1,11 @@
+.member {
+    padding: 20px;
+}
+
+.member:hover {
+    background-color: #cccccc;
+}
+
+.memberName {
+    font-size: 20px;
+}
