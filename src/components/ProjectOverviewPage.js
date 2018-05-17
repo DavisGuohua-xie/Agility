@@ -76,7 +76,7 @@ class ProjectOverviewPage extends React.Component {
     }    
 
     toggleSidebar(open) {        
-        this.setState({sidebarOpen: open});
+        this.setState({sidebarOpen: open ? true : false});
     }
 
     setActive(e) {
