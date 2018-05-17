@@ -21,7 +21,6 @@ export default (
     <Switch>
         <Route exact path="/" component={Homepage} />
         <Route exact path="/login" component={LoginPage}/>
-        <Route exact path="/register" component={RegistrationPage}/>
         <Route path="/chat" component={ChatPage}/>
         <Route exact path="/logout" component={LogoutPage} />
         <Route exact path="/myaccount" component={SettingsPage}/>

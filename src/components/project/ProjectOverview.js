@@ -34,30 +34,21 @@ const data = {
 export const ProjectOverview = props => {
     return (
         <div className={styles.layoutContainer}>
-            <div className={styles.menuButton} style={{display: 'none'}}>
-                <span>
-                    Members <i className="fas fa-users"></i>
-                </span>
-            </div>
-
-            <div className={styles.sidebar}>
-                side
-            </div>
 
             <div className={styles.mainContent}>
                 <Container fluid>
                     <Row>
-                        <div className="col-lg-8 col-md-8 col-sm-8">
+                        <div className="col-lg-8 col-md-12 col-sm-12 offset-lg-2">
                             <Line data={data} options={{maintainAspectRatio: true}}/>
                         </div>
                     </Row>
 
-                    <div className="row" style={{marginTop: '30px'}}>
+                    <Row style={{marginTop: '30px'}}>
                         <BoardDetail board='Board name' items={42}/>
                         <BoardDetail board='Board name' items={42}/>
                         <BoardDetail board='Board name' items={42}/>
                         <BoardDetail board='Board name' items={42}/>
-                    </div>
+                    </Row>
 
                 </Container>
                 
