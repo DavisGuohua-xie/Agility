@@ -47,6 +47,7 @@ const members = [
 class ProjectOverviewPage extends React.Component {
     constructor(props) {
         super(props);
+        console.log(props);
 
         this.state = {
             active: 0,
@@ -54,8 +55,11 @@ class ProjectOverviewPage extends React.Component {
             mql: mql,
             docked: props.docked,
             open: props.open,
-            members: members
+            members: members,
+            projectID: props.match.params.projID,
+            page: props.match.params.projPage
         };
+
         this.setActive = this.setActive.bind(this);
         this.toggleSidebar = this.toggleSidebar.bind(this);
         this.mediaQueryChanged = this.mediaQueryChanged.bind(this);
@@ -65,6 +69,8 @@ class ProjectOverviewPage extends React.Component {
     componentWillMount() {
         mql.addListener(this.mediaQueryChanged);
         this.setState({mql: mql, sidebarDocked: mql.matches});
+        // TODO: fetch project data from server
+        // TODO: call redux action
     }
 
     componentWillUnmount() {
@@ -100,13 +106,13 @@ class ProjectOverviewPage extends React.Component {
 
         return (
             <div style={{height: '100%'}}>
-                <NavBar projName="Project" />
+                <NavBar projName="Project" projID={this.state.projectID}/>
                 <Sidebar sidebar={sidebarContent}
                     open={this.state.sidebarOpen}
                     docked={this.state.sidebarDocked}
                     onSetOpen={this.toggleSidebar}
                     styles={{root: {top: '56px', overflowY: 'auto'}, content: {overflowY: 'auto'}, overlay: {top: '56px'}, sidebar: {backgroundColor: 'white', width: 250}}}>
-                    <OverviewSubnav active={this.state.active} toggleSidebar={this.toggleSidebar} docked={this.state.sidebarDocked}/>
+                    <OverviewSubnav active={this.state.active} toggleSidebar={this.toggleSidebar} docked={this.state.sidebarDocked} projID={this.state.projectID}/>
                     <ProjectOverview onSidebarToggle={this.toggleSidebar}/>
                 </Sidebar>
             </div>

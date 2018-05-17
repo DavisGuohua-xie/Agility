@@ -39,7 +39,8 @@ class ChatPage extends Component {
                 sent_by_name: 'Gary the Great' // TODO: need to add to db
             }],
             currUser: {id: 'random'},
-            sidebarOpen: false
+            sidebarOpen: false,
+            projectID: props.match.params.projID
         };
 
         this.toggleSidebar = this.toggleSidebar.bind(this);
@@ -56,7 +57,7 @@ class ChatPage extends Component {
         console.log(groupChannels);
         return (
             <div style={{height: '100%'}}>
-                <NavBar projName='Project name'/>
+                <NavBar projName='Project name' projID={this.state.projectID}/>
                 <ChatLayout
                     groups={groupChannels}
                     dms={dmChannels} 

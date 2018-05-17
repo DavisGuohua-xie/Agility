@@ -21,10 +21,10 @@ export default (
     <Switch>
         <Route exact path="/" component={Homepage} />
         <Route exact path="/login" component={LoginPage}/>
-        <Route path="/chat" component={ChatPage}/>
+        <Route path="/:projID/chat" component={ChatPage}/>
         <Route exact path="/logout" component={LogoutPage} />
         <Route exact path="/myaccount" component={SettingsPage}/>
-        <Route exact path="/overview" component={ProjectOverviewPage}/>
+        <Route exact path="/:projID/:projPage" component={ProjectOverviewPage}/>
         <Route path="*" component={PageNotFound} />
     </Switch>
 );

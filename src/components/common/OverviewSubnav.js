@@ -12,10 +12,10 @@ export const OverviewSubnav = props => {
                 Members <i className="fas fa-users"></i>
             </Button>
             <li className="nav-item" onClick={props.onTabChange} data-tab={0}>
-                <Link className={overviewActive} to="/overview">Overview</Link>
+                <Link className={overviewActive} to={`/${props.projID}/overview`}>Overview</Link>
             </li>
             <li className="nav-item" data-tab={1}>
-                <Link className={tasklistActive} to="/tasklist">Tasks</Link>
+                <Link className={tasklistActive} to={`/${props.projID}/tasks`}>Tasks</Link>
             </li>
         </ul>
     );
