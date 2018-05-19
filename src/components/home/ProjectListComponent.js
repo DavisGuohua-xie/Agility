@@ -13,6 +13,7 @@ import { withRouter } from 'react-router';
 
 import { Button, Form, FormGroup, Input, Label, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
+import { Parse } from 'parse';
 class ProjectListComponent extends React.Component {
 
     constructor(props) {
@@ -21,12 +22,13 @@ class ProjectListComponent extends React.Component {
             projItems: props.projects,
             newProjectModalOpen: false,
             newProjectName: '',
-            newProjectMembers: '' // TODO: handle adding new project members to project on creation
+            newProjectMembers: ''
         }
 
         this.toggleModal = this.toggleModal.bind(this);
         this.handleCreateProject = this.handleCreateProject.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
+        this.handleMemberChange = this.handleMemberChange.bind(this);
     }
 
 
@@ -37,7 +39,10 @@ class ProjectListComponent extends React.Component {
     handleCreateProject() {
         if (this.state.newProjectName !== '') {
             console.log("project name: " + this.state.newProjectName);
-            this.props.actions.createProject(this.state.newProjectName, null, this.props.history);
+            let temp = this.state.newProjectMembers.replace(/ /g,'').split(",");
+
+            temp.unshift(Parse.User.current());
+            this.props.actions.createProject(this.state.newProjectName, temp, this.props.history);
         } else {
             console.log('no project name inputted');
         }
@@ -45,6 +50,10 @@ class ProjectListComponent extends React.Component {
 
     handleNameChange(e) {
         this.setState({newProjectName: e.target.value});
+    }
+
+    handleMemberChange(e) {
+        this.setState({newProjectMembers: e.target.value});
     }
 
     render() {
@@ -59,7 +68,7 @@ class ProjectListComponent extends React.Component {
                             </FormGroup>
                             <FormGroup>
                                 <Label for="addMembers">Add Members</Label>
-                                <Input type="text" name="addmembersinput" id="addMembers" placeholder="TODO: functionality not yet implemented" /> 
+                                <Input type="text" name="addmembersinput" id="addMembers" placeholder="username1, username2" onChange={this.handleMemberChange}/> 
                             </FormGroup>
                         </Form>
                     </ModalBody>
