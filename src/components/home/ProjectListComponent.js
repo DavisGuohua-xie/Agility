@@ -73,8 +73,8 @@ class ProjectListComponent extends React.Component {
                         </Form>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="primary" onClick={this.handleCreateProject}>Create Project</Button>
                         <Button color="secondary" onClick={this.toggleModal}>Cancel</Button>
+                        <Button color="primary" onClick={this.handleCreateProject}>Create Project</Button>
                     </ModalFooter>
                 </Modal>
                 <ProjectList 
