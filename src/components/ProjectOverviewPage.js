@@ -23,6 +23,7 @@ import {ProjectOverview} from './project/ProjectOverview';
 import MemberSidebarItem from './common/MemberSidebarItem';
 
 import styles from '../styles/ProjectOverviewPage.module.css';
+import { ProjectTasks } from './project/ProjectTasks';
 
 const mql = window.matchMedia(`(min-width: 900px)`);
 
@@ -56,8 +57,7 @@ class ProjectOverviewPage extends React.Component {
             docked: props.docked,
             open: props.open,
             members: members,
-            projectID: props.match.params.projID,
-            page: props.match.params.projPage
+            projectID: props.match.params.projID
         };
 
         this.setActive = this.setActive.bind(this);
@@ -102,7 +102,11 @@ class ProjectOverviewPage extends React.Component {
     
     //
     render() {
+        console.log(this.state);
         let sidebarContent = this.generateSidebar();
+        let mainContent = this.state.active == 0 ? 
+            <ProjectOverview onSidebarToggle={this.toggleSidebar}/> :
+            <ProjectTasks onSidebarToggle={this.toggleSidebar}/>;
 
         return (
             <div style={{height: '100%'}}>
@@ -112,8 +116,8 @@ class ProjectOverviewPage extends React.Component {
                     docked={this.state.sidebarDocked}
                     onSetOpen={this.toggleSidebar}
                     styles={{root: {top: '56px', overflowY: 'auto'}, content: {overflowY: 'auto'}, overlay: {top: '56px'}, sidebar: {backgroundColor: 'white', width: 250}}}>
-                    <OverviewSubnav active={this.state.active} toggleSidebar={this.toggleSidebar} docked={this.state.sidebarDocked} projID={this.state.projectID}/>
-                    <ProjectOverview onSidebarToggle={this.toggleSidebar}/>
+                    <OverviewSubnav active={this.state.active} toggleSidebar={this.toggleSidebar} docked={this.state.sidebarDocked} projID={this.state.projectID} onTabChange={this.setActive}/>
+                    {mainContent}
                 </Sidebar>
             </div>
         )

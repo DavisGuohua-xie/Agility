@@ -11,11 +11,11 @@ export const OverviewSubnav = props => {
             <Button style={{margin: '2px'}} onClick={props.toggleSidebar} hidden={props.docked ? true : null}>
                 Members <i className="fas fa-users"></i>
             </Button>
-            <li className="nav-item" onClick={props.onTabChange} data-tab={0}>
-                <Link className={overviewActive} to={`/${props.projID}/overview`}>Overview</Link>
+            <li className="nav-item" onClick={props.onTabChange}>
+                <Link className={overviewActive} to={`/${props.projID}/overview`} data-tab="0">Overview</Link>
             </li>
-            <li className="nav-item" data-tab={1}>
-                <Link className={tasklistActive} to={`/${props.projID}/tasks`}>Tasks</Link>
+            <li className="nav-item" onClick={props.onTabChange}>
+                <Link className={tasklistActive} to={`/${props.projID}/tasks`} data-tab="1">Tasks</Link>
             </li>
         </ul>
     );

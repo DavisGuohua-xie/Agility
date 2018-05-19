@@ -1,3 +1,7 @@
+/*
+ * Board detail for overview page.
+ */
+
 import React from 'react';
 
 const BoardDetail = props => {
