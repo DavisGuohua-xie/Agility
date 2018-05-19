@@ -2,9 +2,18 @@ import React from 'react';
 
 
 import ProjectList from './ProjectList';
+import { projActions } from '../../actions/projActions';
+
+import { bindActionCreators } from 'redux';
+
+
+import { connect } from 'react-redux';
+
+import { withRouter } from 'react-router';
+
 import { Button, Form, FormGroup, Input, Label, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
-export default class ProjectListComponent extends React.Component {
+class ProjectListComponent extends React.Component {
 
     constructor(props) {
         super(props);
@@ -26,9 +35,12 @@ export default class ProjectListComponent extends React.Component {
     }
 
     handleCreateProject() {
-        // todo: projActions
-        console.log("project name: " + this.state.newProjectName);
-        console.log("TODO: create project")
+        if (this.state.newProjectName !== '') {
+            console.log("project name: " + this.state.newProjectName);
+            this.props.actions.createProject(this.state.newProjectName, null, this.props.history);
+        } else {
+            console.log('no project name inputted');
+        }
     }
 
     handleNameChange(e) {
@@ -36,7 +48,6 @@ export default class ProjectListComponent extends React.Component {
     }
 
     render() {
-
         return <div>
                 <Modal isOpen={this.state.newProjectModalOpen} toggle={this.toggleModal} className={this.props.className}>
                     <ModalHeader toggle={this.toggleModal}> Create New Project </ModalHeader>
@@ -64,5 +75,15 @@ export default class ProjectListComponent extends React.Component {
                 />
                 </div>;
     }
+};
 
+function mapDispatchToProps(dispatch) {
+    return {
+        actions: bindActionCreators(projActions, dispatch)
+    };
+}
+
+const connectedProjectListComponent = withRouter(connect(null, mapDispatchToProps)(ProjectListComponent));
+export {
+    connectedProjectListComponent as ProjectListComponent
 };
