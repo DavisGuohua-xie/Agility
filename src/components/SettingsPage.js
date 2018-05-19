@@ -40,7 +40,7 @@ class SettingsPage extends React.Component {
     render() {
         return (
             <div>
-                <NavBar/>
+                <NavBar history={this.props.history}/>
                 <SettingsLayout
                     onChange={this.handleChange}
                     onSave={this.handleSave}

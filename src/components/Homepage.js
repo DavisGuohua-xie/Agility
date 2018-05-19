@@ -12,7 +12,7 @@ import * as projActions from '../actions/projActions';
 import {Parse} from 'parse';
 
 import NavBar from './common/Navbar';
-import ProjectListComponent from './home/ProjectListComponent';
+import {ProjectListComponent} from './home/ProjectListComponent';
 
 let projs = [
     {name: "Project 1"},
