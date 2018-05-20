@@ -61,6 +61,31 @@ static let PRIORITY = 'priority'
   }
 
 
+  getTitle(){
+    return this.get(TaskModel.TITLE)
+  }
+
+  getContent(){
+    return this.get(TaskModel.CONTENT)
+  }
+
+  getStartedAt(){
+    return this.get(TaskModel.STARTED_AT)
+  }
+
+  getDueDate(){
+    return this.get(TaskModel.DUE_DATE)
+  }
+
+  getCompletionDate(){
+    return this.get(TaskModel.COMPLETION_DATE)
+  }
+
+  getPriority(){
+    return this.get(TaskModel.PRIORITY)
+  }
+
+
 //TODO: Adds another person to be assined to the task
   addAssignedTo(user, successHandler, errorHandler){
     this.assignedTo.push(user)
