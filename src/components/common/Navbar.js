@@ -26,7 +26,8 @@ export default class NavBar extends React.Component {
     this.toggle = this.toggle.bind(this);
     this.logout = this.logout.bind(this);
     this.state = {
-      isOpen: false
+      isOpen: false,
+      projectID: props.projID
     };
   }
 
@@ -45,20 +46,20 @@ export default class NavBar extends React.Component {
     console.log(projName);
     return (
       <div>
-        <Navbar color="dark" dark expand="md"  style={{zIndex: 2}}>
+        <Navbar color="dark" dark expand="md"  style={{zIndex: 100000}}>
           <Link to="/" className={`${styles.navbarBrand} navbar-brand`}>Agility</Link>
           <NavbarToggler onClick={this.toggle} />
           
           <Nav className={styles.navbarCenter} navbar>
             {projName && <NavItem>
-              <Link to="/overview" className="nav-link">{projName}</Link>
+              <Link to={`/${this.state.projectID}/overview`} className="nav-link">{projName}</Link>
             </NavItem>}
           </Nav>
           
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="ml-auto" navbar >
               {projName && <NavItem>
-                <Link to="/chat" className="nav-link">Chat</Link>
+                <Link to={`/${this.state.projectID}/chat`} className="nav-link">Chat</Link>
               </NavItem>}
               <UncontrolledDropdown nav inNavbar>
                 <DropdownToggle nav caret>
