@@ -3,18 +3,19 @@ import Parse from 'parse'
 class UserModel extends Parse.User {
 
 
-
+//Notification levels
       static let NEVER = 0
       static let DAILY = 1
       static let HOURLY = 2
 
+//User member fields/keys
       static let FIRST_NAME = 'first_name'
       static let LAST_NAME = 'last_name'
       static let PROJECTS = 'projects'
       static let NOTIFICATION = 'notification'
       static let ID = '_id'
 
-
+//Default completion handlers..
       var defaultSuccessHandler = function(data){
         console.log('Succesfully got back data')
       }
@@ -28,7 +29,7 @@ class UserModel extends Parse.User {
 
 
   constructor (){
-
+//Let the super class be responsible for setting the classname
     super()
 
     this.firstName = 'firstname'
@@ -46,7 +47,7 @@ class UserModel extends Parse.User {
 
   }
 
-
+//Getters
   getNotification(){
     return this.get(UserModel.NOTIFICATION)
   }
@@ -62,6 +63,9 @@ class UserModel extends Parse.User {
   getFirstName(){
     return this.get(UserModel.FIRST_NAME)
   }
+
+
+//Setters/Modifiers
 
   setFirstName (firstName, successHandler, errorHandler){
     // this.firstName = firstName;
@@ -79,9 +83,8 @@ class UserModel extends Parse.User {
   }
 
 
-  addProjects(project, successHandler, errorHandler){
-    // this.projects.add(project)
-    // this.set(UserModel.PROJECTS, sucessHandler, errorHandler)
+  addProject(project, successHandler, errorHandler){
+
     var projects = this.get(UserModel.PROJECTS)
 
     projects.push(project);
@@ -91,7 +94,7 @@ class UserModel extends Parse.User {
 
   }
 
-  removeProjectsByIndex(index){
+  removeProjectByIndex(index){
     var projects = this.get(UserModel.PROJECTS)
     projects.splice(index, 1);
     this.set(UserModel.PROJECTS, projects);

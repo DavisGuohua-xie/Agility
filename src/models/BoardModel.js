@@ -40,17 +40,19 @@ export class BoardModel extends Parse.Object {
    }
 // Pass in a javascript object with fields of task (Not handled by mongoDB)
    addTask(task, successHandler, errorHandler){
-      let taskList = this.get(BoardModel.TASK_LIST)
+      var taskList = this.get(BoardModel.TASK_LIST)
       taskList.push(task);
-      this.set(TaskModel.TASK_LIST, taskList);
+      this.set(BoardModel.TASK_LIST, taskList);
       saveData(this, sucessHandler, errorHandler)
 
    }
 
    removeTaskById(task, successHandler, errorHandler){
-     let taskList = this.get(BoardModel.TASK_LIST)
+     var taskList = this.get(BoardModel.TASK_LIST)
      taskList.filter(function(currTask, index, arr){
-       return currTask.id != task.id;
+       var currTaskId = currTask.get(BoardModel.ID)
+       var taskId = task.get(BoardModel.ID)
+       return currTaskId != taskId;
      })
      this.set(TaskModel.TASK_LIST, taskList);
      saveData(this, successHandler, errorHandler)

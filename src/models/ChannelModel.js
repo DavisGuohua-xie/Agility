@@ -14,6 +14,10 @@ export class ChannelModel extends Parse.Object {
   static let HISTORY_MESSAGE = 'message'
   static let HISTORY_SENT_AT = 'sent_at'
   static let HISTORY_SENT_BY = 'sent_by'
+  static let ID = '_id'
+
+
+
 
     className (){
       return 'Channel'
@@ -64,14 +68,14 @@ export class ChannelModel extends Parse.Object {
     }
 
     addParticipant(user,successHandler, errorHandler){
-      let particpants = this.get(ChannelModel.PARTICIPANTS)
+      var particpants = this.get(ChannelModel.PARTICIPANTS)
       participants.add(user);
       this.set(ChannelModel.PARTICIPANTS, particpants)
       saveData(this, sucessHandler, errorHandler)
     }
 
     removeParticipantByIndex(index,successHandler, errorHandler){
-      let particpants = this.get(ChannelModel.PARTICIPANTS)
+      var particpants = this.get(ChannelModel.PARTICIPANTS)
       participants.splice(index, 0)
       this.set(ChannelModel.PARTICIPANTS, particpants)
       saveData(this, sucessHandler, errorHandler)
@@ -79,10 +83,14 @@ export class ChannelModel extends Parse.Object {
 
 
     removeParticipantByUser(user, successHandler, errorHandler){
-      let particpants = this.get(ChannelModel.PARTICIPANTS)
+      var particpants = this.get(ChannelModel.PARTICIPANTS)
 
       participants.filter(function(participant, index, arr){
-        return participant.id != user.id
+        //Change to UserModel.ID
+        var participantId = pariticipant.get(ChannelModel.ID)
+        var userId = user.get(ChannelModel.ID)
+
+        return participantId != userId
       })
       this.set(ChannelModel.PARTICIPANTS, particpants)
       saveData(this, successHandler, errorHandler)
@@ -96,7 +104,7 @@ export class ChannelModel extends Parse.Object {
 
 
     addToHistory(message){
-      let history = this.get(ChannelModel.HISTORY)
+      var history = this.get(ChannelModel.HISTORY)
       history.push(message)
       this.set(ChannelModel.HISTORY, history)
       saveData(this, successHandler, errorHandler)

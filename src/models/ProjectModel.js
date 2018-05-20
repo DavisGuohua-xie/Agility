@@ -1,21 +1,23 @@
 import Parse from 'parse'
 
 export class ProjectModel extends Parse.Object {
-
+//PRESET ROLES
      static let PROJECT_MANAGER = "ProjectManager";
      static let TEAM_MEMBER = "TeamMember";
      static let CUSTOMER = "Customer";
      static let CEO = 'CEO';
 
-
+//KEY VALUES for Project object
      static let ROLES = 'roles'
      static let TASKS = 'tasks'
      static let CHANNELS = 'channels'
      static let UPDATES = 'updates'
      static let BOARDS = 'boards'
      static let NAME = 'name'
+     static let ID = '_id'
 
 
+//These handlers will be used if you do not provide one to each function
      var defaultSuccessHandler = function(data){
        console.log('Succesfully got back data')
      }
@@ -25,17 +27,19 @@ export class ProjectModel extends Parse.Object {
        console.log('[ERROR]', error)
      }
 
-
+//Just the name of the colleciton in the database
   className(){
     return 'Project';
   }
 
      constructor(){
+       //This actually sets the classname
        super (className())
        //Other initialization
 
        this.roles = {} // Empty dictionary
        this.set(ProjectModel.ROLES, this.roles)
+
        this.tasks = [] //Empty array of tasks
        this.set(ProjectModel.TASKS, this.tasks)
 
@@ -53,6 +57,8 @@ export class ProjectModel extends Parse.Object {
        this.set(ProjectModel.NAME, this.name)
 
      }
+
+     //Getters
 
      getRoles(){
       return this.get(ProjectModel.ROLES)
@@ -82,6 +88,7 @@ export class ProjectModel extends Parse.Object {
 
     addRole(user, role, successHandler, errorHandler){
       var roles = this.get(ProjectModel.ROLES)
+      //(user id) -> role map
       roles[user.id] = role;
       this.set(ProjectModel.ROLES, roles)
 
@@ -145,7 +152,10 @@ export class ProjectModel extends Parse.Object {
 
       var boards = this.get(ProjectModel.BOARDS)
       boards.filter(function(currBoard){
-        return currBoard.id != board.id
+        var currBoardId = currBoard.get(ProjectModel.ID)
+        var boardRemoveId = board.get(ProjectModel.ID)
+
+        return currBoardId != boardRemoveId
       })
 
       this.set(ProjectModel.BOARDS, boards)

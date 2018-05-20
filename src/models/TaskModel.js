@@ -2,9 +2,12 @@ import Parse from 'parse'
 
 export class TaskModel extends Parse.Object {
 
+//Priority bounds
   let MAX_PRIORITY = 10;
   let MIN_PRIORITY = 1;
 
+
+//Default handlers
   var defaultSuccessHandler = function(data){
     console.log('Succesfully got back data')
   }
@@ -14,6 +17,8 @@ export class TaskModel extends Parse.Object {
     console.log('[ERROR]', error)
   }
 
+
+//Task model member fields/ keys
 static let ASSIGNED_TO = 'assigned_to'
 static let TITLE = 'title'
 static let CONTENT = 'content'
@@ -21,7 +26,9 @@ static let STARTED_AT = 'started_at'
 static let DUE_DATE = 'due_date'
 static let COMPLETION_DATE = 'completion_date'
 static let PRIORITY = 'priority'
+static let ID = '_id'
 
+//Databse name
   className (){
     return 'Task'
   }
@@ -29,6 +36,7 @@ static let PRIORITY = 'priority'
 
 
   constructor(){
+    //Set the db name and init object
     super(className())
     this.assignedTo = [];
     this.set(TaskModel.ASSIGNED_TO, this.assignedTo);
@@ -56,7 +64,7 @@ static let PRIORITY = 'priority'
 
   }
 
-
+//Getters
   getTitle(){
     return this.get(TaskModel.TITLE)
   }
@@ -82,11 +90,11 @@ static let PRIORITY = 'priority'
   }
 
 
-//TODO: Adds another person to be assined to the task
+//Settters
   addAssignedTo(user, successHandler, errorHandler){
     this.assignedTo.push(user)
     //get actual data
-    let actualAssigned = this.get(TaskModel.ASSIGNED_TO)
+    var actualAssigned = this.get(TaskModel.ASSIGNED_TO)
     actualAssigned.push(user)
 //Modify data
     this.set(TaskModel.ASSIGNED_TO, actualAssigned)
@@ -94,9 +102,11 @@ static let PRIORITY = 'priority'
     saveData(this, successHandler, errorHandler)
   }
 
+
+
 removeAssignedToByIndex(index, successHandler, errorHandler){
   //remove the element at this index
-  let actualAssigned = this.get(TaskModel.ASSIGNED_TO)
+  var actualAssigned = this.get(TaskModel.ASSIGNED_TO)
   actualAssigned.splice(index, 1)
   this.set(TaskModel.ASSIGNED_TO, actualAssigned)
   saveData(this, successHandler, errorHandler)
@@ -104,49 +114,38 @@ removeAssignedToByIndex(index, successHandler, errorHandler){
 }
 
 removeAssignedToByUser(user, successHandler, errorHandler){
-  let actualAssigned = this.get(TaskModel.ASSIGNED_TO);
-  var assignedLen = actualAssigned.length
-var i;
-  for (i = 0; i <  assignedLen; i++){
-    var assignedUser = actualAssigned[i];
-
-    if (assignedUser.id == user.id){
-      actualAssigned.splice(i, 0); //Remove the element from the list
-    }
-  }
+  var actualAssigned = this.get(TaskModel.ASSIGNED_TO);
+  actualAssigned.filter(function(currentUser){
+    var currentUserId = currentUser.get(TaskModel.ID)
+    var removeUserId = user.get(TaskModel.ID)
+    return currenUserId != removeUserId
+  })
 
   this.set(TaskModel.ASSIGNED_TO, actualAssigned)
   saveData(this, successHandler, errorHandler)
 }
 
 
-
-
-//TODO: Implement function for updating the title
 updateTitle(newTitle, successHandler, errorHandler){
     this.set(TaskModel.TITLE, newTitle);
     saveData(this, successHandler, errorHandler)
 }
 
-//TODO: Implement function for updating the content
 updateContent(newContent, successHandler, errorHandler){
   this.set(TaskModel.CONTENT, newContent)
   saveData(this, successHandler, errorHandler)
 }
 
-//TODO: Implement
 updateDueDate(newDueDate, successHandler, errorHandler){
   this.set(TaskModel.DUE_DATE, newDueDate)
   saveData(this, successHandler, errorHandler)
 }
 
-//TODO: Implement
 upadateCompletionDate(newCompletionDate, sucessHandler, errorHandler){
   this.set(TaskModel.COMPLETION_DATE, newCompletionDate)
   saveData(this, sucessHandler, errorHandler)
 }
 
-//TODO: Implement
 updatePriority(newPriority, successHandler, errorHandler){
 
 //Bound the prio
@@ -156,11 +155,8 @@ updatePriority(newPriority, successHandler, errorHandler){
   }else if (newPriority < MIN_PRIORITY) {
     newPriority = MIN_PRIORITY;
   }
-
-
   this.set(TaskModel.PRIORITY, newPriority);
   saveData(this,successHandler, errorHandler )
-
 
 }
 
