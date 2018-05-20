@@ -3,7 +3,7 @@ import Parse from 'parse'
 
 
 
-class Project extends Parse.Object {
+class ProjectModel extends Parse.Object {
 
      static let PROJECT_MANAGER = "ProjectManager";
      static let TEAM_MEMBER = "TeamMember";
@@ -75,7 +75,7 @@ class Project extends Parse.Object {
     }
 
 
-    
+
 
 
 

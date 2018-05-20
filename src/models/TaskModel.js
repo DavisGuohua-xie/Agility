@@ -4,7 +4,7 @@ import Parse from 'parse'
 
 
 
-class Task extends Parse.Object {
+exoprt class TaskModel extends Parse.Object {
 
   let MAX_PRIORITY = 10;
   let MIN_PRIORITY = 1;
@@ -52,18 +52,20 @@ updateContent(newContent){
   this.content = newContent
 }
 
+//TODO: Implement
 updateDueDate(dueDate){
   this.dueDate = dueDate;
 }
 
-
+//TODO: Implement
 upadateCompletionDate(newCompletionDate){
   this.completionDate = newCompletionDate;
 }
 
+//TODO: Implement
 updatePriority(newPriority){
 
-//Bound the priority
+//Bound the prio
   if (newPriority > MAX_PRIORITY){
     this.priority = MAX_PRIORITY;
     return;

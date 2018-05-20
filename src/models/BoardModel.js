@@ -2,7 +2,7 @@ import Parse from 'parse'
 
 
 
-class Board extends Parse.Object {
+class BoardModel extends Parse.Object {
 
   className(){
     return 'Board'
@@ -19,8 +19,5 @@ class Board extends Parse.Object {
    updateTitle(newTitle){
      this.title = newTitle
    }
-
-   
-
 
 }

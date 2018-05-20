@@ -2,7 +2,7 @@ import Parse from 'parse'
 
 
 
-class Channel extends Parse.Object {
+class ChannelModel extends Parse.Object {
 
     className (){
       return 'Channel'
