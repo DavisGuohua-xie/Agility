@@ -1,9 +1,5 @@
 import Parse from 'parse'
 
-
-
-
-
 export class TaskModel extends Parse.Object {
 
   let MAX_PRIORITY = 10;
@@ -173,7 +169,7 @@ updatePriority(newPriority, successHandler, errorHandler){
     successHandler = this.defaultSuccessHandler
   }
 
-  if (errorHadnler == null || errorHandler == undefined){
+  if (errorHandler == null || errorHandler == undefined){
     errorHandler = this.defaultErrorHandler
   }
 
