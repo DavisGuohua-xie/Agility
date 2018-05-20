@@ -9,7 +9,7 @@ export const OverviewSubnav = props => {
     return (
         <ul className="nav nav-tabs" style={{height: '40px'}}>
             <Button style={{margin: '2px'}} onClick={props.toggleSidebar} hidden={props.docked ? true : null}>
-                Members <i className="fas fa-users"></i>
+                <i className="fas fa-users"></i>
             </Button>
             <li className="nav-item" onClick={props.onTabChange}>
                 <Link className={overviewActive} to={`/${props.projID}/overview`} data-tab="0">Overview</Link>
@@ -17,6 +17,10 @@ export const OverviewSubnav = props => {
             <li className="nav-item" onClick={props.onTabChange}>
                 <Link className={tasklistActive} to={`/${props.projID}/tasks`} data-tab="1">Tasks</Link>
             </li>
+
+            <Button size='sm' color='primary' style={{position:'absolute', right: 5, top: '5px'}} onClick={props.onNewBoard} hidden={props.active === '0' ? true : null}>
+                New Board
+            </Button>
         </ul>
     );
 }
