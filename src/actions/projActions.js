@@ -20,12 +20,10 @@ function createProject(projectName, projectMembers, history) {
     project.set("tasks", []);
     project.set("updates", []);
 
-    //roles["CEO"] = projectMembers[0];
     roles[projectMembers[0].id] = "ProjectManager";
     projectMembers.shift();
 
     getMembers(projectMembers).then(res => {
-      // TODO: this won't remove duplicate user entries...
       res.forEach(user => {
         console.log(user.length);
         if (user.length !== 0) {
@@ -40,7 +38,6 @@ function createProject(projectName, projectMembers, history) {
       project.save(null, {
         success: function(project) {
           dispatch(success(project));
-          console.log("/" + project.id + "/overview");
           history.push("/" + project.id + "/overview");
         },
         error: function(project, error) {
