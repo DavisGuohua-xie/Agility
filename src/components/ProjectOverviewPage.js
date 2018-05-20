@@ -51,7 +51,7 @@ class ProjectOverviewPage extends React.Component {
         console.log(props);
 
         this.state = {
-            active: 0,
+            active: '0',
             sidebarOpen: false,
             mql: mql,
             docked: props.docked,
@@ -115,7 +115,7 @@ class ProjectOverviewPage extends React.Component {
                     open={this.state.sidebarOpen}
                     docked={this.state.sidebarDocked}
                     onSetOpen={this.toggleSidebar}
-                    styles={{root: {top: '56px', overflowY: 'auto'}, content: {overflowY: 'auto'}, overlay: {top: '56px'}, sidebar: {backgroundColor: 'white', width: 250}}}>
+                    styles={{root: {top: '56px', overflowY: 'auto'}, content: {overflowY: 'auto'}, overlay: {top: '56px'}, sidebar: {backgroundColor: 'white', width: 200, zIndex: 99999}}}>
                     <OverviewSubnav active={this.state.active} toggleSidebar={this.toggleSidebar} docked={this.state.sidebarDocked} projID={this.state.projectID} onTabChange={this.setActive}/>
                     {mainContent}
                 </Sidebar>
