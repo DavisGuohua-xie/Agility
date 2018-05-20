@@ -15,13 +15,13 @@ function createProject(projectName, projectMembers, history) {
 
     let roles = {};
     project.set("name", projectName);
+    project.set("boards", []);
+    project.set("channels", []);
+    project.set("tasks", []);
+    project.set("updates", []);
 
-    roles["CEO"] = projectMembers[0];
-    roles["ProjectManager"] = projectMembers[0];
-    roles["Customer"] = [];
-
-    let members = [];
-    members.push(projectMembers[0]);
+    //roles["CEO"] = projectMembers[0];
+    roles[projectMembers[0].id] = "ProjectManager";
     projectMembers.shift();
 
     getMembers(projectMembers).then(res => {
@@ -29,11 +29,12 @@ function createProject(projectName, projectMembers, history) {
       res.forEach(user => {
         console.log(user.length);
         if (user.length !== 0) {
-          members.push(user[0]);
+            if (!(user[0].id in roles)) {
+                roles[user[0].id] = "ProjectMember";
+            }
         }
       });
 
-      roles["ProjectMember"] = members;
       project.set("roles", roles);
 
       project.save(null, {
