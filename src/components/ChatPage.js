@@ -15,6 +15,7 @@ import {
 } from 'react-router';
 
 import Sidebar from 'react-sidebar';
+import Parse from 'parse';
 
 import * as chatActions from '../actions/chatActions';
 
@@ -85,6 +86,11 @@ class ChatPage extends Component {
         this.setState({mql: mql, sidebarDocked: mql.matches});
         // TODO: fetch project data from server
         // TODO: call redux action
+
+        var currentUser = Parse.User.current();
+        if (!currentUser) {
+            this.props.history.push("/login");
+        }
     }
 
     componentWillUnmount() {

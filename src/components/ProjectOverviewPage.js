@@ -27,6 +27,8 @@ import MemberSidebarItem from './common/MemberSidebarItem';
 import styles from '../styles/ProjectOverviewPage.module.css';
 import { ProjectTasks } from './project/ProjectTasks';
 
+import { Parse } from 'parse';
+
 const mql = window.matchMedia(`(min-width: 900px)`);
 
 /* TODO: delete mock proj member data */
@@ -101,6 +103,11 @@ class ProjectOverviewPage extends React.Component {
         this.generateSidebar = this.generateSidebar.bind(this);
         this.handleNewBoard = this.handleNewBoard.bind(this);
         this.setEventBus = this.setEventBus.bind(this);
+
+        var currentUser = Parse.User.current();
+        if (!currentUser) {
+            this.props.history.push("/login");
+        }
     }
 
     componentWillMount() {

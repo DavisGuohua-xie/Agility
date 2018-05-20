@@ -24,6 +24,7 @@ export default class NavBar extends React.Component {
     super(props);
 
     this.toggle = this.toggle.bind(this);
+    this.logout = this.logout.bind(this);
     this.state = {
       isOpen: false,
       projectID: props.projID
@@ -36,6 +37,9 @@ export default class NavBar extends React.Component {
     });
   }
   
+  logout() {
+    this.props.history.push("/logout");
+  }
   render() {
 
     let projName = this.props.projName ? this.props.projName : null;
@@ -66,7 +70,7 @@ export default class NavBar extends React.Component {
                     <Link to="/myaccount" style={{textDecoration: 'none', color: '#212529'}}>My Account</Link>
                   </DropdownItem>
                   <DropdownItem divider />
-                  <DropdownItem className={styles.dropdownItem}>
+                  <DropdownItem className={styles.dropdownItem} onClick={this.logout}>
                     Logout
                   </DropdownItem>
                 </DropdownMenu>

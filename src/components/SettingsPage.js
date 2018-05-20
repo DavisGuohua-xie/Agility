@@ -6,6 +6,7 @@ import * as accountActions from '../actions/accountActions';
 
 import NavBar from './common/Navbar';
 import SettingsLayout from './settings/SettingsLayout';
+import Parse from 'parse';
 
 class SettingsPage extends React.Component {
     constructor(props) {
@@ -17,6 +18,11 @@ class SettingsPage extends React.Component {
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSave = this.handleSave.bind(this);
+
+        var currentUser = Parse.User.current();
+        if (!currentUser) {
+            this.props.history.push("/login");
+        }
     }
 
     handleSave(e) {
@@ -34,7 +40,7 @@ class SettingsPage extends React.Component {
     render() {
         return (
             <div>
-                <NavBar/>
+                <NavBar history={this.props.history}/>
                 <SettingsLayout
                     onChange={this.handleChange}
                     onSave={this.handleSave}

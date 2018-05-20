@@ -14,7 +14,7 @@ const ProjectList = (props) => {
         <Container>
             <h1 className={styles.projectHeader}>Your projects</h1>
             <div className={styles.btnDiv}>
-                <Button color="primary" size="lg" className={styles.newProjBtn}>New project</Button>
+                <Button color="primary" size="lg" className={styles.newProjBtn} onClick={props.onNewProject}>New Project</Button>
             </div>
             <div className={styles.listContainer}>
                 {props.projects.map((item, index) => <ProjectItem key={index} name={item.name}/>)}
