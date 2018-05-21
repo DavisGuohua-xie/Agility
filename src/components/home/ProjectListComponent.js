@@ -81,6 +81,7 @@ class ProjectListComponent extends React.Component {
                     projects={this.state.projItems}
                     onNewProject={this.toggleModal}
                     onEnterProject={this.handleEnterProject}
+                    onClick={this.props.onClick}
                 />
                 </div>;
     }
