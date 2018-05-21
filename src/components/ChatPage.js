@@ -19,7 +19,7 @@ import Parse from 'parse';
 
 import * as chatActions from '../actions/chatActions';
 
-import NavBar from './common/Navbar';
+import {NavBar} from './common/Navbar';
 import ChatLayout from './chat/ChatLayout';
 
 import MemberSidebarItem from './common/MemberSidebarItem';
@@ -133,7 +133,7 @@ class ChatPage extends Component {
         console.log(groupChannels);
         return (
             <div style={{height: '100%'}}>
-                <NavBar projName='Project name' projID={this.state.projectID}/>
+                <NavBar history={this.props.history} projName='Project name' projID={this.state.projectID}/>
                 <Sidebar sidebar={sidebarContent}
                     open={this.state.sidebarOpen}
                     docked={this.state.sidebarDocked}

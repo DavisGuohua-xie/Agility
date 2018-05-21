@@ -4,7 +4,7 @@ import {bindActionCreators} from 'redux';
 import {withRouter} from 'react-router';
 import * as accountActions from '../actions/accountActions';
 
-import NavBar from './common/Navbar';
+import {NavBar} from './common/Navbar';
 import SettingsLayout from './settings/SettingsLayout';
 import Parse from 'parse';
 

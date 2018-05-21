@@ -18,7 +18,7 @@ import v4 from 'uuid';
 
 import * as projActions from '../actions/projActions';
 
-import NavBar from './common/Navbar';
+import {NavBar} from './common/Navbar';
 
 import {OverviewSubnav} from './common/OverviewSubnav';
 import {ProjectOverview} from './project/ProjectOverview';
@@ -174,7 +174,7 @@ class ProjectOverviewPage extends React.Component {
 
         return (
             <div style={{height: '100%'}}>
-                <NavBar projName="Project" projID={this.state.projectID}/>
+                <NavBar history={this.props.history} projName="Project" projID={this.state.projectID}/>
                 <Sidebar sidebar={sidebarContent}
                     open={this.state.sidebarOpen}
                     docked={this.state.sidebarDocked}
