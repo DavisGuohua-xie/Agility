@@ -3,7 +3,6 @@ import {
 Collapse,
 Navbar,
 NavbarToggler,
-NavbarBrand,
 Nav,
 NavItem,
 UncontrolledDropdown,
@@ -16,10 +15,14 @@ import {
 Link
 } from 'react-router-dom';
 
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {withRouter} from 'react-router';
+import {authActions} from '../../actions/authActions';
 
 import styles from '../../styles/navbar.module.css';
 
-export default class NavBar extends React.Component {
+class NavBar extends React.Component {
   constructor(props) {
     super(props);
 
@@ -29,6 +32,10 @@ export default class NavBar extends React.Component {
       isOpen: false,
       projectID: props.projID
     };
+
+    console.log(`navbar props:`);
+    console.log(this.props.actions);
+
   }
 
   toggle() {
@@ -38,8 +45,10 @@ export default class NavBar extends React.Component {
   }
   
   logout() {
-    this.props.history.push("/logout");
+    this.props.history.push("/login");
+    this.props.actions.logout(this.props.history);
   }
+
   render() {
 
     let projName = this.props.projName ? this.props.projName : null;
@@ -82,3 +91,12 @@ export default class NavBar extends React.Component {
     );
   }
 }
+
+function mapDispatchToProps(dispatch) {
+  return {
+      actions: bindActionCreators(authActions, dispatch)
+  };
+}
+
+const connectedNavbar = withRouter(connect(null, mapDispatchToProps)(NavBar));
+export { connectedNavbar as NavBar };

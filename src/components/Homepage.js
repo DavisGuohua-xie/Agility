@@ -11,7 +11,7 @@ import {withRouter} from 'react-router';
 import * as projActions from '../actions/projActions';
 import {Parse} from 'parse';
 
-import NavBar from './common/Navbar';
+import {NavBar} from './common/Navbar';
 import {ProjectListComponent} from './home/ProjectListComponent';
 
 let projs = [
@@ -37,7 +37,7 @@ class Homepage extends React.Component {
     render() {
         return (
             <div>
-                <NavBar/>
+                <NavBar history={this.props.history}/>
                 <ProjectListComponent projects={projs}/> {/* TODO: project list will be sent over by server */}
             </div>
         )
