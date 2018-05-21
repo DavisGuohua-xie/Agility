@@ -10,6 +10,7 @@ export const ProjectCalendar = props => {
             events={props.events}
             startAccessor='startDate'
             endAccessor='endDate'
+            defaultDate={new Date()}
             style={{height: 'calc(100% - 40px)'}}
         />
     );
