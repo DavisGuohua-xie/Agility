@@ -53,8 +53,8 @@ const LoginForm1 = props => {
                         </Form>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="primary" onClick={props.onPasswordReset}>Send reset link</Button>{' '}
                         <Button color="secondary" onClick={props.onToggleForgot}>Cancel</Button>
+                        <Button color="primary" onClick={props.onPasswordReset}>Send reset link</Button>{' '}
                     </ModalFooter>
                 </Modal>
 
@@ -83,8 +83,8 @@ const LoginForm1 = props => {
                         </Form>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="primary" onClick={props.onCreateAccount} disabled={props.ajaxRequested}>Create Account</Button>{' '}
-                        <Button color="secondary" onClick={props.onToggleReg}>Cancel</Button>
+                        <Button color="secondary" onClick={props.onToggleReg}>Cancel</Button>{' '}
+                        <Button color="primary" onClick={props.onCreateAccount} disabled={props.ajaxRequested}>Create Account</Button>
                     </ModalFooter>
                 </Modal>
             </div>
