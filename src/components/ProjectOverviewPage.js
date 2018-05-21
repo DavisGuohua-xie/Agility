@@ -26,6 +26,8 @@ import MemberSidebarItem from './common/MemberSidebarItem';
 
 import styles from '../styles/ProjectOverviewPage.module.css';
 import { ProjectTasks } from './project/ProjectTasks';
+import {ProjectCalendar} from './project/Calendar';
+import moment from 'moment';
 
 import { Parse } from 'parse';
 
@@ -168,9 +170,21 @@ class ProjectOverviewPage extends React.Component {
     render() {
         console.log(this.state);
         let sidebarContent = this.generateSidebar();
-        let mainContent = this.state.active == 0 ? 
-            <ProjectOverview onSidebarToggle={this.toggleSidebar}/> :
-            <ProjectTasks onSidebarToggle={this.toggleSidebar} data={this.state.tasksData} eventBus={this.setEventBus}/>;
+        let mainContent;
+        switch(this.state.active) {
+            case '0': 
+                mainContent = <ProjectOverview onSidebarToggle={this.toggleSidebar}/>;
+                break;
+            case '1':
+                mainContent = <ProjectTasks onSidebarToggle={this.toggleSidebar} data={this.state.tasksData} eventBus={this.setEventBus}/>;
+                break;
+            default:
+                mainContent = <ProjectCalendar events={[ {
+                    startDate: new Date(),
+                    endDate: new Date(moment().add(1, "days")),
+                    title: "Some title"
+                  }]}/>
+        }
 
         return (
             <div style={{height: '100%'}}>
