@@ -4,9 +4,9 @@ import styles from '../../styles/ProjectItem.module.css';
 
 const ProjectItem = props => {
     return (
-        <div className={styles.projectItem}>
-            <p className={styles.projectName}>{props.name}</p>
-        </div>
+        <button className={styles.projectItem} onClick={props.onClick}>
+            {props.name}
+        </button>
     );
 };
 

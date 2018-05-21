@@ -1,9 +1,58 @@
 .projectItem {
-    border: 1px solid black;
-    height: 150px;
-    width: 200px;
-    margin-bottom: 20px;
-    margin-left: 20px;
+    border: none;
+	font-family: inherit;
+	font-size: inherit;
+	color: inherit;
+	background: none;
+	cursor: pointer;
+	padding: 25px 80px;
+	display: inline-block;
+	margin: 15px 30px;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	font-weight: 700;
+	outline: none;
+	position: relative;
+	-webkit-transition: all 0.3s;
+	-moz-transition: all 0.3s;
+	transition: all 0.3s;
+}
+
+.projectItem:after {
+	content: '';
+	position: absolute;
+	z-index: -1;
+	-webkit-transition: all 0.3s;
+	-moz-transition: all 0.3s;
+	transition: all 0.3s;
+}
+
+.projectItem {
+	background: #226FBE;
+	color: #fff;
+	box-shadow: 0 6px rgb(21, 71, 121);
+	-webkit-transition: none;
+	-moz-transition: none;
+	transition: none;
+	height: 150px;
+}
+
+.projectItem {
+	border-radius: 20px;
+}
+
+.projectItem:hover {
+	box-shadow: 0 4px rgb(21, 71, 121);
+	top: 2px;
+}
+
+.projectItem:active {
+	box-shadow: 0 0 rgb(21, 71, 121);
+	top: 6px;
+}
+
+.projectItem:focus {
+    outline: none;
 }
 
 .projectName {

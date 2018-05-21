@@ -34,11 +34,15 @@ class Homepage extends React.Component {
         }
     }
 
+    projectClick(e) {
+        
+    }
+
     render() {
         return (
             <div>
                 <NavBar history={this.props.history}/>
-                <ProjectListComponent projects={projs}/> {/* TODO: project list will be sent over by server */}
+                <ProjectListComponent projects={projs} onClick={this.projectClick}/> {/* TODO: project list will be sent over by server */}
             </div>
         )
     }
