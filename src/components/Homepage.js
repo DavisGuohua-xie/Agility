@@ -14,12 +14,14 @@ import {Parse} from 'parse';
 import {NavBar} from './common/Navbar';
 import {ProjectListComponent} from './home/ProjectListComponent';
 
+import v4 from 'uuid';
+
 let projs = [
-    {name: "Project 1"},
-    {name: "Project 2"},
-    {name: "Project 3"},
-    {name: "Project 4"},
-    {name: "Project 5"}
+    {name: "Project 1", id: v4()},
+    {name: "Project 2", id: v4()},
+    {name: "Project 3", id: v4()},
+    {name: "Project 4", id: v4()},
+    {name: "Project 5", id: v4()}
 ]
 
 
@@ -41,7 +43,7 @@ class Homepage extends React.Component {
     render() {
         return (
             <div>
-                <NavBar history={this.props.history}/>
+                <NavBar history={this.props.history} zIndex={3}/>
                 <ProjectListComponent projects={projs} onClick={this.projectClick}/> {/* TODO: project list will be sent over by server */}
             </div>
         )

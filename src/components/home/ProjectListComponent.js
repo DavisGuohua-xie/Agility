@@ -57,7 +57,8 @@ class ProjectListComponent extends React.Component {
     }
 
     render() {
-        return <div>
+        return (
+            <div>
                 <Modal isOpen={this.state.newProjectModalOpen} toggle={this.toggleModal} className={this.props.className}>
                     <ModalHeader toggle={this.toggleModal}> Create New Project </ModalHeader>
                     <ModalBody>
@@ -83,7 +84,8 @@ class ProjectListComponent extends React.Component {
                     onEnterProject={this.handleEnterProject}
                     onClick={this.props.onClick}
                 />
-                </div>;
+            </div>
+        );
     }
 };
 
