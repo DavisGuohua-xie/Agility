@@ -52,10 +52,11 @@ class NavBar extends React.Component {
   render() {
 
     let projName = this.props.projName ? this.props.projName : null;
+    let zind = this.props.zIndex ? this.props.zIndex : 100000;
     console.log(projName);
     return (
       <div>
-        <Navbar color="dark" dark expand="md"  style={{zIndex: 100000}}>
+        <Navbar color="dark" dark expand="md"  style={{zIndex: zind}}>
           <Link to="/" className={`${styles.navbarBrand} navbar-brand`}>Agility</Link>
           <NavbarToggler onClick={this.toggle} />
           
