@@ -3,7 +3,6 @@ import {
 Collapse,
 Navbar,
 NavbarToggler,
-NavbarBrand,
 Nav,
 NavItem,
 UncontrolledDropdown,
@@ -16,18 +15,27 @@ import {
 Link
 } from 'react-router-dom';
 
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {withRouter} from 'react-router';
+import {authActions} from '../../actions/authActions';
 
 import styles from '../../styles/navbar.module.css';
 
-export default class NavBar extends React.Component {
+class NavBar extends React.Component {
   constructor(props) {
     super(props);
 
     this.toggle = this.toggle.bind(this);
+    this.logout = this.logout.bind(this);
     this.state = {
       isOpen: false,
       projectID: props.projID
     };
+
+    console.log(`navbar props:`);
+    console.log(this.props.actions);
+
   }
 
   toggle() {
@@ -36,6 +44,11 @@ export default class NavBar extends React.Component {
     });
   }
   
+  logout() {
+    this.props.history.push("/login");
+    this.props.actions.logout(this.props.history);
+  }
+
   render() {
 
     let projName = this.props.projName ? this.props.projName : null;
@@ -66,7 +79,7 @@ export default class NavBar extends React.Component {
                     <Link to="/myaccount" style={{textDecoration: 'none', color: '#212529'}}>My Account</Link>
                   </DropdownItem>
                   <DropdownItem divider />
-                  <DropdownItem className={styles.dropdownItem}>
+                  <DropdownItem className={styles.dropdownItem} onClick={this.logout}>
                     Logout
                   </DropdownItem>
                 </DropdownMenu>
@@ -78,3 +91,12 @@ export default class NavBar extends React.Component {
     );
   }
 }
+
+function mapDispatchToProps(dispatch) {
+  return {
+      actions: bindActionCreators(authActions, dispatch)
+  };
+}
+
+const connectedNavbar = withRouter(connect(null, mapDispatchToProps)(NavBar));
+export { connectedNavbar as NavBar };

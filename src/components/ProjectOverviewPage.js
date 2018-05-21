@@ -18,7 +18,7 @@ import v4 from 'uuid';
 
 import * as projActions from '../actions/projActions';
 
-import NavBar from './common/Navbar';
+import {NavBar} from './common/Navbar';
 
 import {OverviewSubnav} from './common/OverviewSubnav';
 import {ProjectOverview} from './project/ProjectOverview';
@@ -26,6 +26,8 @@ import MemberSidebarItem from './common/MemberSidebarItem';
 
 import styles from '../styles/ProjectOverviewPage.module.css';
 import { ProjectTasks } from './project/ProjectTasks';
+
+import { Parse } from 'parse';
 
 const mql = window.matchMedia(`(min-width: 900px)`);
 
@@ -101,6 +103,11 @@ class ProjectOverviewPage extends React.Component {
         this.generateSidebar = this.generateSidebar.bind(this);
         this.handleNewBoard = this.handleNewBoard.bind(this);
         this.setEventBus = this.setEventBus.bind(this);
+
+        var currentUser = Parse.User.current();
+        if (!currentUser) {
+            this.props.history.push("/login");
+        }
     }
 
     componentWillMount() {
@@ -167,7 +174,7 @@ class ProjectOverviewPage extends React.Component {
 
         return (
             <div style={{height: '100%'}}>
-                <NavBar projName="Project" projID={this.state.projectID}/>
+                <NavBar history={this.props.history} projName="Project" projID={this.state.projectID}/>
                 <Sidebar sidebar={sidebarContent}
                     open={this.state.sidebarOpen}
                     docked={this.state.sidebarDocked}

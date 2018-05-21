@@ -9,9 +9,10 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {withRouter} from 'react-router';
 import * as projActions from '../actions/projActions';
+import {Parse} from 'parse';
 
-import NavBar from './common/Navbar';
-import ProjectListComponent from './home/ProjectListComponent';
+import {NavBar} from './common/Navbar';
+import {ProjectListComponent} from './home/ProjectListComponent';
 
 let projs = [
     {name: "Project 1"},
@@ -26,13 +27,22 @@ class Homepage extends React.Component {
 
     constructor(props) {
         super(props);
+
+        var currentUser = Parse.User.current();
+        if (!currentUser) {
+            this.props.history.push("/login");
+        }
+    }
+
+    projectClick(e) {
+        
     }
 
     render() {
         return (
             <div>
-                <NavBar/>
-                <ProjectListComponent projects={projs}/> {/* TODO: project list will be sent over by server */}
+                <NavBar history={this.props.history}/>
+                <ProjectListComponent projects={projs} onClick={this.projectClick}/> {/* TODO: project list will be sent over by server */}
             </div>
         )
     }
