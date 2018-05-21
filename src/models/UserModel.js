@@ -1,19 +1,19 @@
 import Parse from 'parse'
 
-class UserModel extends Parse.User {
-
-
 //Notification levels
-      static let NEVER = 0
-      static let DAILY = 1
-      static let HOURLY = 2
+       let NEVER = 0
+       let DAILY = 1
+       let HOURLY = 2
 
 //User member fields/keys
-      static let FIRST_NAME = 'first_name'
-      static let LAST_NAME = 'last_name'
-      static let PROJECTS = 'projects'
-      static let NOTIFICATION = 'notification'
-      static let ID = '_id'
+       let FIRST_NAME = 'first_name'
+       let LAST_NAME = 'last_name'
+       let PROJECTS = 'projects'
+       let NOTIFICATION = 'notification'
+       let USERNAME = 'username'
+       let PASSWORD = 'password'
+       let EMAIL = 'email'
+       let ID = '_id'
 
 //Default completion handlers..
       var defaultSuccessHandler = function(data){
@@ -26,51 +26,86 @@ class UserModel extends Parse.User {
       }
 
 
-
+//UserModel does not extends Parse.User but is more like a wrapper
+export class UserModel {
 
   constructor (){
 //Let the super class be responsible for setting the classname
-    super()
+    this.user = new Parse.User()
 
     this.firstName = 'firstname'
-    this.set(UserModel.FIRST_NAME, this.firstName)
+    this.user.set(FIRST_NAME, this.firstName)
 
     this.lastName = 'lastname'
-    this.set(UserModel.LAST_NAME, this.lastName)
+    this.user.set(LAST_NAME, this.lastName)
 
     this.projects = []
-    this.set(UserModel.PROJECTS, this.projects)
+    this.user.set(PROJECTS, this.projects)
 
 
     this.notification = HOURLY
-    this.set(UserModel.NOTIFICATION, this.notification)
+    this.user.set(NOTIFICATION, this.notification)
+
+
+
+
 
   }
 
 //Getters
   getNotification(){
-    return this.get(UserModel.NOTIFICATION)
+    return this.user.get(NOTIFICATION)
   }
 
   getProjects(){
-    return this.get(UserModel.PROJECTS)
+    return this.user.get(PROJECTS)
   }
 
   getLastName(){
-    return this.get(UserModel.LAST_NAME)
+    return this.user.get(LAST_NAME)
   }
 
   getFirstName(){
-    return this.get(UserModel.FIRST_NAME)
+    return this.user.get(FIRST_NAME)
   }
 
 
 //Setters/Modifiers
 
+ createAccount(username, password, email='', successHandler, errorHandler){
+
+    this.user.set(USERNAME, username)
+    this.user.set(PASSWORD, password)
+    this.user.set(EMAIL, email)
+
+    this.user.signUp(null, {
+      success: successHandler,
+      error: errorHandler
+    });
+
+
+  }
+
+static login(username, password, successHandler, errorHandler){
+  
+    Parse.User.login(username, password, {
+      success: successHandler ,
+      error: errorHandler
+    })
+
+
+  }
+
+  static logout(completionHandler){
+    Parse.currentUser().logout()
+    .then(completionHandler)
+  }
+
   setFirstName (firstName, successHandler, errorHandler){
     // this.firstName = firstName;
-    this.set(UserModel.FIRST_NAME, firstName)
-    saveData(this, successHandler, errorHandler)
+    this.user.set(FIRST_NAME, firstName)
+    console.log('setFirstName()')
+    this.saveData(this.user, successHandler, errorHandler)
 
   }
 
@@ -78,51 +113,51 @@ class UserModel extends Parse.User {
   setLastName(lastName, successHandler, errorHandler){
     // this.lastName = lastName;
 
-    this.set(UserModel.LAST_NAME, lastName)
-    saveData(this, successHandler, errorHandler)
+    this.user.set(LAST_NAME, lastName)
+    this.saveData(this.user, successHandler, errorHandler)
   }
 
 
   addProject(project, successHandler, errorHandler){
 
-    var projects = this.get(UserModel.PROJECTS)
+    var projects = this.user.get(PROJECTS)
 
     projects.push(project);
 
-    this.set(UserModel.PROJECTS, projects);
-    saveData(this, successHandler, errorHandler)
+    this.user.set(PROJECTS, projects);
+    this.saveData(this.user, successHandler, errorHandler)
 
   }
 
-  removeProjectByIndex(index){
-    var projects = this.get(UserModel.PROJECTS)
+  removeProjectByIndex(index, successHandler, errorHandler){
+    var projects = this.user.get(PROJECTS)
     projects.splice(index, 1);
-    this.set(UserModel.PROJECTS, projects);
-    saveData(this, successHandler, errorHandler)
+    this.user.set(PROJECTS, projects);
+    this.saveData(this.user, successHandler, errorHandler)
 
   }
 
-  removeProjectByProject(project){
-    var projects = this.get(UserModel.PROJECTS)
+  removeProjectByProject(project, successHandler, errorHandler ){
+    var projects = this.get(PROJECTS)
 
     projects.filter(function(currProject){
       //Change to ProjectModel.ID
-      var currProjectId = currProject.get(UserModel.ID)
-      var projectRemoveId = project.get(UserModel.ID)
+      var currProjectId = currProject.get(ID)
+      var projectRemoveId = project.get(ID)
       return currProjectId != projectRemoveId
     })
 
-    this.set(UserModel.PROJECTS, projects);
-    saveData(this, successHandler, errorHandler)
+    this.user.set(PROJECTS, projects);
+    this.saveData(this.user, successHandler, errorHandler)
   }
 
-  changeNotification(newNotification, sucessHandler, errorHandler){
+  changeNotification(newNotification, successHandler, errorHandler){
     if (newNotification < NEVER) newNotification = NEVER;
     if (newNotification > HOURLY) newNotification = HOURLY;
 
-    this.set(User.Model, newNotification)
+    this.user.set(NOTIFICATION, newNotification)
 
-    saveData(this, successHandler, errorHandler)
+    this.saveData(this.user, successHandler, errorHandler)
   }
 
 
@@ -136,11 +171,13 @@ class UserModel extends Parse.User {
      errorHandler = this.defaultErrorHandler
    }
 
+
    pfobject.save(null, {
      success: successHandler,
      error: errorHandler
    })
   }
 
-
 }
+
+Parse.Object.registerSubclass('User', UserModel);

@@ -2,111 +2,102 @@ import Parse from 'parse'
 
 
 
+ let IS_CHANNEL  = 'is_channel'
+ let PARTICIPANTS = 'participants'
+ let NAME = 'name'
+ let HISTORY = 'history'
+ let HISTORY_MESSAGE = 'message'
+ let HISTORY_SENT_AT = 'sent_at'
+ let HISTORY_SENT_BY = 'sent_by'
+ let ID = '_id'
+
+
 export class ChannelModel extends Parse.Object {
 
 
-
-
-  static let IS_CHANNEL  = 'is_channel'
-  static let PARTICIPANTS = 'participants'
-  static let NAME = 'name'
-  static let HISTORY = 'history'
-  static let HISTORY_MESSAGE = 'message'
-  static let HISTORY_SENT_AT = 'sent_at'
-  static let HISTORY_SENT_BY = 'sent_by'
-  static let ID = '_id'
-
-
-
-
-    className (){
-      return 'Channel'
-    }
-
-
     constructor(){
-      super(className())
+      super('Channel')
 
       this.isChannel = false
-      this.set(ChannelModel.IS_CHANNEL, this.isChannel)
+      this.set(IS_CHANNEL, this.isChannel)
 
       this.participants = []
-      this.set(ChannelModel.PARTICIPANTS, this.participants)
+      this.set(PARTICIPANTS, this.participants)
 
 
       this.name = 'NewChannel'
-      this.set(ChannelModel.NAME, this.name)
+      this.set(NAME, this.name)
 
 
       this.history = [] // Array of maps
-      this.set(ChannelModel.HISTORY, this.history)
+      this.set(HISTORY, this.history)
     }
 
 
     getHistory(){
-      return this.get(ChannelModel.HISTORY)
+      return this.get(HISTORY)
     }
 
 
     getName(){
-      return this.get(ChannelModel.NAME)
+      return this.get(NAME)
     }
 
 
     getParticipants(){
-      return this.get(ChannelModel.PARTICIPANTS)
+      return this.get(PARTICIPANTS)
     }
 
     getIsChannel(){
-      return this.get(ChannelModel.IS_CHANNEL)
+      return this.get(IS_CHANNEL)
     }
 
 
     setIsChannel(isGroup, sucessHandler, errorHandler){
-      this.set(ChannelModel.IS_CHANNEL, isGroup)
+      this.set(IS_CHANNEL, isGroup)
       saveData(this, sucessHandler, errorHandler )
     }
 
     addParticipant(user,successHandler, errorHandler){
-      var particpants = this.get(ChannelModel.PARTICIPANTS)
+      var particpants = this.get(PARTICIPANTS)
       participants.add(user);
-      this.set(ChannelModel.PARTICIPANTS, particpants)
+      this.set(PARTICIPANTS, particpants)
       saveData(this, sucessHandler, errorHandler)
     }
 
     removeParticipantByIndex(index,successHandler, errorHandler){
-      var particpants = this.get(ChannelModel.PARTICIPANTS)
+      var particpants = this.get(PARTICIPANTS)
       participants.splice(index, 0)
-      this.set(ChannelModel.PARTICIPANTS, particpants)
+      this.set(PARTICIPANTS, particpants)
       saveData(this, sucessHandler, errorHandler)
     }
 
 
     removeParticipantByUser(user, successHandler, errorHandler){
-      var particpants = this.get(ChannelModel.PARTICIPANTS)
+      var particpants = this.get(PARTICIPANTS)
 
       participants.filter(function(participant, index, arr){
         //Change to UserModel.ID
-        var participantId = pariticipant.get(ChannelModel.ID)
-        var userId = user.get(ChannelModel.ID)
+        var participantId = pariticipant.get(ID)
+        var userId = user.get(ID)
 
         return participantId != userId
       })
-      this.set(ChannelModel.PARTICIPANTS, particpants)
+      this.set(PARTICIPANTS, particpants)
       saveData(this, successHandler, errorHandler)
     }
 
     updateName(newName, successHandler, errorHandler){
-      this.set(ChannelModel.NAME, newName)
+      this.set(NAME, newName)
       saveData(this, successHandler, errorHandler)
 
     }
 
 
     addToHistory(message){
-      var history = this.get(ChannelModel.HISTORY)
+      var history = this.get(HISTORY)
       history.push(message)
-      this.set(ChannelModel.HISTORY, history)
+      this.set(HISTORY, history)
       saveData(this, successHandler, errorHandler)
     }
 
@@ -128,3 +119,6 @@ saveData(pfobject, successHandler, errorHandler){
    error: errorHandler
  })
 }
+
+
+Parse.Object.registerSubclass('Channel', ChannelModel);

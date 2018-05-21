@@ -1,57 +1,51 @@
 import Parse from 'parse'
 
+   let TITLE = 'title'
+   let TASK_LIST = 'task_list'
 
 
 export class BoardModel extends Parse.Object {
 
 
-  static let TITLE = 'title'
-  static let TASK_LIST = 'task_list'
-
-  className(){
-    return 'Board'
-  }
    constructor(){
-     super(className())
+     super('Board')
 
 
      this.title = 'New Board'
-     this.set(BoardModel.TITLE, this.title);
+     this.set(TITLE, this.title);
 
      this.task_list = [];
-     this.set(BoardModel.TASK_LIST, this.task_list);
+     this.set(TASK_LIST, this.task_list);
 
    }
-
-
    getTitle(){
-     return this.get(BoardModel.TITLE)
+     return this.get(TITLE)
    }
 
    getTaskList(){
-     return this.get(BoardModel.TASK_LIST)
+     return this.get(TASK_LIST)
    }
 
 
    updateTitle(newTitle, successHandler, errorHandler){
-     this.set(BoardModel.TITLE, newTitle);
+     this.set(TITLE, newTitle);
      saveData(this,successHandler, errorHandler)
 
    }
 // Pass in a javascript object with fields of task (Not handled by mongoDB)
    addTask(task, successHandler, errorHandler){
-      var taskList = this.get(BoardModel.TASK_LIST)
+      var taskList = this.get(TASK_LIST)
       taskList.push(task);
-      this.set(BoardModel.TASK_LIST, taskList);
+      this.set(TASK_LIST, taskList);
       saveData(this, sucessHandler, errorHandler)
 
    }
 
    removeTaskById(task, successHandler, errorHandler){
-     var taskList = this.get(BoardModel.TASK_LIST)
+     var taskList = this.get(TASK_LIST)
      taskList.filter(function(currTask, index, arr){
-       var currTaskId = currTask.get(BoardModel.ID)
-       var taskId = task.get(BoardModel.ID)
+       var currTaskId = currTask.get(ID)
+       var taskId = task.get(ID)
        return currTaskId != taskId;
      })
      this.set(TaskModel.TASK_LIST, taskList);
@@ -72,3 +66,6 @@ export class BoardModel extends Parse.Object {
    }
 
 }
+
+
+Parse.Object.registerSubclass('Board', Board);
