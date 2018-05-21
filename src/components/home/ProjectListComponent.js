@@ -1,19 +1,32 @@
 import React from 'react';
-
-
 import ProjectList from './ProjectList';
-import { projActions } from '../../actions/projActions';
+import {
+    projActions
+} from '../../actions/projActions';
+import {
+    bindActionCreators
+} from 'redux';
+import {
+    connect
+} from 'react-redux';
+import {
+    withRouter
+} from 'react-router';
+import {
+    Button,
+    Form,
+    FormGroup,
+    Input,
+    Label,
+    Modal,
+    ModalHeader,
+    ModalBody,
+    ModalFooter
+} from 'reactstrap';
+import {
+    Parse
+} from 'parse';
 
-import { bindActionCreators } from 'redux';
-
-
-import { connect } from 'react-redux';
-
-import { withRouter } from 'react-router';
-
-import { Button, Form, FormGroup, Input, Label, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-
-import { Parse } from 'parse';
 class ProjectListComponent extends React.Component {
 
     constructor(props) {
@@ -30,7 +43,15 @@ class ProjectListComponent extends React.Component {
         this.handleNameChange = this.handleNameChange.bind(this);
         this.handleMemberChange = this.handleMemberChange.bind(this);
     }
-
+    
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if(nextProps.projects !== prevState.projects) {
+            return {
+                projItems: nextProps.projects
+            };
+        }
+        return null;
+    }
 
     toggleModal() {
         this.setState({newProjectModalOpen: !this.state.newProjectModalOpen});

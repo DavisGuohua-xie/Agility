@@ -33,18 +33,26 @@ class Homepage extends React.Component {
         var currentUser = Parse.User.current();
         if (!currentUser) {
             this.props.history.push("/login");
+            return;
         }
+
+        this.state = {
+            projects: projs // TODO: change to action dispatch
+        };
+
+        this.projectClick = this.projectClick.bind(this);
     }
 
     projectClick(e) {
-        
+        this.props.history.push(`/${e.target.id}/overview`);
+        // TODO: dispatch action to reflect current project name in store
     }
 
     render() {
         return (
             <div>
                 <NavBar history={this.props.history} zIndex={3}/>
-                <ProjectListComponent projects={projs} onClick={this.projectClick}/> {/* TODO: project list will be sent over by server */}
+                <ProjectListComponent projects={this.state.projects} onClick={this.projectClick}/> {/* TODO: project list will be sent over by server */}
             </div>
         )
     }
