@@ -62,7 +62,8 @@ class ProjectListComponent extends React.Component {
             console.log("project name: " + this.state.newProjectName);
             let temp = this.state.newProjectMembers.replace(/ /g,'').split(",");
 
-            temp.unshift(Parse.User.current());
+            console.log(Parse.User.current());
+            temp.unshift(Parse.User.current().get("username"));
             this.props.actions.createProject(this.state.newProjectName, temp, this.props.history);
         } else {
             console.log('no project name inputted');
