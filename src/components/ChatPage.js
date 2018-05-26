@@ -59,12 +59,26 @@ class ChatPage extends Component {
         this.state = {
             channelList: [{name: "Group channel 1", is_channel: true, id: 'asdfa'}, {name: "Team member", is_channel: false, id: "asdfasdf"}],
             currChannel: 'Group channel 1',
-            msgList: [{
-                message: "Test message",
-                sent_at: new Date(),
-                sent_by: 'sdafasd232', // user id
-                sent_by_name: 'Gary the Great' // TODO: need to add to db
-            }],
+            msgList: [
+                {
+                    message: "Test message",
+                    sent_at: new Date(),
+                    sent_by: 'sdafasd232', // user id
+                    sent_by_name: 'Gary the Great' // TODO: need to add to db
+                },
+                {
+                    message: "Test message 2",
+                    sent_at: new Date(),
+                    sent_by: 'sdafasd232', // user id
+                    sent_by_name: 'Joe' // TODO: need to add to db
+                },
+                {
+                    message: "Test message 3",
+                    sent_at: new Date(),
+                    sent_by: 'sdafasd232', // user id
+                    sent_by_name: 'Gary the Great' // TODO: need to add to db
+                },
+            ],
             currUser: {id: 'random'},
             active: 0,
             sidebarOpen: false,
