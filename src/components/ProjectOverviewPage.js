@@ -30,25 +30,14 @@ import {ProjectCalendar} from './project/Calendar';
 import moment from 'moment';
 
 import { Parse } from 'parse';
+import ManagementButton from './project/ManagementButton';
 
 const mql = window.matchMedia(`(min-width: 900px)`);
 
 /* TODO: delete mock proj member data */
 const members = [
     {fname: 'Joe', lname: 'Schmo'},
-    {fname: 'Joe', lname: 'Schmo'},
-    {fname: 'Joe', lname: 'Schasdfasdfamo'},
-    {fname: 'Joe', lname: 'Schmo'},
-    {fname: 'Joe', lname: 'Schasdfasdfamo'},
-    {fname: 'Joe', lname: 'Schmo'},
-    {fname: 'Joe', lname: 'Schasdfasdfamo'},
-    {fname: 'Joe', lname: 'Schmo'},
-    {fname: 'Joe', lname: 'Schasdfasdfamo'},
-    {fname: 'Joe', lname: 'Schmo'},
-    {fname: 'Joe', lname: 'Schasdfasdfamo'},
-    {fname: 'Joe', lname: 'Schmo'},
-    {fname: 'Joe', lname: 'Schasdfasdfamo'},
-    {fname: 'Joe', lname: 'Schmo'} 
+    {fname: 'Joe', lname: 'Schmo'}
 ];
 
 const mockTasks = {
@@ -85,8 +74,13 @@ const mockTasks = {
 class ProjectOverviewPage extends React.Component {
     constructor(props) {
         super(props);
+    
+        var currentUser = Parse.User.current();
+        if (!currentUser) {
+            this.props.history.push("/login");
+        }
+        
         console.log(props);
-
         this.state = {
             active: '0',
             sidebarOpen: false,
@@ -96,7 +90,8 @@ class ProjectOverviewPage extends React.Component {
             members: members,
             projectID: props.match.params.projID,
             tasksData: mockTasks, // TODO: fix this later
-            eventBus: undefined
+            eventBus: undefined,
+            showManageMenu: false
         };
 
         this.setActive = this.setActive.bind(this);
@@ -105,11 +100,9 @@ class ProjectOverviewPage extends React.Component {
         this.generateSidebar = this.generateSidebar.bind(this);
         this.handleNewBoard = this.handleNewBoard.bind(this);
         this.setEventBus = this.setEventBus.bind(this);
-
-        var currentUser = Parse.User.current();
-        if (!currentUser) {
-            this.props.history.push("/login");
-        }
+        this.handleManageClick = this.handleManageClick.bind(this);
+        this.handleLaneClick = this.handleLaneClick.bind(this);
+        this.handleCardClick = this.handleCardClick.bind(this);
     }
 
     componentWillMount() {
@@ -165,23 +158,40 @@ class ProjectOverviewPage extends React.Component {
     }
 
     shouldReceiveNewData = newdata => console.log(newdata);
+
+    handleManageClick = () => this.setState({showManageMenu: !this.state.showManageMenu});
+
+    handleLaneClick(e) {
+        console.log(e);
+    }
+
+    handleCardClick(e) {
+        console.log(e);
+    }
     
     //
     render() {
         console.log(this.state);
         let sidebarContent = this.generateSidebar();
         let mainContent;
-        switch(this.state.active) {
-            case '0': 
-                mainContent = <ProjectOverview onSidebarToggle={this.toggleSidebar}/>;
+        let projectManage = null;
+        switch(this.props.match.params.projPage) {
+            case 'overview':
+                mainContent = <ProjectOverview onSidebarToggle={this.toggleSidebar} taskList={this.state.tasksData.lanes}/>;
+                projectManage = <ManagementButton onManageClick={this.handleManageClick} show={this.state.showManageMenu}/>;
                 break;
-            case '1':
-                mainContent = <ProjectTasks onSidebarToggle={this.toggleSidebar} data={this.state.tasksData} eventBus={this.setEventBus}/>;
+            case 'tasks':
+                mainContent = <ProjectTasks 
+                    onSidebarToggle={this.toggleSidebar} 
+                    data={this.state.tasksData}
+                    eventBus={this.setEventBus}
+                    onLaneClick={this.handleLaneClick}
+                    onCardClick={this.handleCardClick}/>;
                 break;
-            default:
+            case 'calendar':
                 mainContent = <ProjectCalendar events={[ {
                     startDate: new Date(),
-                    endDate: new Date(moment().add(1, "days")),
+                    endDate: new Date(moment().add(0, "days")),
                     title: "Some title"
                   }]}/>
         }
@@ -195,6 +205,7 @@ class ProjectOverviewPage extends React.Component {
                     onSetOpen={this.toggleSidebar}
                     styles={{root: {top: '56px', overflowY: 'auto'}, content: {overflowY: 'auto', height: '100%'}, overlay: {top: '56px'}, sidebar: {backgroundColor: 'white', width: 200, zIndex: 99999}}}>
                     <OverviewSubnav active={this.state.active} onNewBoard={this.handleNewBoard} toggleSidebar={this.toggleSidebar} docked={this.state.sidebarDocked} projID={this.state.projectID} onTabChange={this.setActive}/>
+                    {projectManage}
                     {mainContent}
                 </Sidebar>
             </div>

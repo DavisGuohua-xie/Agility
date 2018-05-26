@@ -64,21 +64,33 @@ const LoginForm1 = props => {
                     <ModalBody>
                         <Form>
                             <FormGroup>
+                                <Label for="fname">First Name</Label>
+                                <Input type="text" name="fname" id="fname"
+                                    placeholder="First Name" onChange={props.onInputChange} required/>
+                            </FormGroup>
+                            
+                            <FormGroup>
+                                <Label for="lname">Last Name</Label>
+                                <Input type="text" name="lname" id="lname"
+                                    placeholder="Last Name" onChange={props.onInputChange} required/>
+                            </FormGroup>
+                            
+                            <FormGroup>
                                 <Label for="registerUsername">Username</Label>
                                 <Input type="text" name="registerUsername" id="registerUsername"
-                                    placeholder="Username" onChange={props.onInputChange}/>
+                                    placeholder="Username" onChange={props.onInputChange} required/>
                             </FormGroup>
 
                             <FormGroup>
                                 <Label for="registerEmail">Email address</Label>
                                 <Input type="email" name="registerEmail" id="registerEmail" 
-                                    placeholder="Email address" onChange={props.onInputChange}/>
+                                    placeholder="Email address" onChange={props.onInputChange} required/>
                             </FormGroup>
 
                             <FormGroup>
                                 <Label for="registerPassword">Password</Label>
                                 <Input type="password" name="registerPassword" id="registerPassword" 
-                                    placeholder="Password" onChange={props.onInputChange}/>
+                                    placeholder="Password" onChange={props.onInputChange} required/>
                             </FormGroup>
                         </Form>
                     </ModalBody>

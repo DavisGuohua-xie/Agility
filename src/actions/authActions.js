@@ -16,6 +16,7 @@ function login(username, password, history) {
     authAPI.login(username, password).then(
       user => {
         dispatch(success(user));
+        console.log(`Logged in user:`);
         console.log(user);
         history.push("/");
       },
@@ -47,7 +48,6 @@ function logout(history) {
       res => {
         dispatch(success());
         console.log("signed out.");
-        history.push('/');
       },
       error => {
         dispatch(failure());
@@ -67,14 +67,14 @@ function logout(history) {
   }
 }
 
-function register(username, password, email, history) {
+function register(username, password, email, fname, lname, history) {
   return dispatch => {
     dispatch(ajaxActions.ajaxBegin());
     dispatch(request(username));
 
-    authAPI.register(username, password, email).then(
+    authAPI.register(username, password, email, fname, lname).then(
       user => {
-        dispatch(success());
+        dispatch(success(user));
         console.log(user);
         history.push("/");
       },
