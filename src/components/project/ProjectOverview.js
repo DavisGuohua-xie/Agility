@@ -45,10 +45,7 @@ export const ProjectOverview = props => {
                     </Row>
 
                     <Row style={{marginTop: '30px'}}>
-                        <BoardDetail board='Board name' items={42}/>
-                        <BoardDetail board='Board name' items={42}/>
-                        <BoardDetail board='Board name' items={42}/>
-                        <BoardDetail board='Board name' items={42}/>
+                        {props.taskList.map((board, index) => <BoardDetail key={index} board={board.title} items={board.cards.length}/>)}
                     </Row>
 
                 </Container>
