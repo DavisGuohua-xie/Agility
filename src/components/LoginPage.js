@@ -54,16 +54,17 @@ export default class LoginPage extends Component {
         let username = this.state.registerUsername;
         let password = this.state.registerPassword;
         let email = this.state.registerEmail;
+        let fname = this.state.fname;
+        let lname = this.state.lname;
 
         if (username && password && email) {
-            this.props.actions.register(username, password, email, this.props.history);
+            this.props.actions.register(username, password, email, fname, lname, this.props.history);
         }
     }
 
     handleInputChange(e) {
-        let value = e.target.value;
         this.setState({
-            [e.target.name]: value
+            [e.target.name]: e.target.value
         });
     }
 
