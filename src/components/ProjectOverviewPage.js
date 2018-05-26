@@ -74,8 +74,13 @@ const mockTasks = {
 class ProjectOverviewPage extends React.Component {
     constructor(props) {
         super(props);
+    
+        var currentUser = Parse.User.current();
+        if (!currentUser) {
+            this.props.history.push("/login");
+        }
+        
         console.log(props);
-
         this.state = {
             active: '0',
             sidebarOpen: false,
@@ -96,11 +101,8 @@ class ProjectOverviewPage extends React.Component {
         this.handleNewBoard = this.handleNewBoard.bind(this);
         this.setEventBus = this.setEventBus.bind(this);
         this.handleManageClick = this.handleManageClick.bind(this);
-
-        var currentUser = Parse.User.current();
-        if (!currentUser) {
-            this.props.history.push("/login");
-        }
+        this.handleLaneClick = this.handleLaneClick.bind(this);
+        this.handleCardClick = this.handleCardClick.bind(this);
     }
 
     componentWillMount() {
@@ -158,6 +160,14 @@ class ProjectOverviewPage extends React.Component {
     shouldReceiveNewData = newdata => console.log(newdata);
 
     handleManageClick = () => this.setState({showManageMenu: !this.state.showManageMenu});
+
+    handleLaneClick(e) {
+        console.log(e);
+    }
+
+    handleCardClick(e) {
+        console.log(e);
+    }
     
     //
     render() {
@@ -171,7 +181,12 @@ class ProjectOverviewPage extends React.Component {
                 projectManage = <ManagementButton onManageClick={this.handleManageClick} show={this.state.showManageMenu}/>;
                 break;
             case 'tasks':
-                mainContent = <ProjectTasks onSidebarToggle={this.toggleSidebar} data={this.state.tasksData} eventBus={this.setEventBus}/>;
+                mainContent = <ProjectTasks 
+                    onSidebarToggle={this.toggleSidebar} 
+                    data={this.state.tasksData}
+                    eventBus={this.setEventBus}
+                    onLaneClick={this.handleLaneClick}
+                    onCardClick={this.handleCardClick}/>;
                 break;
             case 'calendar':
                 mainContent = <ProjectCalendar events={[ {
