@@ -73,7 +73,7 @@ class NavBar extends React.Component {
               </NavItem>}
               <UncontrolledDropdown nav inNavbar>
                 <DropdownToggle nav caret>
-                  Name
+                  {this.props.name}
                 </DropdownToggle>
                 <DropdownMenu right>
                   <DropdownItem className={styles.dropdownItem}>
@@ -99,5 +99,13 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-const connectedNavbar = withRouter(connect(null, mapDispatchToProps)(NavBar));
+function mapStateToProps(state, ownProps) {
+  console.log(state);
+  return {
+      name: state.authReducer.first_name,
+      //projName: state.projReducer.curr_proj
+  }
+}
+
+const connectedNavbar = withRouter(connect(mapStateToProps, mapDispatchToProps)(NavBar));
 export { connectedNavbar as NavBar };
