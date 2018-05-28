@@ -120,9 +120,11 @@ class ProjectOverviewPage extends React.Component {
             case "calendar":
                 newActive = "2";
                 break;
+            default:
+                break; // should never happen
         }
 
-        return prevState.active != newActive ? { active: newActive } : null;
+        return prevState.active !== newActive ? { active: newActive } : null;
     }
 
     mediaQueryChanged() {
@@ -219,6 +221,9 @@ class ProjectOverviewPage extends React.Component {
                         ]}
                     />
                 );
+                break;
+            default:
+                break; // should never happen
         }
 
         return (
