@@ -105,7 +105,7 @@ export default class LoginPage extends Component {
                         this.state.isOpenReg
                     }
                     ajaxRequested = {
-                        this.props.ajaxCalls > 0
+                        this.props.logging_in
                     }
                 />;
     }
@@ -121,7 +121,8 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state, ownProps) {
     console.log(state);
     return {
-        ajaxCalls: state.ajaxCallsInProgress
+        ajaxCalls: state.ajaxCallsInProgress,
+        logging_in: state.authReducer.logging_in
     }
 }
 
