@@ -80,7 +80,7 @@ class ProjectOverviewPage extends React.Component {
             this.props.history.push("/login");
         }
         
-        console.log(props);
+        console.log('in project overview page constructor');
         this.state = {
             active: '0',
             sidebarOpen: false,
@@ -94,7 +94,6 @@ class ProjectOverviewPage extends React.Component {
             showManageMenu: false
         };
 
-        this.setActive = this.setActive.bind(this);
         this.toggleSidebar = this.toggleSidebar.bind(this);
         this.mediaQueryChanged = this.mediaQueryChanged.bind(this);
         this.generateSidebar = this.generateSidebar.bind(this);
@@ -105,7 +104,7 @@ class ProjectOverviewPage extends React.Component {
         this.handleCardClick = this.handleCardClick.bind(this);
     }
 
-    componentWillMount() {
+    componentDidMount() {
         mql.addListener(this.mediaQueryChanged);
         this.setState({mql: mql, sidebarDocked: mql.matches});
         // TODO: fetch project data from server
@@ -116,16 +115,29 @@ class ProjectOverviewPage extends React.Component {
         this.state.mql.removeListener(this.mediaQueryChanged);
     }
 
+    static getDerivedStateFromProps(nextProps, prevState) {
+        let newActive;
+        switch(nextProps.match.params.projPage) {
+            case 'overview':
+                newActive = '0';
+                break;
+            case 'tasks':
+                newActive = '1';
+                break;
+            case 'calendar':
+                newActive = '2';
+                break;
+        }
+
+        return prevState.active != newActive ? {active: newActive} : null;
+    }
+
     mediaQueryChanged() {
         this.setState({sidebarDocked: this.state.mql.matches});
     }    
 
     toggleSidebar(open) {        
         this.setState({sidebarOpen: open ? true : false});
-    }
-
-    setActive(e) {
-        this.setState({active: e.target.dataset.tab});
     }
 
     generateSidebar() {
@@ -204,7 +216,7 @@ class ProjectOverviewPage extends React.Component {
                     docked={this.state.sidebarDocked}
                     onSetOpen={this.toggleSidebar}
                     styles={{root: {top: '56px', overflowY: 'auto'}, content: {overflowY: 'auto', height: '100%'}, overlay: {top: '56px'}, sidebar: {backgroundColor: 'white', width: 200, zIndex: 99999}}}>
-                    <OverviewSubnav active={this.state.active} onNewBoard={this.handleNewBoard} toggleSidebar={this.toggleSidebar} docked={this.state.sidebarDocked} projID={this.state.projectID} onTabChange={this.setActive}/>
+                    <OverviewSubnav active={this.state.active} onNewBoard={this.handleNewBoard} toggleSidebar={this.toggleSidebar} docked={this.state.sidebarDocked} projID={this.state.projectID}/>
                     {projectManage}
                     {mainContent}
                 </Sidebar>

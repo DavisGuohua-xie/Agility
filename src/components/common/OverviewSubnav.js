@@ -12,13 +12,13 @@ export const OverviewSubnav = props => {
             <Button style={{margin: '2px'}} onClick={props.toggleSidebar} hidden={props.docked ? true : null}>
                 <i className="fas fa-users"></i>
             </Button>
-            <li className="nav-item" onClick={props.onTabChange}>
+            <li className="nav-item">
                 <Link className={overviewActive} to={`/${props.projID}/overview`} data-tab="0">Overview</Link>
             </li>
-            <li className="nav-item" onClick={props.onTabChange}>
+            <li className="nav-item">
                 <Link className={tasklistActive} to={`/${props.projID}/tasks`} data-tab="1">Tasks</Link>
             </li>
-            <li className="nav-item" onClick={props.onTabChange}>
+            <li className="nav-item">
                 <Link className={calendarActive} to={`/${props.projID}/calendar`} data-tab="2">Calendar</Link>
             </li>
 
