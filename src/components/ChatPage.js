@@ -1,47 +1,39 @@
-import React, {
-    Component
-} from 'react';
+import React, { Component } from "react";
 
-import {
-    connect
-} from 'react-redux';
+import { connect } from "react-redux";
 
-import {
-    bindActionCreators
-} from 'redux';
+import { bindActionCreators } from "redux";
 
-import {
-    withRouter
-} from 'react-router';
+import { withRouter } from "react-router";
 
-import Sidebar from 'react-sidebar';
-import Parse from 'parse';
+import Sidebar from "react-sidebar";
+import Parse from "parse";
 
-import * as chatActions from '../actions/chatActions';
+import * as chatActions from "../actions/chatActions";
 
-import {NavBar} from './common/Navbar';
-import ChatLayout from './chat/ChatLayout';
+import { NavBar } from "./common/Navbar";
+import ChatLayout from "./chat/ChatLayout";
 
-import MemberSidebarItem from './common/MemberSidebarItem';
+import MemberSidebarItem from "./common/MemberSidebarItem";
 
-import styles from '../styles/ChatLayout.module.css';
+import styles from "../styles/ChatLayout.module.css";
 
 /* TODO: delete mock proj member data */
 const members = [
-    {fname: 'Joe', lname: 'Schmo'},
-    {fname: 'Joe', lname: 'Schmo'},
-    {fname: 'Joe', lname: 'Schasdfasdfamo'},
-    {fname: 'Joe', lname: 'Schmo'},
-    {fname: 'Joe', lname: 'Schasdfasdfamo'},
-    {fname: 'Joe', lname: 'Schmo'},
-    {fname: 'Joe', lname: 'Schasdfasdfamo'},
-    {fname: 'Joe', lname: 'Schmo'},
-    {fname: 'Joe', lname: 'Schasdfasdfamo'},
-    {fname: 'Joe', lname: 'Schmo'},
-    {fname: 'Joe', lname: 'Schasdfasdfamo'},
-    {fname: 'Joe', lname: 'Schmo'},
-    {fname: 'Joe', lname: 'Schasdfasdfamo'},
-    {fname: 'Joe', lname: 'Schmo'} 
+    { fname: "Joe", lname: "Schmo" },
+    { fname: "Joe", lname: "Schmo" },
+    { fname: "Joe", lname: "Schasdfasdfamo" },
+    { fname: "Joe", lname: "Schmo" },
+    { fname: "Joe", lname: "Schasdfasdfamo" },
+    { fname: "Joe", lname: "Schmo" },
+    { fname: "Joe", lname: "Schasdfasdfamo" },
+    { fname: "Joe", lname: "Schmo" },
+    { fname: "Joe", lname: "Schasdfasdfamo" },
+    { fname: "Joe", lname: "Schmo" },
+    { fname: "Joe", lname: "Schasdfasdfamo" },
+    { fname: "Joe", lname: "Schmo" },
+    { fname: "Joe", lname: "Schasdfasdfamo" },
+    { fname: "Joe", lname: "Schmo" }
 ];
 
 const mql = window.matchMedia(`(min-width: 900px)`);
@@ -57,29 +49,32 @@ class ChatPage extends Component {
             currUser: props.currUser
         };*/
         this.state = {
-            channelList: [{name: "Group channel 1", is_channel: true, id: 'asdfa'}, {name: "Team member", is_channel: false, id: "asdfasdf"}],
-            currChannel: 'Group channel 1',
+            channelList: [
+                { name: "Group channel 1", is_channel: true, id: "asdfa" },
+                { name: "Team member", is_channel: false, id: "asdfasdf" }
+            ],
+            currChannel: "Group channel 1",
             msgList: [
                 {
                     message: "Test message",
                     sent_at: new Date(),
-                    sent_by: 'sdafasd232', // user id
-                    sent_by_name: 'Gary the Great' // TODO: need to add to db
+                    sent_by: "sdafasd232", // user id
+                    sent_by_name: "Gary the Great" // TODO: need to add to db
                 },
                 {
                     message: "Test message 2",
                     sent_at: new Date(),
-                    sent_by: 'sdafasd232', // user id
-                    sent_by_name: 'Joe' // TODO: need to add to db
+                    sent_by: "sdafasd232", // user id
+                    sent_by_name: "Joe" // TODO: need to add to db
                 },
                 {
                     message: "Test message 3",
                     sent_at: new Date(),
-                    sent_by: 'sdafasd232', // user id
-                    sent_by_name: 'Gary the Great' // TODO: need to add to db
-                },
+                    sent_by: "sdafasd232", // user id
+                    sent_by_name: "Gary the Great" // TODO: need to add to db
+                }
             ],
-            currUser: {id: 'random'},
+            currUser: { id: "random" },
             active: 0,
             sidebarOpen: false,
             mql: mql,
@@ -97,7 +92,7 @@ class ChatPage extends Component {
 
     componentWillMount() {
         mql.addListener(this.mediaQueryChanged);
-        this.setState({mql: mql, sidebarDocked: mql.matches});
+        this.setState({ mql: mql, sidebarDocked: mql.matches });
         // TODO: fetch project data from server
         // TODO: call redux action
 
@@ -112,27 +107,39 @@ class ChatPage extends Component {
     }
 
     mediaQueryChanged() {
-        this.setState({sidebarDocked: this.state.mql.matches});
-    }    
+        this.setState({ sidebarDocked: this.state.mql.matches });
+    }
 
-    toggleSidebar(open) {        
-        this.setState({sidebarOpen: open ? true : false});
+    toggleSidebar(open) {
+        this.setState({ sidebarOpen: open ? true : false });
     }
 
     generateSidebar(groupChannels, dmChannels) {
         return (
-            <div id='sidebar'>
+            <div id="sidebar">
                 <div className={styles.groupChannels}>
-                    <p className={styles.channelHeader}>Channels <i className={`fas fa-plus-circle ${styles.plus}`}></i></p> 
+                    <p className={styles.channelHeader}>
+                        Channels <i className={`fas fa-plus-circle ${styles.plus}`} />
+                    </p>
                     <ul className={styles.channelList}>
-                        {groupChannels.map(group => <li key={group.id} className={styles.channelItem}>{group.name}</li>)}
+                        {groupChannels.map(group => (
+                            <li key={group.id} className={styles.channelItem}>
+                                {group.name}
+                            </li>
+                        ))}
                     </ul>
                 </div>
 
                 <div className={styles.directChannels}>
-                    <p className={styles.channelHeader}>Direct Messages <i className={`fas fa-plus-circle ${styles.plus}`}></i></p> 
+                    <p className={styles.channelHeader}>
+                        Direct Messages <i className={`fas fa-plus-circle ${styles.plus}`} />
+                    </p>
                     <ul className={styles.channelList}>
-                        {dmChannels.map(group => <li key={group.id} className={styles.channelItem}>{group.name}</li>)}
+                        {dmChannels.map(group => (
+                            <li key={group.id} className={styles.channelItem}>
+                                {group.name}
+                            </li>
+                        ))}
                     </ul>
                 </div>
             </div>
@@ -146,21 +153,33 @@ class ChatPage extends Component {
         let sidebarContent = this.generateSidebar(groupChannels, dmChannels);
         console.log(groupChannels);
         return (
-            <div style={{height: '100%'}}>
-                <NavBar history={this.props.history} projName='Project name' projID={this.state.projectID}/>
-                <Sidebar sidebar={sidebarContent}
+            <div style={{ height: "100%" }}>
+                <NavBar
+                    history={this.props.history}
+                    projName="Project name"
+                    projID={this.state.projectID}
+                />
+                <Sidebar
+                    sidebar={sidebarContent}
                     open={this.state.sidebarOpen}
                     docked={this.state.sidebarDocked}
                     onSetOpen={this.toggleSidebar}
-                    styles={{root: {top: '56px', overflowY: 'auto'}, content: {overflowY: 'auto'}, overlay: {top: '56px'}, sidebar: {backgroundColor: 'white', width: 200, zIndex: 3}}}>
+                    styles={{
+                        root: { top: "56px", overflowY: "auto" },
+                        content: { overflowY: "auto" },
+                        overlay: { top: "56px" },
+                        sidebar: { backgroundColor: "white", width: 200, zIndex: 3 }
+                    }}
+                >
                     <ChatLayout
                         groups={groupChannels}
-                        dms={dmChannels} 
+                        dms={dmChannels}
                         currChannel={this.state.currChannel}
-                        messageList={this.state.msgList} 
+                        messageList={this.state.msgList}
                         me={this.state.currUser.id}
                         docked={this.state.sidebarDocked}
-                        toggleSidebar={this.toggleSidebar}/>
+                        toggleSidebar={this.toggleSidebar}
+                    />
                 </Sidebar>
             </div>
         );
@@ -178,10 +197,8 @@ function mapStateToProps(state, ownProps) {
     // TODO: need to get list of channel objects from store state
     return {
         ajaxCalls: state.ajaxCallsInProgress
-    }
+    };
 }
 
 const connectedChatPage = withRouter(connect(mapStateToProps, mapDispatchToProps)(ChatPage));
-export {
-    connectedChatPage as ChatPage
-};
+export { connectedChatPage as ChatPage };
