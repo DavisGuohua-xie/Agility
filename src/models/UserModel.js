@@ -88,24 +88,56 @@ export class UserModel {
 
     static login(username, password, successHandler, errorHandler) {
 
-        Parse.User.login(username, password, {
-            success: successHandler,
+        Parse.User.logIn(username, password, {
+            success: function(user){
+              var userQuery = new Parse.Query(Parse.User);
+              userQuery.equalTo('username', user.get('username'))
+              userQuery.include(PROJECTS)
+              userQuery.find({
+                success: function(results){
+                  var currUser = results[0];
+                  successHandler()
+
+                },
+                error: function(error){
+                  errorHandler(error)
+                }
+              })
+            },
             error: errorHandler
         })
 
 
     }
 
-    static logout(completionHandler) {
-        Parse.currentUser().logout()
-            .then(completionHandler)
-    }
+  static current(){
 
-    setFirstName(firstName, successHandler, errorHandler) {
-        // this.firstName = firstName;
-        this.user.set(FIRST_NAME, firstName)
-        console.log('setFirstName()')
-        this.saveData(this.user, successHandler, errorHandler)
+  var currentUser = new UserModel();
+  currentUser.user = Parse.User.current();
+  return currentUser;
+}
+
+  static logout(completionHandler){
+    Parse.currentUser().logout()
+    .then(completionHandler)
+  }
+
+  static current(){
+
+    var currentUser = new UserModel();
+    currentUser.user = Parse.User.current();
+    return currentUser;
+  }
+
+
+
+
+
+  setFirstName (firstName, successHandler, errorHandler){
+    // this.firstName = firstName;
+    this.user.set(FIRST_NAME, firstName)
+    console.log('setFirstName()')
+    this.saveData(this.user, successHandler, errorHandler)
 
     }
 
