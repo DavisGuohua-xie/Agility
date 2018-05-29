@@ -21,6 +21,18 @@ import ProjectTaskComponent from "./project/ProjectTaskComponent";
 import { ProjectCalendar } from "./project/Calendar";
 import moment from "moment";
 
+import {
+    Button,
+    Form,
+    FormGroup,
+    Input,
+    Label,
+    Modal,
+    ModalHeader,
+    ModalBody,
+    ModalFooter
+} from 'reactstrap';
+
 import { Parse } from "parse";
 import ManagementButton from "./project/ManagementButton";
 
@@ -81,7 +93,10 @@ class ProjectOverviewPage extends React.Component {
             projectID: props.match.params.projID,
             showManageMenu: false,
             modalOpen: false,
-            tasks: mockTasks
+            tasks: mockTasks,
+            manageMemberModalOpen: false,
+            newUserName: '',
+            newRole: ''
         };
 
         this.toggleSidebar = this.toggleSidebar.bind(this);
@@ -89,6 +104,39 @@ class ProjectOverviewPage extends React.Component {
         this.generateSidebar = this.generateSidebar.bind(this);
         this.handleManageClick = this.handleManageClick.bind(this);
         this.toggleNewBoard = this.toggleNewBoard.bind(this);
+        this.toggleMemberModal = this.toggleMemberModal.bind(this);
+        this.handleNewName = this.handleNewName.bind(this);
+        this.handleAddMember = this.handleAddMember.bind(this);
+        this.handleNewRole = this.handleNewRole.bind(this);
+    }
+
+    toggleMemberModal() {
+        this.setState({manageMemberModalOpen: !this.state.manageMemberModalOpen});
+    }
+
+    handleNewName(e) {
+        let name = e.target.value;
+        this.setState ({
+            newUserName: name
+        });
+        console.log(this.state.newUserName);
+    }
+
+    handleAddMember() {
+        let newMember = {
+            fname: this.state.newUserName,
+            lname: this.state.newUserName
+        }
+
+        this.state.members.push(newMember);
+        this.toggleMemberModal();
+    }
+
+    handleNewRole(e) {
+        this.setState({
+            newRole: e.target.value
+        }) ;
+        console.log(this.state.newRole);
     }
 
     componentDidMount() {
@@ -168,6 +216,7 @@ class ProjectOverviewPage extends React.Component {
                     <ManagementButton
                         onManageClick={this.handleManageClick}
                         show={this.state.showManageMenu}
+                        onManageMember={this.toggleMemberModal}
                     />
                 );
                 break;
@@ -203,6 +252,23 @@ class ProjectOverviewPage extends React.Component {
 
         return (
             <div style={{ height: "100%" }}>
+                <Modal isOpen={this.state.manageMemberModalOpen} toggle={this.toggleMemberModal} className={this.props.className}>
+                    <ModalHeader toggle={this.toggleMemberModal}> Add New Team Member </ModalHeader>
+                    <ModalBody>
+                        <Form>
+                            <FormGroup>
+                                <Label for="usertName">User Name or Email</Label>
+                                <Input type="text" name="usernameinput" id="userName" placeholder="Agility" onChange={this.handleNewName}/>
+                                <Label for="role">Role</Label>
+                                <Input type="text" name="role" id="role" placeholder="Software Architect, Algorithm Specialist, etc." onChange={this.handleNewRole}/>
+                            </FormGroup>
+                        </Form>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="secondary" onClick={this.toggleMemberModal}>Cancel</Button>
+                        <Button color="primary" onClick={this.handleAddMember}>Add</Button> {/* TODO: create handleAddMember function*/}
+                    </ModalFooter>
+                </Modal>
                 <NavBar
                     history={this.props.history}
                     projName="Project"
