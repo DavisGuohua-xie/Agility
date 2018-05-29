@@ -1,51 +1,40 @@
-import React from 'react';
-import ProjectList from './ProjectList';
-import {
-    projActions
-} from '../../actions/projActions';
-import {
-    bindActionCreators
-} from 'redux';
-import {
-    connect
-} from 'react-redux';
-import {
-    withRouter
-} from 'react-router';
-import {
-    Button,
-    Form,
-    FormGroup,
-    Input,
-    Label,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter
-} from 'reactstrap';
-import {
-    Parse
-} from 'parse';
+import React from "react";
+import ProjectList from "./ProjectList";
+import { projActions } from "../../actions/projActions";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { withRouter } from "react-router";
+import { Parse } from "parse";
+
+import NewProjectModal from "./NewProjectModal";
+
+const PROJECT_MEMBER = 0;
+const PROJECT_MANAGER = 1;
+const CUSTOMER = 2;
+const CEO = 3;
 
 class ProjectListComponent extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {
             projItems: props.projects,
             newProjectModalOpen: false,
-            newProjectName: '',
-            newProjectMembers: ''
-        }
+            newProjectName: "",
+            newMembers: [],
+            memberNameEmpty: true
+        };
 
         this.toggleModal = this.toggleModal.bind(this);
         this.handleCreateProject = this.handleCreateProject.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
-        this.handleMemberChange = this.handleMemberChange.bind(this);
+        this.handleAddMember = this.handleAddMember.bind(this);
+        this.handleDeleteNewMember = this.handleDeleteNewMember.bind(this);
+        this.handleRoleChange = this.handleRoleChange.bind(this);
+        this.handleNewProjectNameChange = this.handleNewProjectNameChange.bind(this);
     }
-    
+
     static getDerivedStateFromProps(nextProps, prevState) {
-        if(nextProps.projects !== prevState.projects) {
+        if (nextProps.projects !== prevState.projects) {
             return {
                 projItems: nextProps.projects
             };
@@ -54,53 +43,76 @@ class ProjectListComponent extends React.Component {
     }
 
     toggleModal() {
-        this.setState({newProjectModalOpen: !this.state.newProjectModalOpen});
+        this.setState({
+            newProjectModalOpen: !this.state.newProjectModalOpen,
+            newMembers: [],
+            newProjectName: ""
+        });
     }
 
     handleCreateProject() {
-        if (this.state.newProjectName !== '') {
+        if (this.state.newProjectName !== "") {
             console.log("project name: " + this.state.newProjectName);
-            let temp = this.state.newProjectMembers.replace(/ /g,'').split(",");
 
-            console.log(Parse.User.current());
-            temp.unshift(Parse.User.current().get("username"));
-            this.props.actions.createProject(this.state.newProjectName, temp, this.props.history);
+            let projectManager = Parse.User.current();
+            this.props.actions.createProject(this.state.newProjectName, projectManager, this.state.newMembers, this.props.history);
         } else {
-            console.log('no project name inputted');
+            console.log("no project name inputted");
         }
     }
 
     handleNameChange(e) {
-        this.setState({newProjectName: e.target.value});
+        let members = this.state.newMembers;
+        let index = parseInt(e.target.name.slice("member".length), 10);
+        members[index].name = e.target.value;
+        this.setState({ newMembers: members });
     }
 
-    handleMemberChange(e) {
-        this.setState({newProjectMembers: e.target.value});
+    handleRoleChange(e) {
+        let members = this.state.newMembers;
+        let index = parseInt(e.target.name.slice("role".length), 10);
+        members[index].role = parseInt(e.target.value, 10);
+        this.setState({ newMembers: members });
+    }
+
+    handleAddMember(e) {
+        let members = this.state.newMembers;
+        members.push({ name: "", role: PROJECT_MEMBER });
+        this.setState({
+            newMembers: members
+        });
+    }
+
+    handleDeleteNewMember(e) {
+        let index = e.target.id;
+        let members = this.state.newMembers;
+        members.splice(index, 1);
+
+        this.setState({ newMembers: members });
+    }
+
+    handleNewProjectNameChange(e) {
+        this.setState({
+            newProjectName: e.target.value
+        })
     }
 
     render() {
         return (
             <div>
-                <Modal isOpen={this.state.newProjectModalOpen} toggle={this.toggleModal} className={this.props.className}>
-                    <ModalHeader toggle={this.toggleModal}> Create New Project </ModalHeader>
-                    <ModalBody>
-                        <Form>
-                            <FormGroup>
-                                <Label for="projectName">Project Name</Label>
-                                <Input type="text" name="projectnameinput" id="projectName" placeholder="Agility" onChange={this.handleNameChange}/> 
-                            </FormGroup>
-                            <FormGroup>
-                                <Label for="addMembers">Add Members</Label>
-                                <Input type="text" name="addmembersinput" id="addMembers" placeholder="username1, username2" onChange={this.handleMemberChange}/> 
-                            </FormGroup>
-                        </Form>
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button color="secondary" onClick={this.toggleModal}>Cancel</Button>
-                        <Button color="primary" onClick={this.handleCreateProject}>Create Project</Button>
-                    </ModalFooter>
-                </Modal>
-                <ProjectList 
+                <NewProjectModal
+                    onToggleModal={this.toggleModal}
+                    modalOpen={this.state.newProjectModalOpen}
+                    onCreateProject={this.handleCreateProject}
+                    onAddMember={this.handleAddMember}
+                    newMembers={this.state.newMembers}
+                    onDeleteNewMember={this.handleDeleteNewMember}
+                    onRoleChange={this.handleRoleChange}
+                    onNameChange={this.handleNameChange}
+                    onNewProjectNameChange={this.handleNewProjectNameChange}
+                />
+
+                <ProjectList
                     projects={this.state.projItems}
                     onNewProject={this.toggleModal}
                     onEnterProject={this.handleEnterProject}
@@ -109,7 +121,7 @@ class ProjectListComponent extends React.Component {
             </div>
         );
     }
-};
+}
 
 function mapDispatchToProps(dispatch) {
     return {
@@ -117,7 +129,7 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-const connectedProjectListComponent = withRouter(connect(null, mapDispatchToProps)(ProjectListComponent));
-export {
-    connectedProjectListComponent as ProjectListComponent
-};
+const connectedProjectListComponent = withRouter(
+    connect(null, mapDispatchToProps)(ProjectListComponent)
+);
+export { connectedProjectListComponent as ProjectListComponent };

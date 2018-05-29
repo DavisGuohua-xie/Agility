@@ -4,29 +4,27 @@
  * Description: Example functional React component.
  * Date: 04/22/2018
  */
-import React from 'react';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import {withRouter} from 'react-router';
-import * as projActions from '../actions/projActions';
-import {Parse} from 'parse';
+import React from "react";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { withRouter } from "react-router";
+import * as projActions from "../actions/projActions";
+import { Parse } from "parse";
 
-import {NavBar} from './common/Navbar';
-import {ProjectListComponent} from './home/ProjectListComponent';
+import { NavBar } from "./common/Navbar";
+import { ProjectListComponent } from "./home/ProjectListComponent";
 
-import v4 from 'uuid';
+import v4 from "uuid";
 
 let projs = [
-    {name: "Project 1", id: v4()},
-    {name: "Project 2", id: v4()},
-    {name: "Project 3", id: v4()},
-    {name: "Project 4", id: v4()},
-    {name: "Project 5", id: v4()}
-]
-
+    { name: "Project 1", id: v4() },
+    { name: "Project 2", id: v4() },
+    { name: "Project 3", id: v4() },
+    { name: "Project 4", id: v4() },
+    { name: "Project 5", id: v4() }
+];
 
 class Homepage extends React.Component {
-
     constructor(props) {
         super(props);
 
@@ -51,10 +49,14 @@ class Homepage extends React.Component {
     render() {
         return (
             <div>
-                <NavBar history={this.props.history} zIndex={3}/>
-                <ProjectListComponent projects={this.state.projects} onClick={this.projectClick}/> {/* TODO: project list will be sent over by server */}
+                <NavBar history={this.props.history} zIndex={3} />
+                <ProjectListComponent
+                    projects={this.state.projects}
+                    onClick={this.projectClick}
+                />{" "}
+                {/* TODO: project list will be sent over by server */}
             </div>
-        )
+        );
     }
 }
 
@@ -68,7 +70,7 @@ function mapStateToProps(state, ownProps) {
     console.log(state);
     return {
         loading: state.ajaxCallsInProgress > 0
-    }
+    };
 }
 
 const connectedHomepage = withRouter(connect(mapStateToProps, mapDispatchToProps)(Homepage));
