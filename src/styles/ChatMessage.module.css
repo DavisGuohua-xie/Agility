@@ -1,34 +1,30 @@
-.singleMessage {
-    border: 2px solid #dedede;
-    background-color: #f1f1f1;
-    border-radius: 5px;
-    padding: 10px;
-    margin: 20px;
-    word-wrap: break-word;
+.from {
+    font-weight: 600;
+    margin: 0;
+    padding: 0;
 }
 
-/* Darker chat container */
-.darker {
-    border-color: #ccc;
-    background-color: #ddd;
-    text-align: right;
+.message {
+    margin-left: 20px;
 }
 
-/* Clear floats */
-.singleMessage::after {
-    content: "";
+.message:first-of-type {
+    margin-top: 20px;
+}
+
+.message:after {
+    content: ".";
+    display: block;
+    height: 0;
     clear: both;
-    display: table;
+    visibility: hidden;
+  }
+
+.p {
+    display: inline-block;
+    padding: 0;
 }
 
-/* Style time text */
-.timeRight {
-    float: right;
-    color: #aaa;
-}
-
-/* Style time text */
-.timeLeft {
-    float: left;
-    color: #999;
+.p:nth-child(even) {
+    margin-left: 5px;
 }

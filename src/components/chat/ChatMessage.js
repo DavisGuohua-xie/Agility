@@ -1,21 +1,17 @@
-import React from 'react';
+import React from "react";
 
-import styles from '../../styles/ChatMessage.module.css';
+import styles from "../../styles/ChatMessage.module.css";
 
 export const ChatMessage = props => {
-    /*
-        TODO: fix this implementation
-    */
-    //let messageClass = props.otherUser.userid === props.from ? styles.singleMessage : `${styles.singleMessage} ${styles.darker}`;
-    //let timeClass = props.otherUser.userid === props.from ? styles.timeRight : styles.timeLeft;
-    //let dateContents = (new Date(props.date)).toLocaleString();
-    let messageClass;
-    let dateContents;
-    let timeClass;
+    let dateContents = new Date(props.message.sent_at).toLocaleString();
     return (
-        <div className={messageClass}>
-            <p>{props.message_contents}</p>
-            <span className={timeClass}>{dateContents}</span>
+        <div className={styles.message}>
+            <p className={`${styles.from} ${styles.p}`} title={dateContents}>
+                {props.message.sent_by_name}
+            </p>
+            <p className={styles.p} title={dateContents}>
+                {props.message.message}
+            </p>
         </div>
     );
 };

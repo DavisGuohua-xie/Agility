@@ -1,12 +1,12 @@
-import React from 'react';
+import React from "react";
 
-import styles from '../../styles/ProjectItem.module.css';
+import styles from "../../styles/ProjectItem.module.css";
 
 const ProjectItem = props => {
     return (
-        <div className={styles.projectItem}>
-            <p className={styles.projectName}>{props.name}</p>
-        </div>
+        <button className={styles.projectItem} onClick={props.onClick} id={props.id}>
+            {props.name}
+        </button>
     );
 };
 

@@ -1,27 +1,16 @@
-import React, {
-    Component
-} from 'react';
+import React, { Component } from "react";
 
-import {
-    connect
-} from 'react-redux';
+import { connect } from "react-redux";
 
-import {
-    bindActionCreators
-} from 'redux';
+import { bindActionCreators } from "redux";
 
-import {
-    withRouter
-} from 'react-router';
+import { withRouter } from "react-router";
 
-import {
-    authActions
-} from '../actions/authActions';
+import { authActions } from "../actions/authActions";
 
-import LoginForm1 from './login/LoginForm1';
+import LoginForm1 from "./login/LoginForm1";
 
 export default class LoginPage extends Component {
-
     constructor(props) {
         super(props);
 
@@ -31,8 +20,7 @@ export default class LoginPage extends Component {
             email: "",
             isOpenReg: false,
             isOpenForgot: false
-        }
-
+        };
 
         this.handleLogin = this.handleLogin.bind(this);
         this.handleCreateAccount = this.handleCreateAccount.bind(this);
@@ -54,16 +42,24 @@ export default class LoginPage extends Component {
         let username = this.state.registerUsername;
         let password = this.state.registerPassword;
         let email = this.state.registerEmail;
+        let fname = this.state.fname;
+        let lname = this.state.lname;
 
         if (username && password && email) {
-            this.props.actions.register(username, password, email, this.props.history);
+            this.props.actions.register(
+                username,
+                password,
+                email,
+                fname,
+                lname,
+                this.props.history
+            );
         }
     }
 
     handleInputChange(e) {
-        let value = e.target.value;
         this.setState({
-            [e.target.name]: value
+            [e.target.name]: e.target.value
         });
     }
 
@@ -81,35 +77,20 @@ export default class LoginPage extends Component {
 
     render() {
         console.log(this.props.ajaxCalls);
-        return <LoginForm1
-                    onInputChange = {
-                        this.handleInputChange
-                    }
-                    onLogin = {
-                        this.handleLogin
-                    }
-                    onCreateAccount = {
-                        this.handleCreateAccount
-                    }
-                    onToggleForgot = {
-                        this.handleToggleForgot
-                    }
-                    isOpenForgot = {
-                        this.state.isOpenForgot
-                    }
-                    onToggleReg = {
-                        this.handleToggleReg
-                    }
-                    isOpenReg = {
-                        this.state.isOpenReg
-                    }
-                    ajaxRequested = {
-                        this.props.ajaxCalls > 0
-                    }
-                />;
+        return (
+            <LoginForm1
+                onInputChange={this.handleInputChange}
+                onLogin={this.handleLogin}
+                onCreateAccount={this.handleCreateAccount}
+                onToggleForgot={this.handleToggleForgot}
+                isOpenForgot={this.state.isOpenForgot}
+                onToggleReg={this.handleToggleReg}
+                isOpenReg={this.state.isOpenReg}
+                ajaxRequested={this.props.logging_in}
+            />
+        );
     }
 }
-
 
 function mapDispatchToProps(dispatch) {
     return {
@@ -120,11 +101,10 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state, ownProps) {
     console.log(state);
     return {
-        ajaxCalls: state.ajaxCallsInProgress
-    }
+        ajaxCalls: state.ajaxCallsInProgress,
+        logging_in: state.authReducer.logging_in
+    };
 }
 
 const connectedLoginPage = withRouter(connect(mapStateToProps, mapDispatchToProps)(LoginPage));
-export {
-    connectedLoginPage as LoginPage
-};
+export { connectedLoginPage as LoginPage };

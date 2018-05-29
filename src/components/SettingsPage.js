@@ -1,12 +1,12 @@
-import React from 'react';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import {withRouter} from 'react-router';
-import * as accountActions from '../actions/accountActions';
+import React from "react";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { withRouter } from "react-router";
+import * as accountActions from "../actions/accountActions";
 
-import NavBar from './common/Navbar';
-import SettingsLayout from './settings/SettingsLayout';
-import Parse from 'parse';
+import { NavBar } from "./common/Navbar";
+import SettingsLayout from "./settings/SettingsLayout";
+import Parse from "parse";
 
 class SettingsPage extends React.Component {
     constructor(props) {
@@ -28,7 +28,7 @@ class SettingsPage extends React.Component {
     handleSave(e) {
         e.preventDefault();
         // TODO: save logic here
-        console.log('saving...');
+        console.log("saving...");
     }
 
     handleChange(e) {
@@ -40,11 +40,8 @@ class SettingsPage extends React.Component {
     render() {
         return (
             <div>
-                <NavBar history={this.props.history}/>
-                <SettingsLayout
-                    onChange={this.handleChange}
-                    onSave={this.handleSave}
-                    />
+                <NavBar history={this.props.history} />
+                <SettingsLayout onChange={this.handleChange} onSave={this.handleSave} />
             </div>
         );
     }
@@ -61,7 +58,7 @@ function mapStateToProps(state, ownProps) {
     return {
         loading: state.ajaxCallsInProgress > 0
         // TODO: map user info from state into this component's props
-    }
+    };
 }
 
 const connectedHomepage = withRouter(connect(mapStateToProps, mapDispatchToProps)(SettingsPage));
