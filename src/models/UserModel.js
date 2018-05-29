@@ -86,15 +86,41 @@ export class UserModel {
 
   }
 
+
+
 static login(username, password, successHandler, errorHandler){
 
-    Parse.User.login(username, password, {
-      success: successHandler ,
+    Parse.User.logIn(username, password, {
+      success: function(user){
+        var userQuery = new Parse.Query(Parse.User);
+        userQuery.equalTo(user.get('username'))
+        userQuery.include(PROJECTS);
+
+        //execute the Query
+
+        userQuery.find({
+          success: function(results){
+            var user = results[0];
+            successHandler()
+          },
+
+          error: function(error){
+            console.log('[ERROR]' + error)
+          }
+        })
+      } ,
       error: errorHandler
     })
 
 
   }
+
+  static current(){
+
+  var currentUser = new UserModel();
+  currentUser.user = Parse.User.current();
+  return currentUser;
+}
 
   static logout(completionHandler){
     Parse.currentUser().logout()
