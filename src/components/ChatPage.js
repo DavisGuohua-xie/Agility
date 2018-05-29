@@ -8,6 +8,7 @@ import { withRouter } from "react-router";
 
 import Sidebar from "react-sidebar";
 import Parse from "parse";
+import Chatkit from "@pusher/chatkit";
 
 import * as chatActions from "../actions/chatActions";
 
@@ -37,6 +38,7 @@ const members = [
 ];
 
 const mql = window.matchMedia(`(min-width: 900px)`);
+let chatManager = undefined;
 
 class ChatPage extends Component {
     constructor(props) {
@@ -88,9 +90,10 @@ class ChatPage extends Component {
         this.toggleSidebar = this.toggleSidebar.bind(this);
         this.mediaQueryChanged = this.mediaQueryChanged.bind(this);
         this.generateSidebar = this.generateSidebar.bind(this);
+        this.loginToChat = this.loginToChat.bind(this);
     }
 
-    componentWillMount() {
+    componentDidMount() {
         mql.addListener(this.mediaQueryChanged);
         this.setState({ mql: mql, sidebarDocked: mql.matches });
         // TODO: fetch project data from server
@@ -100,10 +103,48 @@ class ChatPage extends Component {
         if (!currentUser) {
             this.props.history.push("/login");
         }
+
+        chatManager = new Chatkit.ChatManager({
+            instanceLocator: "v1:us1:dae44b3a-7d46-4d6b-8894-1302096c409d",
+            userId: this.props.username,
+            tokenProvider: new Chatkit.TokenProvider({
+                url: "http://localhost:3001/authenticate"
+            })
+        });
+
+        this.loginToChat();
+        this.connectChatkit();
     }
 
     componentWillUnmount() {
         this.state.mql.removeListener(this.mediaQueryChanged);
+    }
+
+    loginToChat() {
+        fetch("http://localhost:3001/users", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ username: this.props.username })
+        })
+            .then(response => {
+                this.setState({
+                    currentUsername: this.props.username
+                });
+                
+                if(response.status === 200)
+                    console.log(`user already on chatkit server with username: ${this.props.username}`);
+                else if(response.status === 201)
+                    console.log(`user created on chatkit server with username: ${this.props.username}`);
+            })
+            .catch(error => console.error("error", error));
+    }
+
+    connectChatkit() {
+        chatManager.connect().then( currentUser => {
+            console.log("current user: ", currentUser);
+        }).catch(error => console.log(error));
     }
 
     mediaQueryChanged() {
@@ -119,7 +160,7 @@ class ChatPage extends Component {
             <div id="sidebar">
                 <div className={styles.groupChannels}>
                     <p className={styles.channelHeader}>
-                        Channels <i className={`fas fa-plus-circle ${styles.plus}`} />
+                        Group Channels <i className={`fas fa-plus-circle ${styles.plus}`} />
                     </p>
                     <ul className={styles.channelList}>
                         {groupChannels.map(group => (
@@ -196,7 +237,8 @@ function mapStateToProps(state, ownProps) {
     console.log(state);
     // TODO: need to get list of channel objects from store state
     return {
-        ajaxCalls: state.ajaxCallsInProgress
+        ajaxCalls: state.ajaxCallsInProgress,
+        username: state.authReducer.username
     };
 }
 
