@@ -27,7 +27,7 @@ const NewProjectModal = props => {
                             name="projectnameinput"
                             id="projectName"
                             placeholder="Agility"
-                            onChange={props.onHandleNameChange}
+                            onChange={props.onNewProjectNameChange}
                         />
                     </FormGroup>
                     <FormGroup>

@@ -20,7 +20,6 @@ class ProjectListComponent extends React.Component {
             projItems: props.projects,
             newProjectModalOpen: false,
             newProjectName: "",
-            newProjectMembers: "",
             newMembers: [],
             memberNameEmpty: true
         };
@@ -31,6 +30,7 @@ class ProjectListComponent extends React.Component {
         this.handleAddMember = this.handleAddMember.bind(this);
         this.handleDeleteNewMember = this.handleDeleteNewMember.bind(this);
         this.handleRoleChange = this.handleRoleChange.bind(this);
+        this.handleNewProjectNameChange = this.handleNewProjectNameChange.bind(this);
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -53,11 +53,9 @@ class ProjectListComponent extends React.Component {
     handleCreateProject() {
         if (this.state.newProjectName !== "") {
             console.log("project name: " + this.state.newProjectName);
-            let temp = this.state.newProjectMembers.replace(/ /g, "").split(",");
 
-            console.log(Parse.User.current());
-            temp.unshift(Parse.User.current().get("username"));
-            this.props.actions.createProject(this.state.newProjectName, temp, this.props.history);
+            let projectManager = Parse.User.current();
+            this.props.actions.createProject(this.state.newProjectName, projectManager, this.state.newMembers, this.props.history);
         } else {
             console.log("no project name inputted");
         }
@@ -65,15 +63,15 @@ class ProjectListComponent extends React.Component {
 
     handleNameChange(e) {
         let members = this.state.newMembers;
-        let index = parseInt(e.target.name.slice("member".length));
+        let index = parseInt(e.target.name.slice("member".length), 10);
         members[index].name = e.target.value;
         this.setState({ newMembers: members });
     }
 
     handleRoleChange(e) {
         let members = this.state.newMembers;
-        let index = parseInt(e.target.name.slice("role".length));
-        members[index].role = parseInt(e.target.value);
+        let index = parseInt(e.target.name.slice("role".length), 10);
+        members[index].role = parseInt(e.target.value, 10);
         this.setState({ newMembers: members });
     }
 
@@ -93,6 +91,12 @@ class ProjectListComponent extends React.Component {
         this.setState({ newMembers: members });
     }
 
+    handleNewProjectNameChange(e) {
+        this.setState({
+            newProjectName: e.target.value
+        })
+    }
+
     render() {
         return (
             <div>
@@ -105,6 +109,7 @@ class ProjectListComponent extends React.Component {
                     onDeleteNewMember={this.handleDeleteNewMember}
                     onRoleChange={this.handleRoleChange}
                     onNameChange={this.handleNameChange}
+                    onNewProjectNameChange={this.handleNewProjectNameChange}
                 />
 
                 <ProjectList
