@@ -94,7 +94,9 @@ class ProjectOverviewPage extends React.Component {
             showManageMenu: false,
             modalOpen: false,
             tasks: mockTasks,
-            manageMemberModalOpen: false
+            manageMemberModalOpen: false,
+            newUserName: '',
+            newRole: ''
         };
 
         this.toggleSidebar = this.toggleSidebar.bind(this);
@@ -103,10 +105,38 @@ class ProjectOverviewPage extends React.Component {
         this.handleManageClick = this.handleManageClick.bind(this);
         this.toggleNewBoard = this.toggleNewBoard.bind(this);
         this.toggleMemberModal = this.toggleMemberModal.bind(this);
+        this.handleNewName = this.handleNewName.bind(this);
+        this.handleAddMember = this.handleAddMember.bind(this);
+        this.handleNewRole = this.handleNewRole.bind(this);
     }
 
     toggleMemberModal() {
         this.setState({manageMemberModalOpen: !this.state.manageMemberModalOpen});
+    }
+
+    handleNewName(e) {
+        let name = e.target.value;
+        this.setState ({
+            newUserName: name
+        });
+        console.log(this.state.newUserName);
+    }
+
+    handleAddMember() {
+        let newMember = {
+            fname: this.state.newUserName,
+            lname: this.state.newUserName
+        }
+
+        this.state.members.push(newMember);
+        this.toggleMemberModal();
+    }
+
+    handleNewRole(e) {
+        this.setState({
+            newRole: e.target.value
+        }) ;
+        console.log(this.state.newRole);
     }
 
     componentDidMount() {
@@ -223,18 +253,20 @@ class ProjectOverviewPage extends React.Component {
         return (
             <div style={{ height: "100%" }}>
                 <Modal isOpen={this.state.manageMemberModalOpen} toggle={this.toggleMemberModal} className={this.props.className}>
-                    <ModalHeader toggle={this.toggleMemberModal}> Add/Remove New Team Member </ModalHeader>
+                    <ModalHeader toggle={this.toggleMemberModal}> Add New Team Member </ModalHeader>
                     <ModalBody>
                         <Form>
                             <FormGroup>
                                 <Label for="usertName">User Name or Email</Label>
-                                <Input type="text" name="projectnameinput" id="projectName" placeholder="Agility" onChange={this.handleNameChange}/> {/* TODO: create handleNameChange function */}
+                                <Input type="text" name="usernameinput" id="userName" placeholder="Agility" onChange={this.handleNewName}/>
+                                <Label for="role">Role</Label>
+                                <Input type="text" name="role" id="role" placeholder="Software Architect, Algorithm Specialist, etc." onChange={this.handleNewRole}/>
                             </FormGroup>
                         </Form>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="primary" onClick={this.toggleAddModal}>Add</Button>
-                        <Button color="primary" onClick={this.handleAddMember}>Remove</Button> {/* TODO: create handleAddMember function*/}
+                        <Button color="secondary" onClick={this.toggleMemberModal}>Cancel</Button>
+                        <Button color="primary" onClick={this.handleAddMember}>Add</Button> {/* TODO: create handleAddMember function*/}
                     </ModalFooter>
                 </Modal>
                 <NavBar
