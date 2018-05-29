@@ -8,8 +8,6 @@ import { withRouter } from "react-router";
 
 import Sidebar from "react-sidebar";
 
-import v4 from "uuid";
-
 import * as projActions from "../actions/projActions";
 
 import { NavBar } from "./common/Navbar";
@@ -19,7 +17,7 @@ import { ProjectOverview } from "./project/ProjectOverview";
 import MemberSidebarItem from "./common/MemberSidebarItem";
 
 import styles from "../styles/ProjectOverviewPage.module.css";
-import { ProjectTasks } from "./project/ProjectTasks";
+import ProjectTaskComponent from "./project/ProjectTaskComponent";
 import { ProjectCalendar } from "./project/Calendar";
 import moment from "moment";
 
@@ -30,7 +28,6 @@ const mql = window.matchMedia(`(min-width: 900px)`);
 
 /* TODO: delete mock proj member data */
 const members = [{ fname: "Joe", lname: "Schmo" }, { fname: "Joe", lname: "Schmo" }];
-
 const mockTasks = {
     lanes: [
         {
@@ -82,19 +79,16 @@ class ProjectOverviewPage extends React.Component {
             open: props.open,
             members: members,
             projectID: props.match.params.projID,
-            tasksData: mockTasks, // TODO: fix this later
-            eventBus: undefined,
-            showManageMenu: false
+            showManageMenu: false,
+            modalOpen: false,
+            tasks: mockTasks
         };
 
         this.toggleSidebar = this.toggleSidebar.bind(this);
         this.mediaQueryChanged = this.mediaQueryChanged.bind(this);
         this.generateSidebar = this.generateSidebar.bind(this);
-        this.handleNewBoard = this.handleNewBoard.bind(this);
-        this.setEventBus = this.setEventBus.bind(this);
         this.handleManageClick = this.handleManageClick.bind(this);
-        this.handleLaneClick = this.handleLaneClick.bind(this);
-        this.handleCardClick = this.handleCardClick.bind(this);
+        this.toggleNewBoard = this.toggleNewBoard.bind(this);
     }
 
     componentDidMount() {
@@ -120,9 +114,11 @@ class ProjectOverviewPage extends React.Component {
             case "calendar":
                 newActive = "2";
                 break;
+            default:
+                break; // should never happen
         }
 
-        return prevState.active != newActive ? { active: newActive } : null;
+        return prevState.active !== newActive ? { active: newActive } : null;
     }
 
     mediaQueryChanged() {
@@ -145,37 +141,16 @@ class ProjectOverviewPage extends React.Component {
         );
     }
 
-    setEventBus = handle => {
-        this.setState({ eventBus: handle });
-    };
-
-    handleNewBoard() {
-        let boards = Object.assign({}, this.state.tasksData);
-        boards.lanes.push({
-            id: v4(),
-            title: "random",
-            label: "",
-            cards: []
+    toggleNewBoard() {
+        this.setState({
+            modalOpen: !this.state.modalOpen
         });
-
-        this.setState({ tasksData: boards });
-        console.log(this.state.eventBus);
-        this.state.eventBus.publish({ type: "UPDATE_LANES", lanes: boards.lanes });
     }
 
     shouldReceiveNewData = newdata => console.log(newdata);
 
     handleManageClick = () => this.setState({ showManageMenu: !this.state.showManageMenu });
 
-    handleLaneClick(e) {
-        console.log(e);
-    }
-
-    handleCardClick(e) {
-        console.log(e);
-    }
-
-    //
     render() {
         console.log(this.state);
         let sidebarContent = this.generateSidebar();
@@ -186,7 +161,7 @@ class ProjectOverviewPage extends React.Component {
                 mainContent = (
                     <ProjectOverview
                         onSidebarToggle={this.toggleSidebar}
-                        taskList={this.state.tasksData.lanes}
+                        taskList={this.state.tasks.lanes}
                     />
                 );
                 projectManage = (
@@ -198,12 +173,14 @@ class ProjectOverviewPage extends React.Component {
                 break;
             case "tasks":
                 mainContent = (
-                    <ProjectTasks
+                    <ProjectTaskComponent
                         onSidebarToggle={this.toggleSidebar}
-                        data={this.state.tasksData}
+                        taskList={this.state.tasks}
                         eventBus={this.setEventBus}
                         onLaneClick={this.handleLaneClick}
                         onCardClick={this.handleCardClick}
+                        modalOpen={this.state.modalOpen}
+                        onToggleModal={this.toggleNewBoard}
                     />
                 );
                 break;
@@ -219,6 +196,9 @@ class ProjectOverviewPage extends React.Component {
                         ]}
                     />
                 );
+                break;
+            default:
+                break; // should never happen
         }
 
         return (
@@ -227,6 +207,7 @@ class ProjectOverviewPage extends React.Component {
                     history={this.props.history}
                     projName="Project"
                     projID={this.state.projectID}
+                    zIndex={2}
                 />
                 <Sidebar
                     sidebar={sidebarContent}
@@ -242,7 +223,7 @@ class ProjectOverviewPage extends React.Component {
                 >
                     <OverviewSubnav
                         active={this.state.active}
-                        onNewBoard={this.handleNewBoard}
+                        onNewBoard={this.toggleNewBoard}
                         toggleSidebar={this.toggleSidebar}
                         docked={this.state.sidebarDocked}
                         projID={this.state.projectID}
