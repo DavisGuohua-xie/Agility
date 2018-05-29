@@ -87,7 +87,7 @@ export class UserModel {
   }
 
 static login(username, password, successHandler, errorHandler){
-  
+
     Parse.User.login(username, password, {
       success: successHandler ,
       error: errorHandler
@@ -100,6 +100,17 @@ static login(username, password, successHandler, errorHandler){
     Parse.currentUser().logout()
     .then(completionHandler)
   }
+
+  static current(){
+
+    var currentUser = new UserModel();
+    currentUser.user = Parse.User.current();
+    return currentUser;
+  }
+
+
+
+
 
   setFirstName (firstName, successHandler, errorHandler){
     // this.firstName = firstName;
@@ -179,5 +190,7 @@ static login(username, password, successHandler, errorHandler){
   }
 
 }
+
+
 
 Parse.Object.registerSubclass('User', UserModel);
