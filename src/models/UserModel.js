@@ -87,7 +87,7 @@ export class UserModel {
   }
 
 static login(username, password, successHandler, errorHandler){
-  
+
     Parse.User.login(username, password, {
       success: successHandler ,
       error: errorHandler
@@ -95,6 +95,13 @@ static login(username, password, successHandler, errorHandler){
 
 
   }
+
+  static current(){
+
+  var currentUser = new UserModel();
+  currentUser.user = Parse.User.current();
+  return currentUser;
+}
 
   static logout(completionHandler){
     Parse.currentUser().logout()
