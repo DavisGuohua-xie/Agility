@@ -29,11 +29,12 @@ export default function authReducer(state = initialState, action) {
             console.log("login_success reducer\n\n\n");
 
             let userInfo = getUserInfo(action.req);
-            return state.merge({ ...userInfo, logging_in: false });
+            return state.merge({ ...userInfo, logging_in: false, logged_in: true });
 
         case types.LOGIN_FAILURE:
             return state.merge({
-                logging_in: false
+                logging_in: false,
+                logged_in: false
             });
 
         case types.LOGOUT_SUCCESS:
