@@ -31,7 +31,7 @@ const ChatLayout = props => {
 
                         <div className={styles.messageContent}>
                             {props.messageList.map((msg, index) => (
-                                <ChatMessage key={index} message={msg} me={props.me} />
+                                <ChatMessage key={index} message={msg} />
                             ))}
                         </div>
                     </div>

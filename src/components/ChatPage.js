@@ -18,6 +18,7 @@ import ChatLayout from "./chat/ChatLayout";
 import MemberSidebarItem from "./common/MemberSidebarItem";
 
 import styles from "../styles/ChatLayout.module.css";
+import ChatSidebar from "./chat/ChatSidebar";
 
 /* TODO: delete mock proj member data */
 const members = [
@@ -51,45 +52,20 @@ class ChatPage extends Component {
             currUser: props.currUser
         };*/
         this.state = {
-            channelList: [
-                { name: "Group channel 1", is_channel: true, id: "asdfa" },
-                { name: "Team member", is_channel: false, id: "asdfasdf" }
-            ],
-            currChannel: "Group channel 1",
-            msgList: [
-                {
-                    message: "Test message",
-                    sent_at: new Date(),
-                    sent_by: "sdafasd232", // user id
-                    sent_by_name: "Gary the Great" // TODO: need to add to db
-                },
-                {
-                    message: "Test message 2",
-                    sent_at: new Date(),
-                    sent_by: "sdafasd232", // user id
-                    sent_by_name: "Joe" // TODO: need to add to db
-                },
-                {
-                    message: "Test message 3",
-                    sent_at: new Date(),
-                    sent_by: "sdafasd232", // user id
-                    sent_by_name: "Gary the Great" // TODO: need to add to db
-                }
-            ],
-            currUser: { id: "random" },
             active: 0,
             sidebarOpen: false,
             mql: mql,
             sidebarDocked: props.docked,
             open: true,
             members: members,
-            projectID: props.match.params.projID
+            projectID: props.match.params.projID,
+            chatkitUsername: props.username + props.match.params.projID,
+            channels: [],
+            msgList: []
         };
 
         this.toggleSidebar = this.toggleSidebar.bind(this);
-        this.toggleSidebar = this.toggleSidebar.bind(this);
         this.mediaQueryChanged = this.mediaQueryChanged.bind(this);
-        this.generateSidebar = this.generateSidebar.bind(this);
         this.loginToChat = this.loginToChat.bind(this);
         this.connectChatkit = this.connectChatkit.bind(this);
     }
@@ -107,7 +83,7 @@ class ChatPage extends Component {
 
         chatManager = new Chatkit.ChatManager({
             instanceLocator: "v1:us1:dae44b3a-7d46-4d6b-8894-1302096c409d",
-            userId: this.props.username,
+            userId: this.state.chatkitUsername,
             tokenProvider: new Chatkit.TokenProvider({
                 url: "http://localhost:3001/authenticate"
             })
@@ -127,26 +103,63 @@ class ChatPage extends Component {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ username: this.props.username })
+            body: JSON.stringify({ username: this.state.chatkitUsername })
         })
             .then(response => {
-                this.setState({
-                    currentUsername: this.props.username
-                });
-                
-                if(response.status === 200)
-                    console.log(`user already on chatkit server with username: ${this.props.username}`);
-                else if(response.status === 201)
-                    console.log(`user created on chatkit server with username: ${this.props.username}`);
+                if (response.status === 200)
+                    console.log(
+                        `user already on chatkit server with username: ${this.props.username}`
+                    );
+                else if (response.status === 201)
+                    console.log(
+                        `user created on chatkit server with username: ${this.props.username}`
+                    );
             })
             .catch(error => console.error("error", error));
     }
 
     connectChatkit() {
-        chatManager.connect().then( currentUser => {
-            console.log("current user: ", currentUser);
-            this.setState({chatkitUser: Object.assign({}, currentUser)});
-        }).catch(error => console.log(error));
+        let currUser;
+
+        chatManager
+            .connect()
+            .then(currentUser => {
+                console.log("current user: ", currentUser);
+                currUser = currentUser;
+
+                this.setState({
+                    chatkitUser: Object.assign({}, currentUser),
+                    currChannel: currentUser.rooms ? currentUser.rooms[0] : undefined
+                });
+
+                let currChannel = currentUser.rooms ? currentUser.rooms[0] : undefined;
+
+                return currentUser.joinRoom({ roomId: 8414397 });
+            })
+            .then(room => {
+                console.log(`joined room with room id: ${room.id}`);
+                console.log("\n\n\n\nROOMS\n\n\n\n");
+                console.log(currUser.rooms);
+                this.setState({
+                    channels: currUser.rooms
+                });
+                return currUser.subscribeToRoom({
+                    roomId: room.id,
+                    messageLimit: 100,
+                    hooks: {
+                        onNewMessage: message => {
+                            this.setState({
+                                msgList: [...this.state.msgList, message]
+                            });
+                        }
+                    }
+                });
+            })
+            .then(currentRoom => {
+                console.log(`subscribed to room with room id: ${currentRoom.id}`);
+                this.setState({ currentRoom });
+            })
+            .catch(error => console.log(error));
     }
 
     mediaQueryChanged() {
@@ -157,44 +170,7 @@ class ChatPage extends Component {
         this.setState({ sidebarOpen: open ? true : false });
     }
 
-    generateSidebar(groupChannels, dmChannels) {
-        return (
-            <div id="sidebar">
-                <div className={styles.groupChannels}>
-                    <p className={styles.channelHeader}>
-                        Group Channels <i className={`fas fa-plus-circle ${styles.plus}`} />
-                    </p>
-                    <ul className={styles.channelList}>
-                        {groupChannels.map(group => (
-                            <li key={group.id} className={styles.channelItem}>
-                                {group.name}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-
-                <div className={styles.directChannels}>
-                    <p className={styles.channelHeader}>
-                        Direct Messages <i className={`fas fa-plus-circle ${styles.plus}`} />
-                    </p>
-                    <ul className={styles.channelList}>
-                        {dmChannels.map(group => (
-                            <li key={group.id} className={styles.channelItem}>
-                                {group.name}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            </div>
-        );
-    }
-
     render() {
-        let groupChannels = this.state.channelList.filter(channel => channel.is_channel);
-        let dmChannels = this.state.channelList.filter(channel => !channel.is_channel);
-
-        let sidebarContent = this.generateSidebar(groupChannels, dmChannels);
-        console.log(groupChannels);
         return (
             <div style={{ height: "100%" }}>
                 <NavBar
@@ -203,7 +179,7 @@ class ChatPage extends Component {
                     projID={this.state.projectID}
                 />
                 <Sidebar
-                    sidebar={sidebarContent}
+                    sidebar={<ChatSidebar channels={this.state.channels} />}
                     open={this.state.sidebarOpen}
                     docked={this.state.sidebarDocked}
                     onSetOpen={this.toggleSidebar}
@@ -215,11 +191,7 @@ class ChatPage extends Component {
                     }}
                 >
                     <ChatLayout
-                        groups={groupChannels}
-                        dms={dmChannels}
-                        currChannel={this.state.currChannel}
                         messageList={this.state.msgList}
-                        me={this.state.currUser.id}
                         docked={this.state.sidebarDocked}
                         toggleSidebar={this.toggleSidebar}
                     />
@@ -240,7 +212,7 @@ function mapStateToProps(state, ownProps) {
     // TODO: need to get list of channel objects from store state
     return {
         ajaxCalls: state.ajaxCallsInProgress,
-        username: state.authReducer.username,
+        username: state.authReducer.username
         //channelIds: state.projReducer.currProject.channels,
         //projectMembers: state.projReducer.currProject.roles
     };

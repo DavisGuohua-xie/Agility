@@ -19,8 +19,26 @@ function createChannel(isGroup, channelName, participants) {
     };
 }
 
+function retrieveChannels(currentUser) {
+    return dispatch => {
+
+    }
+}
+
 function retrieveMessages(chatmanager, channelId) {
     return dispatch => {
 
     }
+}
+
+function retrieveChannelsRequest(currentUser) {
+    return { type: types.RETRIEVE_CHANNELS_REQUEST, req: currentUser };
+}
+
+function retrieveChannelsSuccess(currentUser) {
+    return { type: types.RETRIEVE_CHANNELS_SUCCESS, req: currentUser };
+}
+
+function retrieveChannelsFailure(currentUser) {
+    return { type: types.RETRIEVE_CHANNELS_FAILURE, req: currentUser };
 }
