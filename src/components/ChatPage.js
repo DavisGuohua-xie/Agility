@@ -91,6 +91,7 @@ class ChatPage extends Component {
         this.mediaQueryChanged = this.mediaQueryChanged.bind(this);
         this.generateSidebar = this.generateSidebar.bind(this);
         this.loginToChat = this.loginToChat.bind(this);
+        this.connectChatkit = this.connectChatkit.bind(this);
     }
 
     componentDidMount() {
@@ -110,10 +111,10 @@ class ChatPage extends Component {
             tokenProvider: new Chatkit.TokenProvider({
                 url: "http://localhost:3001/authenticate"
             })
-        });
+        }); // instantiate chatmanager instance on this client
 
-        this.loginToChat();
-        this.connectChatkit();
+        this.loginToChat(); // login to chatkit with this user
+        this.connectChatkit(); // connect to chatkit instance
     }
 
     componentWillUnmount() {
@@ -144,6 +145,7 @@ class ChatPage extends Component {
     connectChatkit() {
         chatManager.connect().then( currentUser => {
             console.log("current user: ", currentUser);
+            this.setState({chatkitUser: Object.assign({}, currentUser)});
         }).catch(error => console.log(error));
     }
 
@@ -238,7 +240,9 @@ function mapStateToProps(state, ownProps) {
     // TODO: need to get list of channel objects from store state
     return {
         ajaxCalls: state.ajaxCallsInProgress,
-        username: state.authReducer.username
+        username: state.authReducer.username,
+        //channelIds: state.projReducer.currProject.channels,
+        //projectMembers: state.projReducer.currProject.roles
     };
 }
 

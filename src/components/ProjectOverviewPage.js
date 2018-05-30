@@ -31,7 +31,7 @@ const members = [{ fname: "Joe", lname: "Schmo" }, { fname: "Joe", lname: "Schmo
 const mockTasks = {
     lanes: [
         {
-            id: "lane1",
+            id: "0",
             title: "Planned Tasks",
             label: "2/2",
             cards: [
@@ -53,7 +53,7 @@ const mockTasks = {
             ]
         },
         {
-            id: "lane2",
+            id: "1",
             title: "Completed",
             label: "0/0",
             cards: []
@@ -89,6 +89,7 @@ class ProjectOverviewPage extends React.Component {
         this.generateSidebar = this.generateSidebar.bind(this);
         this.handleManageClick = this.handleManageClick.bind(this);
         this.toggleNewBoard = this.toggleNewBoard.bind(this);
+        this.updateTasks = this.updateTasks.bind(this);
     }
 
     componentDidMount() {
@@ -141,6 +142,10 @@ class ProjectOverviewPage extends React.Component {
         );
     }
 
+    updateTasks(newData) {
+        this.setState({tasks: newData});
+    }
+
     toggleNewBoard() {
         this.setState({
             modalOpen: !this.state.modalOpen
@@ -181,6 +186,7 @@ class ProjectOverviewPage extends React.Component {
                         onCardClick={this.handleCardClick}
                         modalOpen={this.state.modalOpen}
                         onToggleModal={this.toggleNewBoard}
+                        updateTasks={this.updateTasks}
                     />
                 );
                 break;

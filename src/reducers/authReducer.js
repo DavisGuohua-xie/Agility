@@ -39,7 +39,7 @@ export default function authReducer(state = initialState, action) {
         case types.LOGOUT_SUCCESS:
             return state.merge({
                 logged_in: false
-            });
+            }); // TODO: remove userInfo fields from state
 
         default:
             return state;
