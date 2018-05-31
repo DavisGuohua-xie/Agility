@@ -47,8 +47,6 @@ class ChatPage extends Component {
 
         this.toggleSidebar = this.toggleSidebar.bind(this);
         this.mediaQueryChanged = this.mediaQueryChanged.bind(this);
-        this.loginToChat = this.loginToChat.bind(this);
-        this.connectChatkit = this.connectChatkit.bind(this);
         this.handleMessageChange = this.handleMessageChange.bind(this);
         this.handleMessageSend = this.handleMessageSend.bind(this);
         this.handleNewChannelNameChange = this.handleNewChannelNameChange.bind(this);
@@ -99,75 +97,6 @@ class ChatPage extends Component {
     }
 
     /*******************************CHATKIT SPECIFIC FUNCTIONS *******************/
-    loginToChat() {
-        fetch("http://localhost:3001/users", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                username: this.state.chatkitUsername,
-                firstName: this.props.firstName,
-                lastName: this.props.lastName
-            })
-        })
-            .then(response => {
-                if (response.status === 200)
-                    console.log(
-                        `user already on chatkit server with username: ${this.props.username}`
-                    );
-                else if (response.status === 201)
-                    console.log(
-                        `user created on chatkit server with username: ${this.props.username}`
-                    );
-            })
-            .catch(error => console.error("error", error));
-    }
-
-    connectChatkit() {
-        let currUser;
-
-        chatManager
-            .connect()
-            .then(currentUser => {
-                console.log("current user: ", currentUser);
-                currUser = currentUser;
-
-                this.setState({
-                    chatkitUser: currentUser,
-                    currChannel: currentUser.rooms ? currentUser.rooms[0] : undefined
-                });
-
-                let currChannel = currentUser.rooms ? currentUser.rooms[0] : undefined;
-
-                return currentUser.joinRoom({ roomId: 8453381 });
-            })
-            .then(room => {
-                console.log(`joined room with room id: ${room.id}`);
-                console.log("\n\n\n\nROOMS\n\n\n\n");
-                console.log(currUser.rooms);
-                this.setState({
-                    channels: currUser.rooms,
-                    currChannel: room.id
-                });
-                return currUser.subscribeToRoom({
-                    roomId: room.id,
-                    messageLimit: 100,
-                    hooks: {
-                        onNewMessage: message => {
-                            this.setState({
-                                msgList: [...this.state.msgList, message]
-                            });
-                        }
-                    }
-                });
-            })
-            .then(currentRoom => {
-                console.log(`subscribed to room with room id: ${currentRoom.id}`);
-                this.setState({ currentRoom });
-            })
-            .catch(error => console.log(error));
-    }
 
     sendMessage(text) {
         this.state.chatkitUser.sendMessage({
