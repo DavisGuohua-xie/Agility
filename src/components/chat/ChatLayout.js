@@ -21,7 +21,7 @@ const ChatLayout = props => {
                 >
                     Chats
                 </Button>
-                <p style={{ fontSize: "31px", margin: "0 0 0 5px" }}>PERSON</p>
+                <p style={{ fontSize: "31px", margin: "0 0 0 5px" }}>{props.currentRoom ? props.currentRoom.name : null}</p>
             </nav>
             <Container fluid className={styles.messageContent}>
                 {props.messageList.map((msg, index) => <ChatMessage key={index} message={msg} />)}

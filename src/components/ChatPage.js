@@ -20,24 +20,6 @@ import MemberSidebarItem from "./common/MemberSidebarItem";
 import styles from "../styles/ChatLayout.module.css";
 import ChatSidebar from "./chat/ChatSidebar";
 
-/* TODO: delete mock proj member data */
-const members = [
-    { fname: "Joe", lname: "Schmo" },
-    { fname: "Joe", lname: "Schmo" },
-    { fname: "Joe", lname: "Schasdfasdfamo" },
-    { fname: "Joe", lname: "Schmo" },
-    { fname: "Joe", lname: "Schasdfasdfamo" },
-    { fname: "Joe", lname: "Schmo" },
-    { fname: "Joe", lname: "Schasdfasdfamo" },
-    { fname: "Joe", lname: "Schmo" },
-    { fname: "Joe", lname: "Schasdfasdfamo" },
-    { fname: "Joe", lname: "Schmo" },
-    { fname: "Joe", lname: "Schasdfasdfamo" },
-    { fname: "Joe", lname: "Schmo" },
-    { fname: "Joe", lname: "Schasdfasdfamo" },
-    { fname: "Joe", lname: "Schmo" }
-];
-
 const mql = window.matchMedia(`(min-width: 900px)`);
 let chatManager = undefined;
 
@@ -57,7 +39,6 @@ class ChatPage extends Component {
             mql: mql,
             sidebarDocked: props.docked,
             open: true,
-            members: members,
             projectID: props.match.params.projID,
             chatkitUsername: props.username + props.match.params.projID,
             channels: [],
@@ -65,7 +46,10 @@ class ChatPage extends Component {
             chatkitUser: undefined,
             newMessageContent: "",
             isModalOpen: false,
-            newChannelName: ""
+            newChannelName: "",
+            newChannelMembers: [],
+            createGroupChannel: false,
+            currentRoom: undefined
         };
 
         this.toggleSidebar = this.toggleSidebar.bind(this);
@@ -77,7 +61,7 @@ class ChatPage extends Component {
         this.handleNewChannelNameChange = this.handleNewChannelNameChange.bind(this);
         this.handleCreateChannel = this.handleCreateChannel.bind(this);
         this.toggleModal = this.toggleModal.bind(this);
-
+        this.switchToChannel = this.switchToChannel.bind(this);
     }
 
     componentDidMount() {
@@ -100,6 +84,9 @@ class ChatPage extends Component {
         }); // instantiate chatmanager instance on this client
 
         this.loginToChat(); // login to chatkit with this user
+
+        //TODO: grab all public rooms from parse server (redux action)
+        // and only connect to chatkit instance
         this.connectChatkit(); // connect to chatkit instance
     }
 
@@ -108,13 +95,18 @@ class ChatPage extends Component {
         // remove all room subscriptions
     }
 
+    /*******************************CHATKIT SPECIFIC FUNCTIONS *******************/
     loginToChat() {
         fetch("http://localhost:3001/users", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ username: this.state.chatkitUsername })
+            body: JSON.stringify({
+                username: this.state.chatkitUsername,
+                firstName: this.props.firstName,
+                lastName: this.props.lastName
+            })
         })
             .then(response => {
                 if (response.status === 200)
@@ -139,20 +131,21 @@ class ChatPage extends Component {
                 currUser = currentUser;
 
                 this.setState({
-                    chatkitUser: Object.assign({}, currentUser),
+                    chatkitUser: currentUser,
                     currChannel: currentUser.rooms ? currentUser.rooms[0] : undefined
                 });
 
                 let currChannel = currentUser.rooms ? currentUser.rooms[0] : undefined;
 
-                return currentUser.joinRoom({ roomId: 8414397 });
+                return currentUser.joinRoom({ roomId: 8453381 });
             })
             .then(room => {
                 console.log(`joined room with room id: ${room.id}`);
                 console.log("\n\n\n\nROOMS\n\n\n\n");
                 console.log(currUser.rooms);
                 this.setState({
-                    channels: currUser.rooms
+                    channels: currUser.rooms,
+                    currChannel: room.id
                 });
                 return currUser.subscribeToRoom({
                     roomId: room.id,
@@ -176,21 +169,103 @@ class ChatPage extends Component {
     sendMessage(text) {
         this.state.chatkitUser.sendMessage({
             text: text,
-            roomId: this.state.currChannel.id
-        })
+            roomId: this.state.currChannel
+        });
     }
 
-    /******************************************/
+    switchToChannel(e) {
+        let channelId = parseInt(e.target.dataset.channelid);
+        console.log(this.state.chatkitUser.roomSubscriptions);
+        // close current subscription
+        if (this.state.currChannel) {
+            this.state.chatkitUser.roomSubscriptions[this.state.currChannel].cancel();
+        }
+        this.setState({ msgList: [] });
+
+        //open new subscription to new channel
+        this.state.chatkitUser
+            .subscribeToRoom({
+                roomId: channelId,
+                messageLimit: 100,
+                hooks: {
+                    onNewMessage: message => {
+                        this.setState({
+                            msgList: [...this.state.msgList, message]
+                        });
+                    }
+                }
+            })
+            .then(currentRoom => {
+                console.log(`subscribed to room with room id: ${currentRoom.id}`);
+                this.setState({ currentRoom: currentRoom, currChannel: currentRoom.id });
+            })
+            .catch(error => console.log(error));
+    }
+
+    createChannel(members, name, creatorId, isPrivate) {
+        return fetch("http://localhost:3001/createchannel", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                creator: creatorId,
+                teamMembers: members,
+                channelName: name,
+                isPrivate: isPrivate
+            })
+        });
+    }
+
+    /*******************************END CHATKIT SPECIFIC FUNCTIONS *******************/
 
     toggleModal(e) {
         this.setState({
             isModalOpen: !this.state.isModalOpen,
-            createGroupChannel: e.target.name === "group"
+            createGroupChannel: e.target.dataset.name === "group"
         });
     }
 
     handleCreateChannel(e) {
+        e.preventDefault();
         // create channel
+        let channelSwitchReqObj = { target: { dataset: { channelid: undefined } } };
+
+        let members = this.state.createGroupChannel
+            ? this.props.projectMembers
+            : this.state.newChannelMembers;
+
+        this.createChannel(
+            members,
+            this.state.newChannelName,
+            this.state.chatkitUser.id,
+            !this.state.createGroupChannel
+        )
+            .then(response => {
+                return response.json();
+            })
+            .then(roomObj => {
+                console.log(roomObj);
+                console.log(`channel created on server with name: ${roomObj.name}`);
+
+                console.log(this.state.chatkitUser)
+                this.setState({ channels: this.state.chatkitUser.rooms });
+
+                channelSwitchReqObj.target.dataset.channelid = roomObj.id;
+
+                this.switchToChannel(channelSwitchReqObj);
+            })
+            .catch(error => console.error("error", error));
+
+        this.resetNewChannelFields();
+        this.toggleModal(channelSwitchReqObj);
+    }
+
+    resetNewChannelFields() {
+        this.setState({
+            newChannelMembers: [],
+            newChannelName: ""
+        });
     }
 
     handleNewChannelNameChange(e) {
@@ -208,7 +283,7 @@ class ChatPage extends Component {
     handleMessageSend(e) {
         e.preventDefault();
 
-        if(this.state.newMessageContent.length === 0) return;
+        if (this.state.newMessageContent.length === 0) return;
 
         this.sendMessage(this.state.newMessageContent);
 
@@ -232,9 +307,17 @@ class ChatPage extends Component {
                     history={this.props.history}
                     projName="Project name"
                     projID={this.state.projectID}
+                    zIndex={2}
                 />
                 <Sidebar
-                    sidebar={<ChatSidebar channels={this.state.channels} onToggle={this.toggleModal}/>}
+                    sidebar={
+                        <ChatSidebar
+                            channels={this.state.channels}
+                            onToggle={this.toggleModal}
+                            onChannelClick={this.switchToChannel}
+                            activeChannel={this.state.currChannel}
+                        />
+                    }
                     open={this.state.sidebarOpen}
                     docked={this.state.sidebarDocked}
                     onSetOpen={this.toggleSidebar}
@@ -257,6 +340,7 @@ class ChatPage extends Component {
                         onInputChange={this.handleNewChannelNameChange}
                         onCreateChannel={this.handleCreateChannel}
                         groupChannel={this.state.createGroupChannel}
+                        currentRoom={this.state.currentRoom}
                     />
                 </Sidebar>
             </div>
@@ -275,7 +359,10 @@ function mapStateToProps(state, ownProps) {
     // TODO: need to get list of channel objects from store state
     return {
         ajaxCalls: state.ajaxCallsInProgress,
-        username: state.authReducer.username
+        username: state.authReducer.username,
+        firstName: state.authReducer.first_name,
+        lastName: state.authReducer.last_name,
+        projectMembers: ["undefinedid1"] // TODO: get actual project members
         //channelIds: state.projReducer.currProject.channels,
         //projectMembers: state.projReducer.currProject.roles
     };

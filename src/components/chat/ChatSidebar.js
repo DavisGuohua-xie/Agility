@@ -9,11 +9,23 @@ const ChatSidebar = props => {
         <div id="sidebar">
             <div className={styles.groupChannels}>
                 <p className={styles.channelHeader}>
-                    Group Channels <i className={`fas fa-plus-circle ${styles.plus}`} name="group" onClick={props.onToggle} />
+                    Group Channels{" "}
+                    <i
+                        className={`fas fa-plus-circle ${styles.plus}`}
+                        data-name="group"
+                        onClick={props.onToggle}
+                    />
                 </p>
                 <ul className={styles.channelList}>
                     {groupChannels.map(group => (
-                        <li key={group.id} className={styles.channelItem}>
+                        <li
+                            key={group.id}
+                            data-channelid={`${group.id}`}
+                            className={`${styles.channelItem} ${
+                                group.id === props.activeChannel ? styles.activeChannel : null
+                            }`}
+                            onClick={props.onChannelClick}
+                        >
                             {group.name}
                         </li>
                     ))}
@@ -26,7 +38,12 @@ const ChatSidebar = props => {
                 </p>
                 <ul className={styles.channelList}>
                     {dmChannels.map(group => (
-                        <li key={group.id} className={styles.channelItem}>
+                        <li
+                            key={group.id}
+                            data-channelid={`${group.id}`}
+                            className={styles.channelItem}
+                            onClick={props.onChannelClick}
+                        >
                             {group.name}
                         </li>
                     ))}

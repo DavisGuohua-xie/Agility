@@ -18,7 +18,7 @@ const NewChannelModal = props => {
         <Modal isOpen={props.isOpen} toggle={props.onToggleModal}>
             <ModalHeader toggle={props.onToggleModal}>{headerTitle}</ModalHeader>
             <ModalBody>
-                <Form>
+                <Form onSubmit={e => e.preventDefault()}>
                     <FormGroup>
                         <Label for="channelName">Channel Name</Label>
                         <Input

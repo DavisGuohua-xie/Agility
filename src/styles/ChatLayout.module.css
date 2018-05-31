@@ -49,7 +49,11 @@
 
 .channelItem:hover {
     cursor: pointer;
-    background-color: #606060;
+    background-color: #797979;
+}
+
+.activeChannel {
+    background-color: #969696;
 }
 
 .chatContainerHeader p {
