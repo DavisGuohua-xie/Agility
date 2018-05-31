@@ -3,6 +3,7 @@ import React from "react";
 import styles from "../../styles/ChatMessage.module.css";
 
 export const ChatMessage = props => {
+    if(!props.message) return null;
     let dateContents = new Date(props.message.createdAt).toLocaleString();
     return (
         <div className={styles.message}>

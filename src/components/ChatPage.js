@@ -10,7 +10,7 @@ import Sidebar from "react-sidebar";
 import Parse from "parse";
 import Chatkit from "@pusher/chatkit";
 
-import * as chatActions from "../actions/chatActions";
+import { chatActions } from "../actions/chatActions";
 
 import { NavBar } from "./common/Navbar";
 import ChatLayout from "./chat/ChatLayout";
@@ -26,13 +26,6 @@ let chatManager = undefined;
 class ChatPage extends Component {
     constructor(props) {
         super(props);
-        /* TODO: remove comment when redux store set up: props.history.push(`/chat/${props.channels[0].id}`);
-        this.state = {
-            channelList: props.channels,
-            currChannel: props.channels[0],
-            msgList: props.channels[0].history,
-            currUser: props.currUser
-        };*/
         this.state = {
             active: 0,
             sidebarOpen: false,
@@ -62,6 +55,8 @@ class ChatPage extends Component {
         this.handleCreateChannel = this.handleCreateChannel.bind(this);
         this.toggleModal = this.toggleModal.bind(this);
         this.switchToChannel = this.switchToChannel.bind(this);
+
+        console.log(this.props.chatActions);
     }
 
     componentDidMount() {
@@ -75,19 +70,27 @@ class ChatPage extends Component {
             this.props.history.push("/login");
         }
 
-        chatManager = new Chatkit.ChatManager({
-            instanceLocator: "v1:us1:dae44b3a-7d46-4d6b-8894-1302096c409d",
-            userId: this.state.chatkitUsername,
-            tokenProvider: new Chatkit.TokenProvider({
-                url: "http://localhost:3001/authenticate"
-            })
-        }); // instantiate chatmanager instance on this client
+        this.props.chatActions.instantiateChatkit(this.state.chatkitUsername);
+        this.props.chatActions.login(
+            this.state.chatkitUsername,
+            this.props.firstName,
+            this.props.lastName
+        );
+        this.props.chatActions.connectChatkit();
 
-        this.loginToChat(); // login to chatkit with this user
+        this.setState({
+            msgList: [],
+            channels: [],
+            currentChannel: undefined
+        });
+    }
 
-        //TODO: grab all public rooms from parse server (redux action)
-        // and only connect to chatkit instance
-        this.connectChatkit(); // connect to chatkit instance
+    static getDerivedStateFromProps(props, state) {
+        return {
+            msgList: props.msgList,
+            channels: props.channels,
+            currentChannel: props.currentChannel
+        };
     }
 
     componentWillUnmount() {
@@ -176,7 +179,7 @@ class ChatPage extends Component {
     switchToChannel(e) {
         let channelId = parseInt(e.target.dataset.channelid);
         console.log(this.state.chatkitUser.roomSubscriptions);
-        // close current subscription
+        // close current subscription (ACTION)
         if (this.state.currChannel) {
             this.state.chatkitUser.roomSubscriptions[this.state.currChannel].cancel();
         }
@@ -248,7 +251,7 @@ class ChatPage extends Component {
                 console.log(roomObj);
                 console.log(`channel created on server with name: ${roomObj.name}`);
 
-                console.log(this.state.chatkitUser)
+                console.log(this.state.chatkitUser);
                 this.setState({ channels: this.state.chatkitUser.rooms });
 
                 channelSwitchReqObj.target.dataset.channelid = roomObj.id;
@@ -315,7 +318,7 @@ class ChatPage extends Component {
                             channels={this.state.channels}
                             onToggle={this.toggleModal}
                             onChannelClick={this.switchToChannel}
-                            activeChannel={this.state.currChannel}
+                            activeChannel={this.props.currentChannel}
                         />
                     }
                     open={this.state.sidebarOpen}
@@ -340,7 +343,7 @@ class ChatPage extends Component {
                         onInputChange={this.handleNewChannelNameChange}
                         onCreateChannel={this.handleCreateChannel}
                         groupChannel={this.state.createGroupChannel}
-                        currentRoom={this.state.currentRoom}
+                        currentRoom={this.state.currentChannel}
                     />
                 </Sidebar>
             </div>
@@ -350,7 +353,7 @@ class ChatPage extends Component {
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators(chatActions, dispatch)
+        chatActions: bindActionCreators(chatActions, dispatch)
     };
 }
 
@@ -362,6 +365,9 @@ function mapStateToProps(state, ownProps) {
         username: state.authReducer.username,
         firstName: state.authReducer.first_name,
         lastName: state.authReducer.last_name,
+        msgList: state.chatReducer.msgList,
+        channels: state.chatReducer.channelList,
+        currentChannel: state.chatReducer.currentChannel,
         projectMembers: ["undefinedid1"] // TODO: get actual project members
         //channelIds: state.projReducer.currProject.channels,
         //projectMembers: state.projReducer.currProject.roles
