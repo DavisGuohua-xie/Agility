@@ -15,28 +15,32 @@ const NewChannelModal = props => {
     let headerTitle = props.groupChannel ? "New Group Channel" : "New Private Channel";
 
     return (
-        <Modal isOpen={props.isOpen} toggle={props.onToggle}>
-            <ModalHeader toggle={props.onToggleForgot}>{headerTitle}</ModalHeader>
+        <Modal isOpen={props.isOpen} toggle={props.onToggleModal}>
+            <ModalHeader toggle={props.onToggleModal}>{headerTitle}</ModalHeader>
             <ModalBody>
                 <Form>
                     <FormGroup>
-                        <Label for="recoverUsername">Email address</Label>
+                        <Label for="channelName">Channel Name</Label>
                         <Input
-                            type="email"
-                            name="recoverUsername"
-                            id="recoverUsername"
-                            placeholder="Email address"
+                            type="text"
+                            name="channelName"
+                            id="channelName"
+                            placeholder="Enter channel name"
                             onChange={props.onInputChange}
                         />
                     </FormGroup>
                 </Form>
             </ModalBody>
             <ModalFooter>
-                <Button color="secondary" onClick={props.onToggleForgot}>
+                <Button color="secondary" onClick={props.onToggleModal}>
                     Cancel
                 </Button>
-                <Button color="primary" onClick={props.onPasswordReset}>
-                    Send reset link
+                <Button
+                    color="primary"
+                    data-group={props.groupChannel ? "group" : "private"}
+                    onClick={props.onCreateChannel}
+                >
+                    Create
                 </Button>{" "}
             </ModalFooter>
         </Modal>

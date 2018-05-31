@@ -1,5 +1,4 @@
 .layoutContainer {
-    display: flex;
     height: 100%;
 }
 
@@ -7,21 +6,11 @@
     background-color: white;
 }
 
-.mainChatContent {
-    flex: 1;
-}
-
-.mainChatContainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
-}
-
 .chatContainerHeader {
     height: 50px;
-    background-color: lightblue;
-    text-align: center;
+    background-color: var(--light);
+    display: flex;
+    justify-content: flex-start;
 }
 
 .groupChannels {
@@ -50,6 +39,12 @@
 
 .messageContent {
     overflow-y: auto;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-all;
+    hyphens: auto;
+    height: calc(100% - 50px - 100px);
+
 }
 
 .channelItem:hover {
@@ -61,10 +56,17 @@
     display: inline-block;
     margin-left: 10px;
     font-size: 2em;
+    
+    color: var(--gray-dark) !important;
 }
 
 .inputArea {
     margin: 0 10px 0 10px;
+    height: 78px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
 .plus {
@@ -77,12 +79,4 @@
 .plus:hover {
     transition: ease-in-out 0.2s;
     color: #555;
-}
-
-.chatContainerHeader {
-    background-color: var(--light) !important;
-}
-
-.chatContainerHeader p {
-    color: var(--gray-dark) !important;
 }

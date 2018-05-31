@@ -61,13 +61,23 @@ class ChatPage extends Component {
             projectID: props.match.params.projID,
             chatkitUsername: props.username + props.match.params.projID,
             channels: [],
-            msgList: []
+            msgList: [],
+            chatkitUser: undefined,
+            newMessageContent: "",
+            isModalOpen: false,
+            newChannelName: ""
         };
 
         this.toggleSidebar = this.toggleSidebar.bind(this);
         this.mediaQueryChanged = this.mediaQueryChanged.bind(this);
         this.loginToChat = this.loginToChat.bind(this);
         this.connectChatkit = this.connectChatkit.bind(this);
+        this.handleMessageChange = this.handleMessageChange.bind(this);
+        this.handleMessageSend = this.handleMessageSend.bind(this);
+        this.handleNewChannelNameChange = this.handleNewChannelNameChange.bind(this);
+        this.handleCreateChannel = this.handleCreateChannel.bind(this);
+        this.toggleModal = this.toggleModal.bind(this);
+
     }
 
     componentDidMount() {
@@ -95,6 +105,7 @@ class ChatPage extends Component {
 
     componentWillUnmount() {
         this.state.mql.removeListener(this.mediaQueryChanged);
+        // remove all room subscriptions
     }
 
     loginToChat() {
@@ -162,6 +173,50 @@ class ChatPage extends Component {
             .catch(error => console.log(error));
     }
 
+    sendMessage(text) {
+        this.state.chatkitUser.sendMessage({
+            text: text,
+            roomId: this.state.currChannel.id
+        })
+    }
+
+    /******************************************/
+
+    toggleModal(e) {
+        this.setState({
+            isModalOpen: !this.state.isModalOpen,
+            createGroupChannel: e.target.name === "group"
+        });
+    }
+
+    handleCreateChannel(e) {
+        // create channel
+    }
+
+    handleNewChannelNameChange(e) {
+        this.setState({
+            newChannelName: e.target.value
+        });
+    }
+
+    handleMessageChange(e) {
+        this.setState({
+            newMessageContent: e.target.value
+        });
+    }
+
+    handleMessageSend(e) {
+        e.preventDefault();
+
+        if(this.state.newMessageContent.length === 0) return;
+
+        this.sendMessage(this.state.newMessageContent);
+
+        this.setState({
+            newMessageContent: ""
+        });
+    }
+
     mediaQueryChanged() {
         this.setState({ sidebarDocked: this.state.mql.matches });
     }
@@ -179,7 +234,7 @@ class ChatPage extends Component {
                     projID={this.state.projectID}
                 />
                 <Sidebar
-                    sidebar={<ChatSidebar channels={this.state.channels} />}
+                    sidebar={<ChatSidebar channels={this.state.channels} onToggle={this.toggleModal}/>}
                     open={this.state.sidebarOpen}
                     docked={this.state.sidebarDocked}
                     onSetOpen={this.toggleSidebar}
@@ -194,6 +249,14 @@ class ChatPage extends Component {
                         messageList={this.state.msgList}
                         docked={this.state.sidebarDocked}
                         toggleSidebar={this.toggleSidebar}
+                        onMessageChange={this.handleMessageChange}
+                        onSubmit={this.handleMessageSend}
+                        messageContent={this.state.newMessageContent}
+                        isModalOpen={this.state.isModalOpen}
+                        onToggleModal={this.toggleModal}
+                        onInputChange={this.handleNewChannelNameChange}
+                        onCreateChannel={this.handleCreateChannel}
+                        groupChannel={this.state.createGroupChannel}
                     />
                 </Sidebar>
             </div>

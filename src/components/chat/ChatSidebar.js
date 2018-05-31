@@ -9,7 +9,7 @@ const ChatSidebar = props => {
         <div id="sidebar">
             <div className={styles.groupChannels}>
                 <p className={styles.channelHeader}>
-                    Group Channels {/*<i className={`fas fa-plus-circle ${styles.plus}`} />*/}
+                    Group Channels <i className={`fas fa-plus-circle ${styles.plus}`} name="group" onClick={props.onToggle} />
                 </p>
                 <ul className={styles.channelList}>
                     {groupChannels.map(group => (

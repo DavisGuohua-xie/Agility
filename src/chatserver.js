@@ -18,7 +18,8 @@ app.post("/users", (req, res) => {
     const { username } = req.body;
     console.log(username);
     chatkit
-        .createUser({ // TODO: check if user exists
+        .createUser({
+            // TODO: check if user exists
             id: username,
             name: username
         })
@@ -30,6 +31,21 @@ app.post("/users", (req, res) => {
                 res.status(error.status).json(error);
             }
         });
+});
+
+app.post("/createchannel", (req, res) => {
+    const { creator, teamMembers, channelName, isPrivate } = req.body;
+    console.log(`creating new group channel: ${channelName}`);
+
+    chatkit
+        .createRoom({
+            creatorId: creator,
+            name: channelName,
+            isPrivate: isPrivate,
+            userIds: teamMembers
+        })
+        .then(() => res.sendStatus(201))
+        .catch(error => res.status(error.status).json(error));
 });
 
 app.post("/authenticate", (req, res) => {
