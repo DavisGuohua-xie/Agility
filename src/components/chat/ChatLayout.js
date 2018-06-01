@@ -1,5 +1,6 @@
 import React from "react";
 import { Button, Container } from "reactstrap";
+import {ReactLoading} from 'react-loading'
 
 import { ChatMessage } from "./ChatMessage";
 
@@ -11,7 +12,9 @@ import NewChannelModal from "./NewChannelModal";
  */
 const ChatLayout = props => {
     console.log(`docked: ${props.docked}`);
-    return (
+    return props.loading ? (
+        <ReactLoading type="bars" color="#357EDD" />
+    ) : (
         <div className={styles.layoutContainer}>
             <nav className={`navbar bg-light ${styles.chatContainerHeader}`}>
                 <Button
@@ -21,7 +24,9 @@ const ChatLayout = props => {
                 >
                     Chats
                 </Button>
-                <p style={{ fontSize: "31px", margin: "0 0 0 5px" }}>{props.currentRoom ? props.currentRoom.name : null}</p>
+                <p style={{ fontSize: "31px", margin: "0 0 0 5px" }}>
+                    {props.currentRoom ? props.currentRoom : null}
+                </p>
             </nav>
             <Container fluid className={styles.messageContent}>
                 {props.messageList.map((msg, index) => <ChatMessage key={index} message={msg} />)}

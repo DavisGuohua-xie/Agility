@@ -2,16 +2,39 @@ import * as types from "./actionTypes";
 import * as ajaxActions from "./ajaxActions";
 
 import Chatkit from "@pusher/chatkit";
+import "toastr/build/toastr.css";
+import toastr from "toastr";
+toastr.options = {
+    closeButton: false,
+    debug: false,
+    newestOnTop: false,
+    progressBar: false,
+    positionClass: "toast-top-right",
+    preventDuplicates: true,
+    onclick: null,
+    showDuration: "300",
+    hideDuration: "1000",
+    timeOut: "3000",
+    extendedTimeOut: "1000",
+    showEasing: "swing",
+    hideEasing: "linear",
+    showMethod: "fadeIn",
+    hideMethod: "fadeOut"
+};
 
 export const chatActions = {
     instantiateChatkit,
     login,
-    connectChatkit
+    connectChatkit,
+    reset,
+    sendMessage,
+    switchToChannel
 };
 
 const MAX_MESSAGES_RETRIEVE = 100;
 
 let chatManager = null;
+let currUser = null;
 
 function instantiateChatkit(chatkitUsername) {
     return dispatch => {
@@ -27,6 +50,7 @@ function instantiateChatkit(chatkitUsername) {
 
 function login(chatkitUsername, firstName, lastName) {
     return dispatch => {
+        dispatch(loadingMessages());
         fetch("http://localhost:3001/users", {
             method: "POST",
             headers: {
@@ -40,13 +64,9 @@ function login(chatkitUsername, firstName, lastName) {
         })
             .then(response => {
                 if (response.status === 200)
-                    console.log(
-                        `user already on chatkit server with username: ${chatkitUsername}`
-                    );
+                    console.log(`user already on chatkit server with username: ${chatkitUsername}`);
                 else if (response.status === 201)
-                    console.log(
-                        `user created on chatkit server with username: ${chatkitUsername}`
-                    );
+                    console.log(`user created on chatkit server with username: ${chatkitUsername}`);
             })
             .catch(error => console.error("ERRORORROROROR", error));
     };
@@ -54,8 +74,6 @@ function login(chatkitUsername, firstName, lastName) {
 
 function connectChatkit() {
     return dispatch => {
-        let currUser;
-
         chatManager
             .connect()
             .then(currentUser => {
@@ -69,20 +87,17 @@ function connectChatkit() {
                 console.log("\n\n\n\nROOMS\n\n\n\n");
                 console.log(currUser.rooms);
 
-                return currUser.subscribeToRoom({
-                    roomId: room.id,
-                    messageLimit: 100,
-                    hooks: {
-                        onNewMessage: message => {
-                            dispatch(saveMessageSuccess(message, message.sender));
-                        }
-                    }
-                });
+                return subscribeToChannel(room.id, dispatch);
             })
             .then(currRoom => {
                 console.log(`subscribed to room with room id: ${currRoom.id}`);
-
-                dispatch(saveAllChatData(currUser, currUser.rooms, currRoom));
+                dispatch(saveAllChatData(currUser.rooms, currRoom));
+                dispatch(finishedLoadingMessages());
+                return fetchMessages(currRoom);
+            })
+            .then(messages => {
+                console.log(messages);
+                dispatch(saveMessages(messages));
             })
             .catch(error => {
                 console.log(error);
@@ -90,12 +105,115 @@ function connectChatkit() {
     };
 }
 
-function saveAllChatData(currUser, userChannels, currChannel) {
-    return { type: types.SAVE_ALL_CHAT_DATA_SUCCESS, req: { currUser, userChannels, currChannel } };
+function reset(currentRoom, softClear) {
+    return dispatch => {
+        unsubscribeFromChannel(currentRoom);
+        if (softClear) {
+            dispatch(clearSoftChatState());
+        } else {
+            dispatch(clearChatState());
+        }
+    };
+}
+
+function switchToChannel(newChannelId, currentChannelId) {
+    return dispatch => {
+        dispatch(loadingMessages());
+        dispatch(saveChangeChannel({ id: newChannelId }));
+
+        console.log(currUser.roomSubscriptions);
+        // close current subscription (ACTION)
+        unsubscribeFromChannel(currentChannelId);
+
+        //open new subscription to new channel
+        subscribeToChannel(newChannelId, dispatch)
+            .then(currRoom => {
+                console.log(`subscribed to room with room id: ${currRoom.id}`);
+
+                dispatch(saveAllChatData(currUser.rooms, currRoom));
+                return fetchMessages(currRoom);
+            })
+            .then(messages => {
+                dispatch(saveMessages(messages));
+                dispatch(finishedLoadingMessages());
+            })
+            .catch(error => console.log(error));
+    };
+}
+
+function sendMessage(messageText, channelId) {
+    return dispatch => {
+        currUser
+            .sendMessage({
+                text: messageText,
+                roomId: channelId
+            }).then(() => {})
+            .catch(err => {
+                toastr.error("error sending message");
+            });
+    };
+}
+
+/**************************PRIVATE FUNCTIONS */
+
+function subscribeToChannel(channelId, dispatch) {
+    console.log("in subscribetochannel");
+    return currUser.subscribeToRoom({
+        roomId: channelId,
+        messageLimit: 0,
+        hooks: {
+            onNewMessage: message => {
+                dispatch(saveMessageSuccess(message, message.sender));
+            }
+        }
+    });
+}
+
+function unsubscribeFromChannel(channelId) {
+    return dispatch => {
+        if (channelId) {
+            currUser.roomSubscriptions[channelId].cancel();
+        }
+    };
+}
+
+function fetchMessages(channel) {
+    return currUser.fetchMessages({
+        roomId: channel.id,
+        direction: "older",
+        limit: 100
+    });
+}
+/********ACTION CREATORS***************/
+function saveMessages(messages) {
+    return { type: types.SAVE_ALL_MESSAGES, req: messages };
+}
+
+function saveChangeChannel(currRoom) {
+    return { type: types.SAVE_NEW_ACTIVE_CHANNEL, req: currRoom };
+}
+function loadingMessages() {
+    return { type: types.LOADING_CHAT_MESSAGES, req: null };
+}
+
+function finishedLoadingMessages() {
+    return { type: types.FINISHED_LOADING_CHAT_MESSAGES, req: null };
+}
+
+function clearSoftChatState() {
+    return { type: types.CLEAR_SOFT_CHAT_STATE, req: null };
+}
+
+function clearChatState() {
+    return { type: types.CLEAR_CHAT_STATE, req: null };
+}
+
+function saveAllChatData(userChannels, currChannel) {
+    return { type: types.SAVE_ALL_CHAT_DATA_SUCCESS, req: { userChannels, currChannel } };
 }
 
 function saveMessageSuccess(message, sender) {
-    return { type: types.SAVE_MESSAGE_SUCCESS, req: {message, sender} };
+    return { type: types.SAVE_MESSAGE_SUCCESS, req: { message, sender } };
 }
 
 function retrieveChannelsRequest(currentUser) {
@@ -104,8 +222,4 @@ function retrieveChannelsRequest(currentUser) {
 
 function retrieveChannelsSuccess(currentUser) {
     return { type: types.RETRIEVE_CHANNELS_SUCCESS, req: currentUser };
-}
-
-function retrieveChannelsFailure(currentUser) {
-    return { type: types.RETRIEVE_CHANNELS_FAILURE, req: currentUser };
 }

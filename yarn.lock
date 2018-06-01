@@ -4188,7 +4188,7 @@ joi@^6.10.1:
     moment "2.x.x"
     topo "1.x.x"
 
-jquery@^3.3.1:
+jquery@>=1.12.0, jquery@^3.3.1:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.3.1.tgz#958ce29e81c9790f31be7792df5d4d95fc57fbca"
 
@@ -5983,6 +5983,10 @@ react-is@^16.3.1, react-is@^16.3.2:
   version "16.3.2"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.3.2.tgz#f4d3d0e2f5fbb6ac46450641eb2e25bf05d36b22"
 
+react-loading@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/react-loading/-/react-loading-2.0.2.tgz#bc6d908fa316e1ccd677b7567792049a9bb4be0d"
+
 react-overlays@^0.7.0:
   version "0.7.4"
   resolved "https://registry.yarnpkg.com/react-overlays/-/react-overlays-0.7.4.tgz#ef2ec652c3444ab8aa014262b18f662068e56d5c"
@@ -7176,6 +7180,12 @@ to-regex@^3.0.1, to-regex@^3.0.2:
     extend-shallow "^3.0.2"
     regex-not "^1.0.2"
     safe-regex "^1.1.0"
+
+toastr@^2.1.4:
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/toastr/-/toastr-2.1.4.tgz#8b43be64fb9d0c414871446f2db8e8ca4e95f181"
+  dependencies:
+    jquery ">=1.12.0"
 
 topo@1.x.x:
   version "1.1.0"

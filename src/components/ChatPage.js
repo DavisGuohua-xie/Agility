@@ -9,6 +9,7 @@ import { withRouter } from "react-router";
 import Sidebar from "react-sidebar";
 import Parse from "parse";
 import Chatkit from "@pusher/chatkit";
+import ReactLoading from "react-loading";
 
 import { chatActions } from "../actions/chatActions";
 
@@ -42,7 +43,8 @@ class ChatPage extends Component {
             newChannelName: "",
             newChannelMembers: [],
             createGroupChannel: false,
-            currentRoom: undefined
+            currentChannel: undefined,
+            currentChannelId: undefined
         };
 
         this.toggleSidebar = this.toggleSidebar.bind(this);
@@ -87,51 +89,25 @@ class ChatPage extends Component {
         return {
             msgList: props.msgList,
             channels: props.channels,
-            currentChannel: props.currentChannel
+            currentChannel: props.currentChannel,
+            currentChannelId: props.currentChannelId
         };
     }
 
     componentWillUnmount() {
         this.state.mql.removeListener(this.mediaQueryChanged);
         // remove all room subscriptions
+        this.props.chatActions.reset(this.props.currentChannel, false);
     }
 
     /*******************************CHATKIT SPECIFIC FUNCTIONS *******************/
 
-    sendMessage(text) {
-        this.state.chatkitUser.sendMessage({
-            text: text,
-            roomId: this.state.currChannel
-        });
-    }
-
     switchToChannel(e) {
         let channelId = parseInt(e.target.dataset.channelid);
-        console.log(this.state.chatkitUser.roomSubscriptions);
-        // close current subscription (ACTION)
-        if (this.state.currChannel) {
-            this.state.chatkitUser.roomSubscriptions[this.state.currChannel].cancel();
-        }
-        this.setState({ msgList: [] });
-
-        //open new subscription to new channel
-        this.state.chatkitUser
-            .subscribeToRoom({
-                roomId: channelId,
-                messageLimit: 100,
-                hooks: {
-                    onNewMessage: message => {
-                        this.setState({
-                            msgList: [...this.state.msgList, message]
-                        });
-                    }
-                }
-            })
-            .then(currentRoom => {
-                console.log(`subscribed to room with room id: ${currentRoom.id}`);
-                this.setState({ currentRoom: currentRoom, currChannel: currentRoom.id });
-            })
-            .catch(error => console.log(error));
+        this.props.chatActions.switchToChannel(channelId, this.props.currentChannel);
+        this.setState({
+            currentChannel: { id: channelId }
+        }); // to make ui seem responsive
     }
 
     createChannel(members, name, creatorId, isPrivate) {
@@ -217,7 +193,12 @@ class ChatPage extends Component {
 
         if (this.state.newMessageContent.length === 0) return;
 
-        this.sendMessage(this.state.newMessageContent);
+        console.log("handlemessagesend");
+        console.log(this.props.currentChannelId);
+        this.props.chatActions.sendMessage(
+            this.state.newMessageContent,
+            this.state.currentChannelId
+        );
 
         this.setState({
             newMessageContent: ""
@@ -247,7 +228,8 @@ class ChatPage extends Component {
                             channels={this.state.channels}
                             onToggle={this.toggleModal}
                             onChannelClick={this.switchToChannel}
-                            activeChannel={this.props.currentChannel}
+                            activeChannel={this.state.currentChannelId
+                            }
                         />
                     }
                     open={this.state.sidebarOpen}
@@ -260,20 +242,25 @@ class ChatPage extends Component {
                         sidebar: { backgroundColor: "white", width: 200, zIndex: 3 }
                     }}
                 >
-                    <ChatLayout
-                        messageList={this.state.msgList}
-                        docked={this.state.sidebarDocked}
-                        toggleSidebar={this.toggleSidebar}
-                        onMessageChange={this.handleMessageChange}
-                        onSubmit={this.handleMessageSend}
-                        messageContent={this.state.newMessageContent}
-                        isModalOpen={this.state.isModalOpen}
-                        onToggleModal={this.toggleModal}
-                        onInputChange={this.handleNewChannelNameChange}
-                        onCreateChannel={this.handleCreateChannel}
-                        groupChannel={this.state.createGroupChannel}
-                        currentRoom={this.state.currentChannel}
-                    />
+                    {this.props.loading ? (
+                        <ReactLoading type="bars" color="#357EDD" />
+                    ) : (
+                        <ChatLayout
+                            messageList={this.state.msgList}
+                            docked={this.state.sidebarDocked}
+                            toggleSidebar={this.toggleSidebar}
+                            onMessageChange={this.handleMessageChange}
+                            onSubmit={this.handleMessageSend}
+                            messageContent={this.state.newMessageContent}
+                            isModalOpen={this.state.isModalOpen}
+                            onToggleModal={this.toggleModal}
+                            onInputChange={this.handleNewChannelNameChange}
+                            onCreateChannel={this.handleCreateChannel}
+                            groupChannel={this.state.createGroupChannel}
+                            currentRoom={this.state.currentChannel}
+                            loading={this.props.loading}
+                        />
+                    )}
                 </Sidebar>
             </div>
         );
@@ -296,7 +283,9 @@ function mapStateToProps(state, ownProps) {
         lastName: state.authReducer.last_name,
         msgList: state.chatReducer.msgList,
         channels: state.chatReducer.channelList,
-        currentChannel: state.chatReducer.currentChannel,
+        currentChannel: state.chatReducer.currentChannelName,
+        currentChannelId: state.chatReducer.currentChannelId,
+        loading: state.chatReducer.chat_loading,
         projectMembers: ["undefinedid1"] // TODO: get actual project members
         //channelIds: state.projReducer.currProject.channels,
         //projectMembers: state.projReducer.currProject.roles
