@@ -1,0 +1,8 @@
+.editIcon {
+    visibility: hidden;
+    cursor: pointer;
+}
+
+.p:hover > .editIcon {
+    visibility: visible;
+}

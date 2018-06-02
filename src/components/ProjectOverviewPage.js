@@ -76,6 +76,7 @@ class ProjectOverviewPage extends React.Component {
         this.generateSidebar = this.generateSidebar.bind(this);
         this.handleManageClick = this.handleManageClick.bind(this);
         this.toggleNewBoard = this.toggleNewBoard.bind(this);
+        this.updateTasks = this.updateTasks.bind(this);
         this.toggleAddMemberModal = this.toggleAddMemberModal.bind(this);
         this.handleNewName = this.handleNewName.bind(this);
         this.handleAddMember = this.handleAddMember.bind(this);
@@ -191,6 +192,10 @@ class ProjectOverviewPage extends React.Component {
         );
     }
 
+    updateTasks(newData) {
+        this.setState({tasks: newData});
+    }
+
     toggleNewBoard() {
         this.setState({
             modalOpen: !this.state.modalOpen
@@ -202,7 +207,7 @@ class ProjectOverviewPage extends React.Component {
     handleManageClick = () => this.setState({ showManageMenu: !this.state.showManageMenu });
 
     render() {
-        var task_list = this.props.project_data === undefined ? this.state.tasks : { lanes: JSON.parse(JSON.stringify(this.props.project_data.boards)) };
+        let task_list = this.props.project_data === undefined ? this.state.tasks : { lanes: JSON.parse(JSON.stringify(this.props.project_data.boards)) };
         console.log(task_list);
         
         console.log(this.state);
@@ -236,6 +241,7 @@ class ProjectOverviewPage extends React.Component {
                         onCardClick={this.handleCardClick}
                         modalOpen={this.state.modalOpen}
                         onToggleModal={this.toggleNewBoard}
+                        updateTasks={this.updateTasks}
                         project_id={this.props.match.params.projID}
                     />
                 );

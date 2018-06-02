@@ -15,7 +15,8 @@ class ProjectTaskComponent extends React.Component {
             modalOpen: false,
             tasksData: props.taskList,
             newBoard: "",
-            eventBus: undefined
+            eventBus: undefined,
+            editing: false
         };
 
         this.handleLaneClick = this.handleLaneClick.bind(this);
@@ -23,6 +24,8 @@ class ProjectTaskComponent extends React.Component {
         this.setEventBus = this.setEventBus.bind(this);
         this.handleCreateBoard = this.handleCreateBoard.bind(this);
         this.handleBoardNameChange = this.handleBoardNameChange.bind(this);
+        this.toggleEditModal = this.toggleEditModal.bind(this);
+        this.handleSaveBoard = this.handleSaveBoard.bind(this);
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -51,7 +54,7 @@ class ProjectTaskComponent extends React.Component {
         /*
         let boards = Object.assign({}, this.state.tasksData);
         boards.lanes.push({
-            id: v4(),
+            id: (boards.lanes.length) + "",
             title: this.state.newBoard,
             label: "",
             cards: []
@@ -59,13 +62,40 @@ class ProjectTaskComponent extends React.Component {
 
         this.setState({ tasksData: boards });
         console.log(this.state.eventBus);
+
         this.state.eventBus.publish({ type: "UPDATE_LANES", lanes: boards.lanes });
         */
         this.props.onToggleModal();
+        this.props.updateTasks(boards);
+    }
+
+    handleSaveBoard(e) {
+        if(this.state.newBoard === "") return;
+
+        let boards = this.state.tasksData;
+
+        let boardInd = parseInt(this.state.boardInd, 10);
+
+
+        boards.lanes[boardInd].title = this.state.newBoard;
+
+        this.setState({tasksData: boards});
+        this.state.eventBus.publish({ type: "UPDATE_LANES", lanes: boards.lanes });
+        this.toggleEditModal(e);
+        this.props.updateTasks(boards);
     }
 
     handleBoardNameChange(e) {
         this.setState({ newBoard: e.target.value });
+    }
+
+    toggleEditModal(e) {
+        let boardName = e.target.dataset.title;
+        let boardInd = e.target.dataset.id;
+
+        if (this.state.editing) boardName = "";
+        this.setState({ newBoard: boardName, editing: !this.state.editing, boardInd: boardInd });
+        this.props.onToggleModal();
     }
 
     render() {
@@ -79,6 +109,10 @@ class ProjectTaskComponent extends React.Component {
                 onBoardNameChange={this.handleBoardNameChange}
                 onCreateBoard={this.handleCreateBoard}
                 onToggleModal={this.props.onToggleModal}
+                boardName={this.state.newBoard}
+                onToggleEditModal={this.toggleEditModal}
+                onSaveBoard={this.handleSaveBoard}
+                editing={this.state.editing}
             />
         );
     }

@@ -7,7 +7,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { withRouter } from "react-router";
+import { withRouter, Redirect } from "react-router";
 import { projActions } from "../actions/projActions";
 import { Parse } from "parse";
 import {UserModel} from '../models/UserModel';
@@ -17,17 +17,10 @@ import { ProjectListComponent } from "./home/ProjectListComponent";
 
 import v4 from "uuid";
 
-
 class Homepage extends React.Component {
     constructor(props) {
         super(props);
-
-        var currentUser = Parse.User.current();
-        if (!currentUser) {
-            this.props.history.push("/login");
-            return;
-        }
-        
+      
         this.state = {
             projects: [] // TODO: change to action dispatch
         };
@@ -55,7 +48,7 @@ class Homepage extends React.Component {
     }
 
     render() {
-        return (
+        return this.props.logged_in ? (
             <div>
                 <NavBar zIndex={3} />
                 <ProjectListComponent
@@ -64,7 +57,7 @@ class Homepage extends React.Component {
                 />{" "}
                 {/* TODO: project list will be sent over by server */}
             </div>
-        );
+        ) : <Redirect to="/login"/>;
     }
 }
 
@@ -76,8 +69,9 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state, ownProps) {
     return {
-        projects: state.projectReducer.projects,
-        loading: state.ajaxCallsInProgress > 0
+        loading: state.ajaxCallsInProgress > 0,
+        logged_in: state.authReducer.logged_in,
+        projects: state.projectReducer.projects
     };
 }
 

@@ -32,9 +32,6 @@ class NavBar extends React.Component {
             isOpen: false,
             projectID: props.projID
         };
-
-        console.log(`navbar props:`);
-        console.log(this.props.actions);
     }
 
     toggle() {
@@ -116,7 +113,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, ownProps) {
-    console.log(state);
     return {
         name: state.authReducer.first_name
         //projName: state.projReducer.curr_proj
