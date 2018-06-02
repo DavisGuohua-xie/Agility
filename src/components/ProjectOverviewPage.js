@@ -8,7 +8,7 @@ import { withRouter } from "react-router";
 
 import Sidebar from "react-sidebar";
 
-import * as projActions from "../actions/projActions";
+import { projActions } from "../actions/projActions";
 
 import { NavBar } from "./common/Navbar";
 
@@ -17,7 +17,7 @@ import { ProjectOverview } from "./project/ProjectOverview";
 import MemberSidebarItem from "./common/MemberSidebarItem";
 
 import styles from "../styles/ProjectOverviewPage.module.css";
-import ProjectTaskComponent from "./project/ProjectTaskComponent";
+import { ProjectTaskComponent } from "./project/ProjectTaskComponent";
 import { ProjectCalendar } from "./project/Calendar";
 import moment from "moment";
 
@@ -38,41 +38,6 @@ import ManagementButton from "./project/ManagementButton";
 
 const mql = window.matchMedia(`(min-width: 900px)`);
 
-/* TODO: delete mock proj member data */
-const members = [{ fname: "Joe", lname: "Schmo" }, { fname: "Joe", lname: "Schmo" }];
-const mockTasks = {
-    lanes: [
-        {
-            id: "lane1",
-            title: "Planned Tasks",
-            label: "2/2",
-            cards: [
-                {
-                    id: "Card1",
-                    title: "Write Blog",
-                    description: "Can AI make memes",
-                    label: "30 mins"
-                },
-                {
-                    id: "Card2",
-                    title: "Pay Rent",
-                    description: "Transfer via NEFT",
-                    label: "5 mins",
-                    metadata: {
-                        sha: "be312a1"
-                    }
-                }
-            ]
-        },
-        {
-            id: "lane2",
-            title: "Completed",
-            label: "0/0",
-            cards: []
-        }
-    ]
-};
-
 class ProjectOverviewPage extends React.Component {
     constructor(props) {
         super(props);
@@ -80,6 +45,7 @@ class ProjectOverviewPage extends React.Component {
         var currentUser = Parse.User.current();
         if (!currentUser) {
             this.props.history.push("/login");
+            return;
         }
 
         console.log("in project overview page constructor");
@@ -89,11 +55,11 @@ class ProjectOverviewPage extends React.Component {
             mql: mql,
             docked: props.docked,
             open: props.open,
-            members: members,
+            members: [],
             projectID: props.match.params.projID,
             showManageMenu: false,
             modalOpen: false,
-            tasks: mockTasks,
+            tasks: {lanes: []},
             addMemberModalOpen: false,
             removeMemberModalOpen: false,
             newUserName: '',
@@ -173,8 +139,7 @@ class ProjectOverviewPage extends React.Component {
     componentDidMount() {
         mql.addListener(this.mediaQueryChanged);
         this.setState({ mql: mql, sidebarDocked: mql.matches });
-        // TODO: fetch project data from server
-        // TODO: call redux action
+        this.props.actions.getProject(this.props.match.params.projID);
     }
 
     componentWillUnmount() {
@@ -211,9 +176,11 @@ class ProjectOverviewPage extends React.Component {
     generateSidebar() {
         // TODO: generate list of project members for DM-ing
 
+        var members = this.props.project_data === undefined ? this.state.members : this.props.project_data.members;
+
         return (
             <ul className={styles.sidebarUL}>
-                {this.state.members.map((person, index) => (
+                {members.map((person, index) => (
                     <MemberSidebarItem fname={person.fname} lname={person.lname} key={index} />
                 ))}
             </ul>
@@ -231,6 +198,9 @@ class ProjectOverviewPage extends React.Component {
     handleManageClick = () => this.setState({ showManageMenu: !this.state.showManageMenu });
 
     render() {
+        var task_list = this.props.project_data === undefined ? this.state.tasks : { lanes: JSON.parse(JSON.stringify(this.props.project_data.boards)) };
+        console.log(task_list);
+        
         console.log(this.state);
         let sidebarContent = this.generateSidebar();
         let mainContent;
@@ -240,7 +210,7 @@ class ProjectOverviewPage extends React.Component {
                 mainContent = (
                     <ProjectOverview
                         onSidebarToggle={this.toggleSidebar}
-                        taskList={this.state.tasks.lanes}
+                        taskList={task_list.lanes}
                     />
                 );
                 projectManage = (
@@ -256,12 +226,13 @@ class ProjectOverviewPage extends React.Component {
                 mainContent = (
                     <ProjectTaskComponent
                         onSidebarToggle={this.toggleSidebar}
-                        taskList={this.state.tasks}
+                        taskList={task_list}
                         eventBus={this.setEventBus}
                         onLaneClick={this.handleLaneClick}
                         onCardClick={this.handleCardClick}
                         modalOpen={this.state.modalOpen}
                         onToggleModal={this.toggleNewBoard}
+                        project_id={this.props.match.params.projID}
                     />
                 );
                 break;
@@ -319,7 +290,7 @@ class ProjectOverviewPage extends React.Component {
                 </Modal>
 
                 <NavBar
-                    projName="Project"
+                    projName={this.props.project_data === undefined ? "" : this.props.project_data.name}
                     projID={this.state.projectID}
                     zIndex={2}
                 />
@@ -357,9 +328,10 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, ownProps) {
-    console.log(state);
     return {
-        ajaxCalls: state.ajaxCallsInProgress
+        ajaxCalls: state.ajaxCallsInProgress,
+        project_data: state.projectReducer.project_data,
+        board_data: state.taskReducer.board_data
     };
 }
 
