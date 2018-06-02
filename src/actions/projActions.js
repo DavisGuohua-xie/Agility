@@ -65,13 +65,17 @@ function getProjects() {
                 console.log(userModel);
 
                 let projects = [];
-                let fields = ["roles", "tasks", "channels", "updates", "boards", "name", "_id"];
+                let fields = ["roles", "tasks", "channels", "updates", "boards", "name"];
 
                 userModel.getProjects().forEach(proj => {
                     let obj = {};
                     fields.forEach(field => {
                         obj[field] = proj.get(field);
+                        console.log(proj.get(field));
                     });
+
+                    obj['id'] = proj.id;
+                    console.log(proj.id);
 
                     projects.push(obj);
                 });

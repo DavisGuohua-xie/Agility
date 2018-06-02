@@ -74,6 +74,8 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, ownProps) {
+    console.log("HOMEPAGE");
+    console.log(state);
     return {
         loading: state.ajaxCallsInProgress > 0,
         logged_in: state.authReducer.logged_in,

@@ -146,7 +146,7 @@ export class UserModel {
                 //Update local storage
                 localStorage[CURRENT_USER] = JSON.stringify(loggedIn);
 
-                console.log("[loggedin], ", localStorage[CURRENT_USER]);
+                //console.log("[loggedin], ", localStorage[CURRENT_USER]);
 
                 successHandler(loggedIn);
             },
