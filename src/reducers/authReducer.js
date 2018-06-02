@@ -40,7 +40,11 @@ export default function authReducer(state = initialState, action) {
             return state.merge({
                 logged_in: false,
                 logging_in: false,
-                currentUser: null
+                currentUser: null,
+                username: "",
+                email: "",
+                first_name: "",
+                last_name: ""                
             });
         default:
             return state;
