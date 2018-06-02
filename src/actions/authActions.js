@@ -48,6 +48,7 @@ const successLogin = (loggedInUser) => {
 const loginUser = () => {
   return {
     type: C.LOGIN_USER
+
   }
 }
 
