@@ -4,7 +4,8 @@ import * as ajaxActions from './ajaxActions';
 import history from '../history'
 
 export const taskActions = {
-    createBoard
+    createBoard,
+    createTask
 };
 
 function createBoard(title, project_id) {
@@ -49,3 +50,39 @@ function createBoard(title, project_id) {
         return { type: types.CREATE_BOARD_FAILURE, req };
     }
 }
+
+
+function createTask(taskName, board) {
+    return dispatch => {
+        console.log("creating task" + taskName + "...");
+        dispatch(request(taskName));
+
+        let task = Parse.Object.extend("Task");
+        let task = new Task();
+
+        task.set("name", projectName);
+        task.set("boards", []);
+
+        task.save(null, {
+            success: function(task) {
+
+
+            },
+            error: function(project, error) {
+
+
+            }
+        });
+    };
+
+    function request(req) {
+        return { type: types.CREATE_TASK_REQUEST, req };
+    }
+    function success(req) {
+        return { type: types.CREATE_TASK_SUCCESS, req };
+    }
+    function failure(req) {
+        return { type: types.CREATE_TASK_FAILURE, req };
+    }
+}
+
