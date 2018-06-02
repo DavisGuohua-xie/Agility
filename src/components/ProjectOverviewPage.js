@@ -243,6 +243,7 @@ class ProjectOverviewPage extends React.Component {
                         onToggleModal={this.toggleNewBoard}
                         updateTasks={this.updateTasks}
                         project_id={this.props.match.params.projID}
+                        boards={this.props.board_data}
                     />
                 );
                 break;
@@ -341,7 +342,7 @@ function mapStateToProps(state, ownProps) {
     return {
         ajaxCalls: state.ajaxCallsInProgress,
         project_data: state.projectReducer.project_data,
-        board_data: state.taskReducer.board_data
+        board_data: null//state.taskReducer.board_data
     };
 }
 

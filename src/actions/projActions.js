@@ -2,7 +2,7 @@ import * as types from "./actionTypes";
 import * as ajaxActions from "./ajaxActions";
 import Parse from "parse";
 import createChannelNewProject from "./chatActions";
-//import history from "../history";
+import history from "../history";
 
 export const projActions = {
     createProject,

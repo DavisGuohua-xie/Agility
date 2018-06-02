@@ -8,7 +8,7 @@ export const taskActions = {
     //createTask
 };
 
-function createBoard(title, project_id) {
+function createBoard(title, project_id, eventBus) {
     return dispatch => {
         dispatch(ajaxActions.ajaxBegin());
         dispatch(request());
@@ -41,7 +41,7 @@ function createBoard(title, project_id) {
     }
 
     function request() {
-        return { type: types.CREATE_BOARD_REQUEST };
+        return { type: types.CREATE_BOARD_REQUEST, board: null };
     }
     function success(req) {
         return { type: types.CREATE_BOARD_SUCCESS, board: req };

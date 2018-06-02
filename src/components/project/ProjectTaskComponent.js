@@ -49,7 +49,7 @@ class ProjectTaskComponent extends React.Component {
     handleCreateBoard() {
         if (this.state.newBoard === "") return;
 
-        this.props.actions.createBoard(this.state.newBoard, this.props.project_id);
+        this.props.actions.createBoard(this.state.newBoard, this.props.project_id, this.state.eventBus);
         
         /*
         let boards = Object.assign({}, this.state.tasksData);
@@ -63,10 +63,10 @@ class ProjectTaskComponent extends React.Component {
         this.setState({ tasksData: boards });
         console.log(this.state.eventBus);
 
-        this.state.eventBus.publish({ type: "UPDATE_LANES", lanes: boards.lanes });
+        
         */
         this.props.onToggleModal();
-        this.props.updateTasks(boards);
+        //this.props.updateTasks(boards);
     }
 
     handleSaveBoard(e) {
