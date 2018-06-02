@@ -12,8 +12,7 @@ export const chatActions = {
     sendMessage,
     switchToChannel,
     createChannel,
-    logoff,
-    createChannelNewProject
+    logoff
 };
 
 const MAX_MESSAGES_RETRIEVE = 100;
@@ -194,8 +193,7 @@ function logoff() {
     };
 }
 
-function createChannelNewProject() {
-    let newchatkitUser = creatorUsername + projId;
+export default function createChannelNewProject() {
     return fetch("http://localhost:3001/createchannel", {
         method: "POST",
         headers: {
@@ -213,7 +211,7 @@ function createChannelNewProject() {
 
         return response.json();
     });
-}
+};
 
 /**************************PRIVATE FUNCTIONS*****************************/
 

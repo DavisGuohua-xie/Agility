@@ -1,8 +1,8 @@
 import * as types from "./actionTypes";
 import * as ajaxActions from "./ajaxActions";
 import Parse from "parse";
-import { createChannelNewProject } from "./chatActions";
-import history from "../history";
+import createChannelNewProject from "./chatActions";
+//import history from "../history";
 
 export const projActions = {
     createProject
@@ -22,7 +22,7 @@ function createProject(projectName, projectManager, projectMembers, history) {
         project.set("tasks", []);
         project.set("updates", []);
 
-        createChannelNewProject
+        createChannelNewProject()
             .then(newChannel => {
                 return project.set("channels", [newChannel.id]);
             })
