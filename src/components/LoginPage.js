@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 
 import { bindActionCreators } from "redux";
 
+import toastr from "./common/toastrConfig";
 import { withRouter, Redirect } from "react-router";
 
 import { login, register } from "../actions/authActions";
@@ -38,7 +39,9 @@ export default class LoginPage extends Component {
 
         if (username && password) {
             this.props._login(username, password,
-              ()=>{console.log("success");this.setState({loggedIn: true})});
+              ()=>{console.log("success");});
+        } else {
+            toastr.error("Please enter a username and password!", "Login failed");
         }
     }
 
@@ -82,12 +85,8 @@ export default class LoginPage extends Component {
     }
 
     render() {
-
-      const loggedIn = UserModel.current() != null
-
-      var page = null;
-      if (!this.state.loggedIn){
-        page = <LoginForm1
+      return !this.props.logged_in ?
+        (<LoginForm1
             onInputChange={this.handleInputChange}
             onLogin={this.handleLogin}
             onCreateAccount={this.handleCreateAccount}
@@ -96,12 +95,7 @@ export default class LoginPage extends Component {
             onToggleReg={this.handleToggleReg}
             isOpenReg={this.state.isOpenReg}
             ajaxRequested={this.props.logging_in}
-        />
-
-  }else {
-    page = <Redirect to="/"/>
-  }
-        return page
+        />) : <Redirect to="/" />;
     }
 }
 
@@ -120,7 +114,8 @@ function mapStateToProps(state, ownProps) {
     console.log(state);
     return {
         ajaxCalls: state.ajaxCallsInProgress,
-        logging_in: state.authReducer.logging_in
+        logging_in: state.authReducer.logging_in,
+        logged_in: state.authReducer.logged_in
     };
 }
 

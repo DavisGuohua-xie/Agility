@@ -14,7 +14,6 @@ export default function authReducer(state = initialState, action) {
           return state.merge({
             logging_in: false
           })
-
         case C.LOGIN_SUCCESS: // Add current user to the store
             return state.merge({ currentUser: action.userModel, loggedIn: true});
 

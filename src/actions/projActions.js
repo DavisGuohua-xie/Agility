@@ -1,7 +1,8 @@
 import * as types from "./actionTypes";
-import Parse from "parse";
 import * as ajaxActions from "./ajaxActions";
-import history from "../history";
+import Parse from "parse";
+import createChannelNewProject from "./chatActions";
+//import history from "../history";
 
 export const projActions = {
     createProject,
@@ -23,16 +24,22 @@ function createProject(projectName, projectManager, projectMembers) {
         project.set("tasks", []);
         project.set("updates", []);
 
-        project.save(null, {
-            success: function(project) {
-                saveMembersToProject(project, projectManager, projectMembers);
-                dispatch(success(project));
-            },
-            error: function(project, error) {
-                dispatch(failure(error));
-                console.log(error);
-            }
-        });
+        createChannelNewProject()
+            .then(newChannel => {
+                return project.set("channels", [newChannel.id]);
+            })
+            .then(whatever => {
+                project.save(null, {
+                    success: function(project) {
+                        saveMembersToProject(project, projectManager, projectMembers);
+                        dispatch(success(project));
+                    },
+                    error: function(project, error) {
+                        dispatch(failure(error));
+                        console.log(error);
+                    }
+                });
+            });
     };
 
     function request(req) {

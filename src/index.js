@@ -31,6 +31,7 @@ Parse.initialize(parsecfg.APP_ID, parsecfg.MASTER_KEY);
 Parse.masterKey = parsecfg.MASTER_KEY;
 Parse.serverURL = parsecfg.SERVER_URL;
 
+
 const store = configureStore();
 
 ReactDOM.render(
