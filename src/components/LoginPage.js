@@ -6,7 +6,7 @@ import { bindActionCreators } from "redux";
 
 import { withRouter, Redirect } from "react-router";
 
-import { login } from "../actions/authActions";
+import { login, register } from "../actions/authActions";
 
 import {UserModel} from '../models/UserModel'
 
@@ -50,12 +50,15 @@ export default class LoginPage extends Component {
         let lname = this.state.lname;
 
         if (username && password && email) {
-            this.props.actions.register(
+            this.props._register(
                 username,
                 password,
                 email,
                 fname,
-                lname
+                lname,
+                ()=>{this.setState({
+                  loggedIn: true
+                })}
             );
         }
     }
@@ -81,6 +84,7 @@ export default class LoginPage extends Component {
     render() {
 
       const loggedIn = UserModel.current() != null
+
       var page = null;
       if (!this.state.loggedIn){
         page = <LoginForm1
@@ -105,6 +109,9 @@ function mapDispatchToProps(dispatch) {
     return {
         _login(username, password, success){
           dispatch(login(username, password, success))
+        }
+        ,_register(username, pass,email, fname, lname, success){
+          dispatch(register(fname, lname, username, email, pass, success))
         }
     };
 }

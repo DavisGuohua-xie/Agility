@@ -48,9 +48,6 @@ export class UserModel {
         this.user.set(NOTIFICATION, this.notification)
 
 
-
-
-
     }
 
     getUsername(){
@@ -175,12 +172,6 @@ export class UserModel {
     Parse.currentUser().logout()
     .then(completionHandler)
   }
-
-
-
-
-
-
 
   setFirstName (firstName, successHandler, errorHandler){
     // this.firstName = firstName;

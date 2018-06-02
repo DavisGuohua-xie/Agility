@@ -36,12 +36,14 @@ myRequest.onreadystatechnage = function(){
 
 }
 
-myRequest.setRequestHeader('Authorization', encodedAuth)
-myRequest.setRequestHeader('Content-Type', 'application/json')
+
 myRequest.withCredentials = true;
 
 
 myRequest.open('POST', myurl)
+
+myRequest.setRequestHeader('Authorization', encodedAuth)
+myRequest.setRequestHeader('Content-Type', 'application/json')
 
 
 
