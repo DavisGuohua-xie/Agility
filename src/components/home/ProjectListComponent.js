@@ -5,6 +5,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Parse } from "parse";
+import {UserModel} from '../../models/UserModel'
 
 import NewProjectModal from "./NewProjectModal";
 
@@ -16,6 +17,8 @@ const PROJECT_MEMBER = 0;
 class ProjectListComponent extends React.Component {
     constructor(props) {
         super(props);
+
+
         this.state = {
             projItems: props.projects,
             newProjectModalOpen: false,
@@ -95,6 +98,13 @@ class ProjectListComponent extends React.Component {
         this.setState({
             newProjectName: e.target.value
         })
+    }
+
+    componentDidMount(){
+      var currentUser = UserModel.current(()=>{
+        this.setState({projItems: currentUser.getProjects()})
+      });
+
     }
 
     render() {

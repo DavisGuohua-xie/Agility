@@ -1,98 +1,59 @@
 import { authAPI } from "../server/authAPI";
-import * as types from "./actionTypes";
-import * as ajaxActions from './ajaxActions';
-import history from '../history'
+import {UserModel} from "../models/UserModel"
+// import history from '../history'
+import * as C from "./actionTypes";
 
-export const authActions = {
-  login,
-  logout,
-  register
-};
+// export const authActions = {
+//   login,
+//   logout,
+//   register
+// };
 
-function login(username, password) {
-  return dispatch => {
-    dispatch(ajaxActions.ajaxBegin());
-    dispatch(request({ username }));
+export const login = (username, password, success) => (dispatch) => {
 
-    authAPI.login(username, password).then(
-      user => {
-        dispatch(success(user));
-        console.log(`Logged in user:`);
-        console.log(user);
-        history.push("/");
-      },
-      error => {
-        dispatch(failure(error));
-        console.log(error);
-      }
-    );
-  };
+//Now logging in
+ dispatch(loginUser())
+  UserModel.login(username, password, function(newUserModel){
+    //No longer logging in anymoe
+    dispatch(cancelLogin())
+    //Successful login
+    dispatch(successLogin(newUserModel))
+    //Navigate to
+    // console.log('[USER]: ', newUserModel.getProjects())
+    // console.log(success)
+    success()
+  }, function(error){
+    //No longer logging in anymore
+    dispatch(cancelLogin())
+    dispatch(loginError(error))
 
-  function request(req) {
-    return { type: types.LOGIN_REQUEST, req };
-  }
-  function success(req) {
-    return { type: types.LOGIN_SUCCESS, req };
-  }
-  function failure(req) {
-    return { type: types.LOGIN_FAILURE, req };
+  })
+}
+
+
+const loginError = (newError) => {
+  return {
+    type: C.LOGIN_FAILURE,
+    error: newError
   }
 }
 
-function logout() {
-  return dispatch => {
-    dispatch(ajaxActions.ajaxBegin());
-    dispatch(request());
-    console.log("signing out...");
-
-    authAPI.logout().then(
-      res => {
-        dispatch(success());
-        console.log("signed out.");
-      },
-      error => {
-        dispatch(failure());
-        console.log("error signing out!"); // this shouldn't happen...
-      }
-    );
-  };
-
-  function request() {
-    return { type: types.LOGOUT_REQUEST };
-  }
-  function success() {
-    return { type: types.LOGOUT_SUCCESS };
-  }
-  function failure() {
-    return { type: types.LOGOUT_FAILURE };
+const successLogin = (loggedInUser) => {
+  return {
+    type: C.LOGIN_SUCCESS,
+    userModel: loggedInUser
   }
 }
 
-function register(username, password, email, fname, lname) {
-  return dispatch => {
-    dispatch(ajaxActions.ajaxBegin());
-    dispatch(request(username));
+const loginUser = () => {
+  return {
+    type: C.LOGIN_USER
 
-    authAPI.register(username, password, email, fname, lname).then(
-      user => {
-        dispatch(success(user));
-        console.log(user);
-        history.push("/");
-      },
-      error => {
-        dispatch(failure(error));
-        console.log(error);
-      }
-    );
-  };
+  }
+}
 
-  function request(req) {
-    return { type: types.REGISTRATION_REQUEST, req };
-  }
-  function success(req) {
-    return { type: types.REGISTRATION_SUCCESS, req };
-  }
-  function failure(req) {
-    return { type: types.REGISTRATION_FAILURE, req };
+const cancelLogin = () => {
+  return {
+    type: C.CANCEL_LOGIN
   }
 }
