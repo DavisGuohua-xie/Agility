@@ -2,25 +2,7 @@ import * as types from "./actionTypes";
 import * as ajaxActions from "./ajaxActions";
 
 import Chatkit from "@pusher/chatkit";
-import "toastr/build/toastr.css";
-import toastr from "toastr";
-toastr.options = {
-    closeButton: false,
-    debug: false,
-    newestOnTop: false,
-    progressBar: false,
-    positionClass: "toast-top-right",
-    preventDuplicates: true,
-    onclick: null,
-    showDuration: "300",
-    hideDuration: "1000",
-    timeOut: "3000",
-    extendedTimeOut: "1000",
-    showEasing: "swing",
-    hideEasing: "linear",
-    showMethod: "fadeIn",
-    hideMethod: "fadeOut"
-};
+import toastr from "../components/common/toastrConfig";
 
 export const chatActions = {
     instantiateChatkit,
@@ -81,6 +63,7 @@ function connectChatkit() {
                 console.log("current user: ", currentUser.rooms);
                 currUser = currentUser;
                 let currChannel = currentUser.rooms ? currentUser.rooms[0] : undefined;
+
                 return currentUser.joinRoom({ roomId: currChannel.id });
             })
             .then(room => {
@@ -93,12 +76,13 @@ function connectChatkit() {
             .then(currRoom => {
                 console.log(`subscribed to room with room id: ${currRoom.id}`);
                 dispatch(saveAllChatData(currUser.rooms, currRoom));
-                dispatch(finishedLoadingMessages());
+                dispatch(finishedLoadingMetadata());
                 return fetchMessages(currRoom);
             })
             .then(messages => {
                 console.log(messages);
                 dispatch(saveMessages(messages));
+                dispatch(finishedLoadingMessages());
             })
             .catch(error => {
                 console.log(error);
@@ -132,6 +116,7 @@ function switchToChannel(newChannelId, currentChannelId) {
                 console.log(`subscribed to room with room id: ${currRoom.id}`);
 
                 dispatch(saveAllChatData(currUser.rooms, currRoom));
+                dispatch(finishedLoadingMetadata());
                 return fetchMessages(currRoom);
             })
             .then(messages => {
@@ -156,8 +141,9 @@ function sendMessage(messageText, channelId) {
     };
 }
 
-function createChannel(members, name, creatorId, isPrivate, currentChannelId) {
+function createChannel(members, name, creatorId, isPrivate, currentChannelId, projId) {
     return dispatch => {
+        let chatkitMembers = members.map(user => user + projId);
         fetch("http://localhost:3001/createchannel", {
             method: "POST",
             headers: {
@@ -165,12 +151,15 @@ function createChannel(members, name, creatorId, isPrivate, currentChannelId) {
             },
             body: JSON.stringify({
                 creator: creatorId,
-                teamMembers: members,
+                teamMembers: chatkitMembers,
                 channelName: name,
                 isPrivate: !isPrivate
             })
         })
             .then(response => {
+                console.log("in response");
+                if (response.status >= 400) throw "error";
+
                 return response.json();
             })
             .then(roomObj => {
@@ -181,11 +170,13 @@ function createChannel(members, name, creatorId, isPrivate, currentChannelId) {
                 dispatch(switchToChannel(roomObj.id, currentChannelId));
                 //TODO: add new group channel to project on Parse
             })
-            .catch(error => console.error("error", error));
+            .catch(error => {
+                toastr.error("Could not create private room");
+            });
     };
 }
 
-/**************************PRIVATE FUNCTIONS */
+/**************************PRIVATE FUNCTIONS*****************************/
 
 function subscribeToChannel(channelId, dispatch) {
     console.log("in subscribetochannel");
@@ -194,6 +185,7 @@ function subscribeToChannel(channelId, dispatch) {
         messageLimit: 0,
         hooks: {
             onNewMessage: message => {
+                console.log("onNewMessage hook");
                 dispatch(saveMessageSuccess(message, message.sender));
             }
         }
@@ -215,7 +207,7 @@ function fetchMessages(channel) {
         limit: 100
     });
 }
-/********ACTION CREATORS***************/
+/***************ACTION CREATORS***************/
 
 function addNewChannel(channel) {
     return { type: types.ADD_NEW_CHANNEL, req: channel };
@@ -234,6 +226,10 @@ function loadingMessages() {
 
 function finishedLoadingMessages() {
     return { type: types.FINISHED_LOADING_CHAT_MESSAGES, req: null };
+}
+
+function finishedLoadingMetadata() {
+    return { type: types.FINISHED_LOADING_CHAT_METADATA, req: null };
 }
 
 function clearSoftChatState() {

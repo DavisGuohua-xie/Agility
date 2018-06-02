@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import { withRouter } from "react-router";
+import toastr from "./common/toastrConfig";
 
 import { authActions } from "../actions/authActions";
 
@@ -35,6 +36,8 @@ export default class LoginPage extends Component {
 
         if (username && password) {
             this.props.actions.login(username, password, this.props.history);
+        } else {
+            toastr.error("Please enter a username and password!", "Login failed")
         }
     }
 

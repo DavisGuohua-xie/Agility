@@ -8,7 +8,7 @@ export const ChatMessage = props => {
     return (
         <div className={styles.message}>
             <p className={`${styles.from} ${styles.p}`} title={dateContents}>
-                {props.message.sender.name}
+                {props.message.sender}
             </p>
             <p className={styles.p} title={dateContents}>
                 {props.message.text}

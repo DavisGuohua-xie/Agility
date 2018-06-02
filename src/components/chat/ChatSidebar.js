@@ -47,7 +47,9 @@ const ChatSidebar = props => {
                         <li
                             key={group.id}
                             data-channelid={`${group.id}`}
-                            className={styles.channelItem}
+                            className={`${styles.channelItem} ${
+                                group.id === props.activeChannel ? styles.activeChannel : null
+                            }`}
                             onClick={props.onChannelClick}
                         >
                             {group.name}

@@ -48,7 +48,9 @@ app.post("/createchannel", (req, res) => {
             console.log(room);
             return res.json(room);
         })
-        .catch(error => res.status(error.status).json(error));
+        .catch(error => {
+            return res.status(error.status).json(error);
+        });
 });
 
 app.post("/authenticate", (req, res) => {

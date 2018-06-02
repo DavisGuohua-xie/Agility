@@ -5,11 +5,15 @@ export default function chatReducer(state = initialState, action) {
     switch (action.type) {
         case types.SAVE_MESSAGE_SUCCESS:
             console.log("saving message");
-            console.log(state);
+            console.log(action.req);
             return state.merge({
                 msgList: [
                     ...state.msgList,
-                    { ...action.req.message, sender: { ...action.req.sender } }
+                    {
+                        createdAt: action.req.message.createdAt,
+                        text: action.req.message.text,
+                        sender: action.req.sender.name
+                    }
                 ]
             });
         case types.SAVE_ALL_CHAT_DATA_SUCCESS:
@@ -22,8 +26,12 @@ export default function chatReducer(state = initialState, action) {
         case types.SAVE_ALL_MESSAGES:
             let messages = action.req;
             let msgList = [];
-            for(let i = 0; i < messages.length; i++) 
-                msgList.push({...messages[i], sender: messages[i].sender});
+            for (let i = 0; i < messages.length; i++)
+                msgList.push({
+                    createdAt: messages[i].createdAt,
+                    text: messages[i].text,
+                    sender: messages[i].sender.name
+                });
 
             return state.merge({
                 msgList: msgList
@@ -48,11 +56,16 @@ export default function chatReducer(state = initialState, action) {
             });
         case types.LOADING_CHAT_MESSAGES:
             return state.merge({
-                chat_loading: true
+                chat_loading: true,
+                metadata_loading: true
             });
         case types.FINISHED_LOADING_CHAT_MESSAGES:
             return state.merge({
                 chat_loading: false
+            });
+        case types.FINISHED_LOADING_CHAT_METADATA:
+            return state.merge({
+                metadata_loading: false
             });
         case types.ADD_NEW_CHANNEL:
             return state.merge({

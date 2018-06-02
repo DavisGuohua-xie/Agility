@@ -4,12 +4,13 @@ import { connect } from "react-redux";
 
 import { bindActionCreators } from "redux";
 
-import { withRouter } from "react-router";
+import { withRouter, Redirect } from "react-router";
 
 import Sidebar from "react-sidebar";
 import Parse from "parse";
 import Chatkit from "@pusher/chatkit";
 import ReactLoading from "react-loading";
+import toastr from './common/toastrConfig';
 
 import { chatActions } from "../actions/chatActions";
 
@@ -61,15 +62,16 @@ class ChatPage extends Component {
     }
 
     componentDidMount() {
+        if(!this.props.logged_in) {
+            this.props.history.replace("/login");
+            return;
+        }
+
         mql.addListener(this.mediaQueryChanged);
         this.setState({ mql: mql, sidebarDocked: mql.matches });
+        
         // TODO: fetch project data from server
         // TODO: call redux action
-
-        var currentUser = Parse.User.current();
-        if (!currentUser) {
-            this.props.history.push("/login");
-        }
 
         this.props.chatActions.instantiateChatkit(this.state.chatkitUsername);
         this.props.chatActions.login(
@@ -112,7 +114,8 @@ class ChatPage extends Component {
     toggleModal(e) {
         this.setState({
             isModalOpen: !this.state.isModalOpen,
-            createGroupChannel: e.target.dataset.name === "group"
+            createGroupChannel: e.target.dataset.name === "group",
+            newChannelMembers: []
         });
     }
 
@@ -125,12 +128,18 @@ class ChatPage extends Component {
             ? this.props.projectMembers
             : this.state.newChannelMembers;
 
+        if (members.length == 0 || this.state.newChannelName.length == 0) {
+            toastr.error("Specify channel name and/or members", "Can't create channel");
+            return;
+        }
+
         this.props.chatActions.createChannel(
             members,
             this.state.newChannelName,
             this.state.chatkitUsername,
             this.state.createGroupChannel,
-            this.props.currentChannelId
+            this.props.currentChannelId,
+            this.state.projectID
         );
 
         this.resetNewChannelFields();
@@ -180,7 +189,7 @@ class ChatPage extends Component {
 
         if (newChannelMembers.indexOf(name) < 0) newChannelMembers.push(name);
         else newChannelMembers.splice(newChannelMembers.indexOf(name), 1);
-        
+
         this.setState({ newChannelMembers: newChannelMembers });
     }
 
@@ -220,7 +229,7 @@ class ChatPage extends Component {
                         sidebar: { backgroundColor: "white", width: 200, zIndex: 3 }
                     }}
                 >
-                    {this.props.loading ? (
+                    {this.props.metadata_loading ? (
                         <ReactLoading type="bars" color="#357EDD" />
                     ) : (
                         <ChatLayout
@@ -236,7 +245,7 @@ class ChatPage extends Component {
                             onCreateChannel={this.handleCreateChannel}
                             groupChannel={this.state.createGroupChannel}
                             currentRoom={this.state.currentChannel}
-                            loading={this.props.loading}
+                            loading={this.props.chat_loading}
                             members={this.props.projectMembers.filter(
                                 id => id !== this.props.username
                             )}
@@ -261,6 +270,7 @@ function mapStateToProps(state, ownProps) {
     // TODO: need to get list of channel objects from store state
     return {
         ajaxCalls: state.ajaxCallsInProgress,
+        logged_in: state.authReducer.logged_in,
         username: state.authReducer.username,
         firstName: state.authReducer.first_name,
         lastName: state.authReducer.last_name,
@@ -268,8 +278,9 @@ function mapStateToProps(state, ownProps) {
         channels: state.chatReducer.channelList,
         currentChannel: state.chatReducer.currentChannelName,
         currentChannelId: state.chatReducer.currentChannelId,
-        loading: state.chatReducer.chat_loading,
-        projectMembers: ["undefined", "bob", "testFL"] // TODO: get actual project members
+        chat_loading: state.chatReducer.chat_loading,
+        metadata_loading: state.chatReducer.metadata_loading,
+        projectMembers: ["testFL", "newtestakshara", "newtestakshara1"] // TODO: get actual project members
         //channelIds: state.projReducer.currProject.channels,
         //projectMembers: state.projReducer.currProject.roles
     };

@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Container } from "reactstrap";
-import {ReactLoading} from 'react-loading'
+import ReactLoading from "react-loading";
 
 import { ChatMessage } from "./ChatMessage";
 
@@ -12,9 +12,7 @@ import NewChannelModal from "./NewChannelModal";
  */
 const ChatLayout = props => {
     console.log(`docked: ${props.docked}`);
-    return props.loading ? (
-        <ReactLoading type="bars" color="#357EDD" />
-    ) : (
+    return (
         <div className={styles.layoutContainer}>
             <nav className={`navbar bg-light ${styles.chatContainerHeader}`}>
                 <Button
@@ -28,9 +26,15 @@ const ChatLayout = props => {
                     {props.currentRoom ? props.currentRoom : null}
                 </p>
             </nav>
-            <Container fluid className={styles.messageContent}>
-                {props.messageList.map((msg, index) => <ChatMessage key={index} message={msg} />)}
-            </Container>
+            {props.loading ? (
+                <ReactLoading type="bars" color="#357EDD" />
+            ) : (
+                <Container fluid className={styles.messageContent}>
+                    {props.messageList.map((msg, index) => (
+                        <ChatMessage key={index} message={msg} />
+                    ))}
+                </Container>
+            )}
             <div className={styles.inputArea}>
                 <div className="input-group mb-3">
                     <textarea

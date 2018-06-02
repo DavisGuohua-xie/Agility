@@ -15,17 +15,21 @@ import {
 import styles from "../../styles/NewChannelModal.module.css";
 
 const SelectedMemberItem = props => {
-    return <span className={styles.selectedMember}>{props.username}</span>;
+    return <p className={styles.selectedMember}>{props.username}</p>;
 };
 
 const MemberListItem = props => {
     return (
         <div
-            className={styles.memberItemContainer}
+            className={`${styles.memberItemContainer} ${
+                props.active ? styles.memberItemContainerActive : null
+            }`}
             data-name={props.username}
             onClick={props.onMemberSelect}
         >
-            {props.username}
+            <p className={styles.memberItemName} data-name={props.username}>
+                {props.username}
+            </p>
         </div>
     );
 };
@@ -33,17 +37,19 @@ const MemberListItem = props => {
 const MemberList = props => {
     return (
         <div>
-            <Label>Members</Label>
+            <Label>Selected Members</Label>
             <div>
                 {props.selectedMembers.map((member, index) => (
                     <SelectedMemberItem username={member} key={index} />
                 ))}
             </div>
+            <Label>Project Members</Label>
             {props.members.map((member, index) => (
                 <MemberListItem
                     username={member}
                     key={index}
                     onMemberSelect={props.onMemberSelect}
+                    active={props.selectedMembers.indexOf(member) >= 0}
                 />
             ))}
         </div>
