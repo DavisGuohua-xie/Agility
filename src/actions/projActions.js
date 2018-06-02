@@ -3,6 +3,7 @@ import * as ajaxActions from "./ajaxActions";
 import Parse from "parse";
 import createChannelNewProject from "./chatActions";
 import history from "../history";
+import {UserModel} from '../models/UserModel'
 
 export const projActions = {
     createProject,
@@ -54,42 +55,30 @@ function createProject(projectName, projectManager, projectMembers) {
 }
 
 // get projects from current user
-function getProjects() {
-    return dispatch => {
+const getProjects = ()  => dispatch =>{
+
         dispatch(ajaxActions.ajaxBegin());
         dispatch(request());
         let currentUser = Parse.User.current();
 
-        currentUser
-            .fetch()
-            .then(user => {
-                let projects = user.get("projects");
+        UserModel.current((userModel)=>{
+          dispatch(success(userModel.getProjects()))
+        }, (error)=> {
+          dispatch(failure(error))
+        })
 
-                let projectList = [];
-                projects.forEach(project => {
-                    projectList.push({
-                        name: project.get("name"),
-                        id: project.id
-                    });
-                });
-                dispatch(success(projectList));
-                return projectList;
-            })
-            .catch(error => {
-                dispatch(failure(error));
-            });
-    };
+  }
 
-    function request() {
+    const request = () => {
         return { type: types.GET_PROJECT_LIST_REQUEST };
     }
-    function success(req) {
+    const success = (req) => {
         return { type: types.GET_PROJECT_LIST_SUCCESS, projects: req };
     }
-    function failure(req) {
+    const failure = (req)  => {
         return { type: types.GET_PROJECT_LIST_FAILURE, req };
     }
-}
+
 
 // get project data given id
 function getProject(project_id) {

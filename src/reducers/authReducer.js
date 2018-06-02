@@ -15,7 +15,7 @@ export default function authReducer(state = initialState, action) {
                 logging_in: false
             });
         case C.LOGIN_SUCCESS: // Add current user to the store
-            return state.merge({ currentUser: action.userModel, logged_in: true });
+            return state.merge({  ...action.userModel, logged_in: true });
 
         case C.LOGIN_FAILURE: //Add error to list of current errors
             return state.merge({
@@ -40,7 +40,11 @@ export default function authReducer(state = initialState, action) {
             return state.merge({
                 logged_in: false,
                 logging_in: false,
-                currentUser: null
+                currentUser: null,
+                username: "",
+                email: "",
+                first_name: "",
+                last_name: ""                
             });
         default:
             return state;

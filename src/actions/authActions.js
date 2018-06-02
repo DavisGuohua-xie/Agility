@@ -2,36 +2,51 @@ import { authAPI } from "../server/authAPI";
 import { UserModel } from "../models/UserModel";
 // import history from '../history'
 import * as C from "./actionTypes";
-import { ajaxBegin } from "./ajaxActions";
 
-// export const authActions = {
-//   login,
-//   logout,
-//   register
-// };
+export const authActions = {
+    logout
+};
 
-export const login = (username, password, success) => dispatch => {
-    //Now logging in
-    dispatch(loginUser());
-    UserModel.login(
-        username,
-        password,
-        function(newUserModel) {
-            //No longer logging in anymoe
-            dispatch(cancelLogin());
-            //Successful login
-            dispatch(successLogin(newUserModel));
-            //Navigate to
-            // console.log('[USER]: ', newUserModel.getProjects())
-            // console.log(success)
-            success();
-        },
-        function(error) {
-            //No longer logging in anymore
-            dispatch(cancelLogin());
-            dispatch(loginError(error));
-        }
-    );
+let getUserInfo = userModel => {
+    let username = userModel.getUsername();
+    let email = userModel.getEmail();
+    let first_name = userModel.getFirstName();
+    let last_name = userModel.getLastName();
+    let notification_frequency = userModel.getNotification();
+
+    return {
+        username: username,
+        email: email,
+        first_name: first_name,
+        last_name: last_name,
+        notification_freq: notification_frequency
+    };
+};
+
+export const login = (username, password, success) => {
+    return dispatch => {
+        //Now logging in
+        dispatch(loginUser());
+        UserModel.login(
+            username,
+            password,
+            function(newUserModel) {
+                //No longer logging in anymoe
+                dispatch(cancelLogin());
+                //Successful login
+                dispatch(successLogin(newUserModel));
+                //Navigate to
+                // console.log('[USER]: ', newUserModel.getProjects())
+                // console.log(success)
+                success();
+            },
+            function(error) {
+                //No longer logging in anymore
+                dispatch(cancelLogin());
+                dispatch(loginError(error));
+            }
+        );
+    };
 };
 
 export const register = (firstname, lastname, username, email, password, success) => dispatch => {
@@ -56,6 +71,14 @@ export const register = (firstname, lastname, username, email, password, success
         }
     );
 };
+
+function logout() {
+    return dispatch => {
+        UserModel.logout().then(() => {
+            dispatch(logoutSuccess());
+        });
+    };
+}
 
 const successRegister = () => {
     return {
@@ -92,7 +115,7 @@ const loginError = newError => {
 const successLogin = loggedInUser => {
     return {
         type: C.LOGIN_SUCCESS,
-        userModel: loggedInUser
+        userModel: getUserInfo(loggedInUser)
     };
 };
 
@@ -107,14 +130,8 @@ const cancelLogin = () => {
         type: C.CANCEL_LOGIN
     };
 };
-
-function logout() {
-    return dispatch => {
-        dispatch(ajaxBegin());
-        dispatch(logoutAction());
+function logoutSuccess() {
+    return {
+        type: C.LOGOUT_SUCCESS
     };
-}
-
-function logoutAction() {
-    return { type: C.LOGOUT_SUCCESS, req: null };
 }

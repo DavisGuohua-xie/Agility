@@ -20,7 +20,7 @@ import v4 from "uuid";
 class Homepage extends React.Component {
     constructor(props) {
         super(props);
-      
+
         this.state = {
             projects: [] // TODO: change to action dispatch
         };
