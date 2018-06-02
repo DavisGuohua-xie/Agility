@@ -73,13 +73,13 @@ function getProjects() {
     };
 
     function request() {
-        return { type: types.GET_PROJECT_REQUEST };
+        return { type: types.GET_PROJECT_LIST_REQUEST };
     }
     function success(req) {
-        return { type: types.GET_PROJECT_SUCCESS, projects: req };
+        return { type: types.GET_PROJECT_LIST_SUCCESS, projects: req };
     }
     function failure(req) {
-        return { type: types.GET_PROJECT_FAILURE, req };
+        return { type: types.GET_PROJECT_LIST_FAILURE, req };
     }
 }
 
