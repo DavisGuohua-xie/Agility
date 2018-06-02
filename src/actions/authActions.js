@@ -30,6 +30,49 @@ export const login = (username, password, success) => (dispatch) => {
   })
 }
 
+export const register = (firstname, lastname, username, email, password, success) => dispatch => {
+     dispatch(registerUser())
+     var newUser = new UserModel()
+
+     newUser.createAccount( username, password, email, ()=>{
+       newUser.setFirstName(firstname)
+       newUser.setLastName(lastname)
+       dispatch(successRegister())
+       dispatch(cancelRegistration())
+
+       success(newUser)
+     }, (user , error) => {
+       dispatch(failedRegister(error))
+       dispatch(cancelRegistration())
+     })
+}
+
+const successRegister = () => {
+  return {
+    type: C.REGISTRATION_SUCCESS
+  }
+}
+
+const failedRegister = (error) =>{
+    return {
+      type: C.REGISTRATION_FAILURE,
+      newError: error
+    }
+}
+
+const registerUser = () => {
+  return {
+    type: C.SIGN_UP_USER
+  }
+}
+
+
+const cancelRegistration = () => {
+  return {
+    type: C.CANCEL_REGISTRATION
+  }
+}
+
 
 const loginError = (newError) => {
   return {
