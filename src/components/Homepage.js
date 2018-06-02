@@ -51,7 +51,7 @@ class Homepage extends React.Component {
     render() {
         return (
             <div>
-                <NavBar history={this.props.history} zIndex={3} />
+                <NavBar zIndex={3} />
                 <ProjectListComponent
                     projects={ this.props.projects === undefined ? this.state.projects : this.props.projects }
                     onClick={this.projectClick}
