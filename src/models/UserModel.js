@@ -59,7 +59,7 @@ export class UserModel {
         return this.user.get(NOTIFICATION)
     }
 
-    getProjects(reload) {
+    getProjects() {
 
       var projects = this.user.get(PROJECTS)
       var first = projects[0]
@@ -110,10 +110,6 @@ export class UserModel {
                   var loggedIn = new UserModel();
                   //Set the parse user to be populated object
                   loggedIn.user = currUser
-                  //Update local storage
-                  localStorage[CURRENT_USER] = JSON.stringify(loggedIn)
-
-                  console.log("[loggedin], ", localStorage[CURRENT_USER])
 
                   successHandler(loggedIn)
 
