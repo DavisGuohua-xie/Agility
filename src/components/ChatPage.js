@@ -279,9 +279,8 @@ function mapStateToProps(state, ownProps) {
         currentChannelId: state.chatReducer.currentChannelId,
         chat_loading: state.chatReducer.chat_loading,
         metadata_loading: state.chatReducer.metadata_loading,
-        projectMembers: ["testFL", "newtestakshara", "newtestakshara1"] // TODO: get actual project members
-        //channelIds: state.projReducer.currProject.channels,
-        //projectMembers: state.projReducer.currProject.roles
+        channelIds: state.projectReducer.project_data.channels,
+        projectMembers: state.projectReducer.project_data.members // {fname, lname, member_id, username}
     };
 }
 
