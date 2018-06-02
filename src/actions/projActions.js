@@ -1,13 +1,14 @@
 import * as types from "./actionTypes";
 import Parse from "parse";
 import * as ajaxActions from './ajaxActions';
+import history from '../history'
 
 export const projActions = {
     createProject,
     getProjects
 };
 
-function createProject(projectName, projectManager, projectMembers, history) {
+function createProject(projectName, projectManager, projectMembers) {
     return dispatch => {
         console.log("creating project" + projectName + "...");
         dispatch(request(projectName));
@@ -23,7 +24,7 @@ function createProject(projectName, projectManager, projectMembers, history) {
 
         project.save(null, {
             success: function(project) {
-                saveMembersToProject(project, projectManager, projectMembers, history);
+                saveMembersToProject(project, projectManager, projectMembers);
                 dispatch(success(project));
             },
             error: function(project, error) {
@@ -82,7 +83,7 @@ function getProjects() {
     }
 }
 
-function saveMembersToProject(project, projectManager, projectMembers, history) {
+function saveMembersToProject(project, projectManager, projectMembers) {
     let roles = {};
     let promises = [];
     let failedUsers = [];

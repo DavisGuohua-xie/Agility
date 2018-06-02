@@ -204,7 +204,6 @@ class ProjectOverviewPage extends React.Component {
         return (
             <div style={{ height: "100%" }}>
                 <NavBar
-                    history={this.props.history}
                     projName="Project"
                     projID={this.state.projectID}
                     zIndex={2}
