@@ -13,7 +13,8 @@ const ManagementButton = props => {
             </button>
             <div className={showClass}>
                 <p>Details</p>
-                <p>Add/Remove Members</p>
+                <p onClick={props.onAddMember}>Add Members</p>
+                <p onClick={props.onRemoveMember}>Remove Members</p>
                 <p>Export Tasks</p>
             </div>
         </div>

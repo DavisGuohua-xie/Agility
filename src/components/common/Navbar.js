@@ -20,6 +20,8 @@ import { authActions } from "../../actions/authActions";
 
 import styles from "../../styles/navbar.module.css";
 
+import history from '../../history';
+
 class NavBar extends React.Component {
     constructor(props) {
         super(props);
@@ -42,8 +44,8 @@ class NavBar extends React.Component {
     }
 
     logout() {
-        this.props.history.push("/login");
-        this.props.actions.logout(this.props.history);
+        history.push("/login");
+        this.props.actions.logout();
     }
 
     render() {

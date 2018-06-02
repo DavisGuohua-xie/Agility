@@ -8,7 +8,7 @@ import { withRouter } from "react-router";
 
 import Sidebar from "react-sidebar";
 
-import * as projActions from "../actions/projActions";
+import { projActions } from "../actions/projActions";
 
 import { NavBar } from "./common/Navbar";
 
@@ -17,49 +17,26 @@ import { ProjectOverview } from "./project/ProjectOverview";
 import MemberSidebarItem from "./common/MemberSidebarItem";
 
 import styles from "../styles/ProjectOverviewPage.module.css";
-import ProjectTaskComponent from "./project/ProjectTaskComponent";
+import { ProjectTaskComponent } from "./project/ProjectTaskComponent";
 import { ProjectCalendar } from "./project/Calendar";
 import moment from "moment";
+
+import {
+    Button,
+    Form,
+    FormGroup,
+    Input,
+    Label,
+    Modal,
+    ModalHeader,
+    ModalBody,
+    ModalFooter
+} from 'reactstrap';
 
 import { Parse } from "parse";
 import ManagementButton from "./project/ManagementButton";
 
 const mql = window.matchMedia(`(min-width: 900px)`);
-
-/* TODO: delete mock proj member data */
-const members = [{ fname: "Joe", lname: "Schmo" }, { fname: "Joe", lname: "Schmo" }];
-const mockTasks = {
-    lanes: [
-        {
-            id: "lane1",
-            title: "Planned Tasks",
-            label: "2/2",
-            cards: [
-                {
-                    id: "Card1",
-                    title: "Write Blog",
-                    description: "Can AI make memes",
-                    label: "30 mins"
-                },
-                {
-                    id: "Card2",
-                    title: "Pay Rent",
-                    description: "Transfer via NEFT",
-                    label: "5 mins",
-                    metadata: {
-                        sha: "be312a1"
-                    }
-                }
-            ]
-        },
-        {
-            id: "lane2",
-            title: "Completed",
-            label: "0/0",
-            cards: []
-        }
-    ]
-};
 
 class ProjectOverviewPage extends React.Component {
     constructor(props) {
@@ -68,6 +45,7 @@ class ProjectOverviewPage extends React.Component {
         var currentUser = Parse.User.current();
         if (!currentUser) {
             this.props.history.push("/login");
+            return;
         }
 
         console.log("in project overview page constructor");
@@ -77,11 +55,16 @@ class ProjectOverviewPage extends React.Component {
             mql: mql,
             docked: props.docked,
             open: props.open,
-            members: members,
+            members: [],
             projectID: props.match.params.projID,
             showManageMenu: false,
             modalOpen: false,
-            tasks: mockTasks
+            tasks: {lanes: []},
+            addMemberModalOpen: false,
+            removeMemberModalOpen: false,
+            newUserName: '',
+            newRole: '',
+            removeName: ''
         };
 
         this.toggleSidebar = this.toggleSidebar.bind(this);
@@ -89,13 +72,74 @@ class ProjectOverviewPage extends React.Component {
         this.generateSidebar = this.generateSidebar.bind(this);
         this.handleManageClick = this.handleManageClick.bind(this);
         this.toggleNewBoard = this.toggleNewBoard.bind(this);
+        this.toggleAddMemberModal = this.toggleAddMemberModal.bind(this);
+        this.handleNewName = this.handleNewName.bind(this);
+        this.handleAddMember = this.handleAddMember.bind(this);
+        this.handleNewRole = this.handleNewRole.bind(this);
+        this.toggleRemoveMemberModal = this.toggleRemoveMemberModal.bind(this);
+        this.handleRemoveMember = this.handleRemoveMember.bind(this);
+        this.handleRemoveName = this.handleRemoveName.bind(this);
+    }
+
+    toggleAddMemberModal() {
+        console.log(Parse.User.current().id);
+        this.setState({addMemberModalOpen: !this.state.addMemberModalOpen});
+    }
+
+    handleNewName(e) {
+        let name = e.target.value;
+        this.setState ({
+            newUserName: name
+        });
+        console.log(this.state.newUserName);
+    }
+
+    handleAddMember() {
+        let newMember = {
+            fname: this.state.newUserName,
+            lname: this.state.newUserName
+        }
+
+        this.state.members.push(newMember);
+        this.toggleAddMemberModal();
+    }
+
+    handleNewRole(e) {
+        this.setState({
+            newRole: e.target.value
+        }) ;
+        console.log(this.state.newRole);
+    }
+
+    toggleRemoveMemberModal() {
+        this.setState({removeMemberModalOpen: !this.state.removeMemberModalOpen});
+    }
+
+    handleRemoveName(e) {
+        this.setState({
+            removeName: e.target.value
+        });
+        console.log(this.state.removeName);
+    }
+
+    handleRemoveMember() {
+        let newMembers = this.state.members;
+        console.log(newMembers);
+        for (var i = newMembers.length-1; i >= 0; i--) {
+            if (newMembers[i].fname == this.state.removeName || newMembers[i].lname == this.state.removeName) {
+                newMembers.splice(i, 1);
+                break;
+            }
+        }
+        this.setState({
+            members: newMembers
+        });
     }
 
     componentDidMount() {
         mql.addListener(this.mediaQueryChanged);
         this.setState({ mql: mql, sidebarDocked: mql.matches });
-        // TODO: fetch project data from server
-        // TODO: call redux action
+        this.props.actions.getProject(this.props.match.params.projID);
     }
 
     componentWillUnmount() {
@@ -132,9 +176,11 @@ class ProjectOverviewPage extends React.Component {
     generateSidebar() {
         // TODO: generate list of project members for DM-ing
 
+        var members = this.props.project_data === undefined ? this.state.members : this.props.project_data.members;
+
         return (
             <ul className={styles.sidebarUL}>
-                {this.state.members.map((person, index) => (
+                {members.map((person, index) => (
                     <MemberSidebarItem fname={person.fname} lname={person.lname} key={index} />
                 ))}
             </ul>
@@ -152,6 +198,9 @@ class ProjectOverviewPage extends React.Component {
     handleManageClick = () => this.setState({ showManageMenu: !this.state.showManageMenu });
 
     render() {
+        var task_list = this.props.project_data === undefined ? this.state.tasks : { lanes: JSON.parse(JSON.stringify(this.props.project_data.boards)) };
+        console.log(task_list);
+        
         console.log(this.state);
         let sidebarContent = this.generateSidebar();
         let mainContent;
@@ -161,13 +210,15 @@ class ProjectOverviewPage extends React.Component {
                 mainContent = (
                     <ProjectOverview
                         onSidebarToggle={this.toggleSidebar}
-                        taskList={this.state.tasks.lanes}
+                        taskList={task_list.lanes}
                     />
                 );
                 projectManage = (
                     <ManagementButton
                         onManageClick={this.handleManageClick}
                         show={this.state.showManageMenu}
+                        onAddMember={this.toggleAddMemberModal}
+                        onRemoveMember={this.toggleRemoveMemberModal}
                     />
                 );
                 break;
@@ -175,12 +226,13 @@ class ProjectOverviewPage extends React.Component {
                 mainContent = (
                     <ProjectTaskComponent
                         onSidebarToggle={this.toggleSidebar}
-                        taskList={this.state.tasks}
+                        taskList={task_list}
                         eventBus={this.setEventBus}
                         onLaneClick={this.handleLaneClick}
                         onCardClick={this.handleCardClick}
                         modalOpen={this.state.modalOpen}
                         onToggleModal={this.toggleNewBoard}
+                        project_id={this.props.match.params.projID}
                     />
                 );
                 break;
@@ -203,9 +255,42 @@ class ProjectOverviewPage extends React.Component {
 
         return (
             <div style={{ height: "100%" }}>
+                <Modal isOpen={this.state.addMemberModalOpen} toggle={this.toggleAddMemberModal} className={this.props.className}>
+                    <ModalHeader toggle={this.toggleAddMemberModal}>Add New Team Member</ModalHeader>
+                    <ModalBody>
+                        <Form>
+                            <FormGroup>
+                                <Label for="usertName">User Name or Email</Label>
+                                <Input type="text" name="usernameinput" id="userName" placeholder="Agility" onChange={this.handleNewName}/>
+                                <Label for="role">Role</Label>
+                                <Input type="text" name="role" id="role" placeholder="Software Architect, Algorithm Specialist, etc." onChange={this.handleNewRole}/>
+                            </FormGroup>
+                        </Form>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="secondary" onClick={this.toggleAddMemberModal}>Cancel</Button>
+                        <Button color="primary" onClick={this.handleAddMember}>Add</Button>
+                    </ModalFooter>
+                </Modal>
+
+                <Modal isOpen={this.state.removeMemberModalOpen} toggle={this.toggleRemoveMemberModal} className={this.props.className}>
+                    <ModalHeader toggle={this.toggleRemoveMemberModal}>Remove New Team Member</ModalHeader>
+                    <ModalBody>
+                        <Form>
+                            <FormGroup>
+                                <Label for="usertName">User Name or Email</Label>
+                                <Input type="text" name="usernameinput" id="userName" placeholder="Agility" onChange={this.handleRemoveName}/>
+                            </FormGroup>
+                        </Form>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="secondary" onClick={this.toggleRemoveMemberModal}>Cancel</Button>
+                        <Button color="primary" onClick={this.handleRemoveMember}>Remove</Button>
+                    </ModalFooter>
+                </Modal>
+
                 <NavBar
-                    history={this.props.history}
-                    projName="Project"
+                    projName={this.props.project_data === undefined ? "" : this.props.project_data.name}
                     projID={this.state.projectID}
                     zIndex={2}
                 />
@@ -243,9 +328,10 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, ownProps) {
-    console.log(state);
     return {
-        ajaxCalls: state.ajaxCallsInProgress
+        ajaxCalls: state.ajaxCallsInProgress,
+        project_data: state.projectReducer.project_data,
+        board_data: state.taskReducer.board_data
     };
 }
 
