@@ -59,7 +59,11 @@ class ProjectOverviewPage extends React.Component {
             projectID: props.match.params.projID,
             showManageMenu: false,
             modalOpen: false,
-            tasks: {lanes: []},
+            tasks: {lanes: [ {
+                id: '0',
+                title: 'Please click on overview then tasks again.',
+                cards: []
+            }]},
             addMemberModalOpen: false,
             removeMemberModalOpen: false,
             newUserName: '',
