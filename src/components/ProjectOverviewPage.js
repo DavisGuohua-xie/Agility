@@ -116,6 +116,7 @@ class ProjectOverviewPage extends React.Component {
     }
 
     toggleAddMemberModal() {
+        console.log(Parse.User.current().id);
         this.setState({addMemberModalOpen: !this.state.addMemberModalOpen});
     }
 
