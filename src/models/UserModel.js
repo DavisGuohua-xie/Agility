@@ -28,21 +28,31 @@ var defaultErrorHandler = function(data, error) {
 
 //UserModel does not extends Parse.User but is more like a wrapper
 export class UserModel {
-    constructor() {
-        //Let the super class be responsible for setting the classname
-        this.user = new Parse.User();
+    constructor(currentUser) {
+        if (!currentUser) {
+            //Let the super class be responsible for setting the classname
+            this.user = new Parse.User();
 
-        this.firstName = "firstname";
-        this.user.set(FIRST_NAME, this.firstName);
+            this.firstName = "firstname";
+            this.user.set(FIRST_NAME, this.firstName);
 
-        this.lastName = "lastname";
-        this.user.set(LAST_NAME, this.lastName);
+            this.lastName = "lastname";
+            this.user.set(LAST_NAME, this.lastName);
 
-        this.projects = [];
-        this.user.set(PROJECTS, this.projects);
+            this.projects = [];
+            this.user.set(PROJECTS, this.projects);
 
-        this.notification = HOURLY;
-        this.user.set(NOTIFICATION, this.notification);
+            this.notification = HOURLY;
+            this.user.set(NOTIFICATION, this.notification);
+        } else {
+            this.user = currentUser;
+            this.firstName = currentUser.get(FIRST_NAME);
+            this.lastName = currentUser.get(LAST_NAME);
+            this.projects = currentUser.get(PROJECTS);
+            console.log(`IN USERMODEL CONSTRUCTOR:`);
+            console.log(this.projects);
+            this.notification = currentUser.get(NOTIFICATION);
+        }
     }
 
     getUsername() {
@@ -55,8 +65,8 @@ export class UserModel {
     }
 
     getProjects() {
-        var projects = this.user.get(PROJECTS);
-        var first = projects[0];
+        let projects = this.user.get(PROJECTS);
+        console.log(this.user);
 
         return projects;
     }
@@ -129,8 +139,8 @@ export class UserModel {
         userQuery.find({
             success: function(results) {
                 var currUser = results[0];
-                console.log(currUser.get("projects"));
-                var loggedIn = new UserModel();
+                console.log(results);
+                var loggedIn = new UserModel(currUser);
                 //Set the parse user to be populated object
                 loggedIn.user = currUser;
                 //Update local storage

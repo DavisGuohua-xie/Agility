@@ -31,7 +31,7 @@ const ProjectList = props => {
                   (props.projects != undefined || props.projects != null ? props.projects: []) .map((item, index) => (
                     <ProjectItem
                         key={item.id}
-                        name={item.get("name")}
+                        name={item.name}
                         id={item.id}
                         onClick={props.onClick}
                     />
