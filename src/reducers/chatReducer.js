@@ -6,6 +6,7 @@ export default function chatReducer(state = initialState, action) {
         case types.SAVE_MESSAGE_SUCCESS:
             console.log("saving message");
             console.log(action.req);
+            console.trace();
             return state.merge({
                 msgList: [
                     ...state.msgList,

@@ -11,13 +11,15 @@ export const chatActions = {
     reset,
     sendMessage,
     switchToChannel,
-    createChannel
+    createChannel,
+    logoff
 };
 
 const MAX_MESSAGES_RETRIEVE = 100;
 
 let chatManager = null;
 let currUser = null;
+let roomSubs = [];
 
 function instantiateChatkit(chatkitUsername) {
     return dispatch => {
@@ -75,6 +77,9 @@ function connectChatkit() {
             })
             .then(currRoom => {
                 console.log(`subscribed to room with room id: ${currRoom.id}`);
+                console.log(currRoom.users);
+
+                roomSubs.push(currRoom.id);
                 dispatch(saveAllChatData(currUser.rooms, currRoom));
                 dispatch(finishedLoadingMetadata());
                 return fetchMessages(currRoom);
@@ -90,25 +95,25 @@ function connectChatkit() {
     };
 }
 
-function reset(currentRoom, softClear) {
-    return dispatch => {
-        unsubscribeFromChannel(currentRoom);
-        if (softClear) {
-            dispatch(clearSoftChatState());
-        } else {
-            dispatch(clearChatState());
-        }
-    };
+function reset(currUser, currentRoom, softClear, dispatch) {
+    unsubscribeFromChannel(currentRoom);
+    roomSubs.splice(roomSubs.indexOf(currentRoom), 1);
+    if (softClear) {
+        dispatch(clearSoftChatState());
+    } else {
+        dispatch(clearChatState());
+    }
 }
 
 function switchToChannel(newChannelId, currentChannelId) {
     return dispatch => {
         dispatch(loadingMessages());
-        dispatch(saveChangeChannel({ id: newChannelId }));
 
+        console.log("room subs");
         console.log(currUser.roomSubscriptions);
         // close current subscription (ACTION)
-        unsubscribeFromChannel(currentChannelId);
+        reset(currUser, currentChannelId, true, dispatch);
+        dispatch(saveChangeChannel({ id: newChannelId }));
 
         //open new subscription to new channel
         subscribeToChannel(newChannelId, dispatch)
@@ -129,12 +134,12 @@ function switchToChannel(newChannelId, currentChannelId) {
 
 function sendMessage(messageText, channelId) {
     return dispatch => {
+        console.log("in chatActions sendMessage");
         currUser
             .sendMessage({
                 text: messageText,
                 roomId: channelId
             })
-            .then(() => {})
             .catch(err => {
                 toastr.error("Error sending message");
             });
@@ -176,16 +181,27 @@ function createChannel(members, name, creatorId, isPrivate, currentChannelId, pr
     };
 }
 
+function logoff() {
+    return dispatch => {
+        Object.keys(currUser.roomSubscriptions).forEach(channelId => {
+            unsubscribeFromChannel(channelId);
+        });
+
+        roomSubs = [];
+        console.log("after logging off");
+        console.log(currUser.roomSubscriptions);
+    };
+}
+
 /**************************PRIVATE FUNCTIONS*****************************/
 
 function subscribeToChannel(channelId, dispatch) {
-    console.log("in subscribetochannel");
+    console.log(`in subscribetochannel channelId: ${channelId}`);
     return currUser.subscribeToRoom({
         roomId: channelId,
         messageLimit: 0,
         hooks: {
             onNewMessage: message => {
-                console.log("onNewMessage hook");
                 dispatch(saveMessageSuccess(message, message.sender));
             }
         }
@@ -193,11 +209,10 @@ function subscribeToChannel(channelId, dispatch) {
 }
 
 function unsubscribeFromChannel(channelId) {
-    return dispatch => {
-        if (channelId) {
-            currUser.roomSubscriptions[channelId].cancel();
-        }
-    };
+    console.log(channelId);
+    currUser.roomSubscriptions[channelId].cancel();
+    console.log("in unsub");
+    console.log(channelId);
 }
 
 function fetchMessages(channel) {

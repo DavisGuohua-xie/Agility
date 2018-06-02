@@ -100,12 +100,12 @@ class ChatPage extends Component {
     componentWillUnmount() {
         this.state.mql.removeListener(this.mediaQueryChanged);
         // remove all room subscriptions
-        this.props.chatActions.reset(this.props.currentChannel, false);
+        this.props.chatActions.logoff();
     }
 
     switchToChannel(e) {
         let channelId = parseInt(e.target.dataset.channelid);
-        this.props.chatActions.switchToChannel(channelId, this.props.currentChannel);
+        this.props.chatActions.switchToChannel(channelId, this.props.currentChannelId);
         this.setState({
             currentChannel: { id: channelId }
         }); // to make ui seem responsive
