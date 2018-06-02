@@ -10,15 +10,13 @@ import { bindActionCreators } from "redux";
 import { withRouter } from "react-router";
 import { projActions } from "../actions/projActions";
 import { Parse } from "parse";
+import {UserModel} from '../models/UserModel';
 
 import { NavBar } from "./common/Navbar";
 import { ProjectListComponent } from "./home/ProjectListComponent";
 
 import v4 from "uuid";
 
-let projs = [
-    { name: "Loading...", id: v4() },
-];
 
 class Homepage extends React.Component {
     constructor(props) {
@@ -31,7 +29,7 @@ class Homepage extends React.Component {
         }
         
         this.state = {
-            projects: projs // TODO: change to action dispatch
+            projects: [] // TODO: change to action dispatch
         };
 
 
@@ -46,6 +44,14 @@ class Homepage extends React.Component {
     projectClick(e) {
         this.props.history.push(`/${e.target.id}/overview`);
         // TODO: dispatch action to reflect current project name in store
+    }
+
+    componentDidMount(){
+      var currentUser = UserModel.current(()=>{
+        console.log("[PROJECTLISTCOMPONENTS]",currentUser.getProjects())
+        this.setState({projects: currentUser.getProjects()})
+      });
+
     }
 
     render() {

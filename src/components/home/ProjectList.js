@@ -4,12 +4,13 @@ import PropTypes from "prop-types";
 import { Container, Button } from "reactstrap";
 
 import ProjectItem from "../misc/ProjectItem";
-import {ProjectModel} from "../../models/ProjectModel"
+import ProjectModel from "../../models/ProjectModel"
 
 import styles from "../../styles/ProjectList.module.css";
 
 const ProjectList = props => {
 
+  console.log("[PROJECTS]", props.projects)
 
     return (
         <Container>
@@ -30,7 +31,7 @@ const ProjectList = props => {
                   (props.projects != undefined || props.projects != null ? props.projects: []) .map((item, index) => (
                     <ProjectItem
                         key={item.id}
-                        name={item.getName()}
+                        name={item.get("name")}
                         id={item.id}
                         onClick={props.onClick}
                     />

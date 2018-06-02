@@ -16,7 +16,7 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withRouter } from "react-router";
-import { authActions } from "../../actions/authActions";
+// import { authActions } from "../../actions/authActions";
 
 import styles from "../../styles/navbar.module.css";
 
@@ -111,7 +111,7 @@ class NavBar extends React.Component {
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators(authActions, dispatch)
+        // actions: bindActionCreators(authActions, dispatch)
     };
 }
 

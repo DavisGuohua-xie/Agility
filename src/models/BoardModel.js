@@ -8,7 +8,6 @@ export class BoardModel extends Parse.Object {
     constructor() {
         super('Board')
 
-
         this.title = 'New Board'
         this.set(TITLE, this.title);
 
