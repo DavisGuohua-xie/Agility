@@ -8,7 +8,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withRouter } from "react-router";
-import * as projActions from "../actions/projActions";
+import { projActions } from "../actions/projActions";
 import { Parse } from "parse";
 
 import { NavBar } from "./common/Navbar";
@@ -17,11 +17,7 @@ import { ProjectListComponent } from "./home/ProjectListComponent";
 import v4 from "uuid";
 
 let projs = [
-    { name: "Project 1", id: v4() },
-    { name: "Project 2", id: v4() },
-    { name: "Project 3", id: v4() },
-    { name: "Project 4", id: v4() },
-    { name: "Project 5", id: v4() }
+    { name: "Loading...", id: v4() },
 ];
 
 class Homepage extends React.Component {
@@ -33,12 +29,18 @@ class Homepage extends React.Component {
             this.props.history.push("/login");
             return;
         }
-
+        
         this.state = {
             projects: projs // TODO: change to action dispatch
         };
 
+
         this.projectClick = this.projectClick.bind(this);
+    }
+
+    componentWillMount() {
+        console.log("dispatching...");
+        this.props.actions.getProjects();
     }
 
     projectClick(e) {
@@ -51,7 +53,7 @@ class Homepage extends React.Component {
             <div>
                 <NavBar history={this.props.history} zIndex={3} />
                 <ProjectListComponent
-                    projects={this.state.projects}
+                    projects={ this.props.projects === undefined ? this.state.projects : this.props.projects }
                     onClick={this.projectClick}
                 />{" "}
                 {/* TODO: project list will be sent over by server */}
@@ -67,8 +69,8 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, ownProps) {
-    console.log(state);
     return {
+        projects: state.projectReducer.projects,
         loading: state.ajaxCallsInProgress > 0
     };
 }
