@@ -60,6 +60,10 @@ export class ProjectModel extends Parse.Object {
 
     //Getters
 
+    getName(){
+      return this.get(NAME)
+    }
+
     getRoles() {
         return this.get(ROLES)
     }

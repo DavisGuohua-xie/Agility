@@ -16,9 +16,11 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withRouter } from "react-router";
-import { authActions } from "../../actions/authActions";
+// import { authActions } from "../../actions/authActions";
 
 import styles from "../../styles/navbar.module.css";
+
+import history from '../../history';
 
 class NavBar extends React.Component {
     constructor(props) {
@@ -39,8 +41,8 @@ class NavBar extends React.Component {
     }
 
     logout() {
-        this.props.history.push("/login");
-        this.props.actions.logout(this.props.history);
+        history.push("/login");
+        this.props.actions.logout();
     }
 
     render() {
@@ -106,7 +108,7 @@ class NavBar extends React.Component {
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators(authActions, dispatch)
+        // actions: bindActionCreators(authActions, dispatch)
     };
 }
 

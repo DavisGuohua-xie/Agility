@@ -1,46 +1,42 @@
-import * as types from "../actions/actionTypes";
+import  * as C from "../actions/actionTypes";
 import initialState from "./initialState";
-
-let getUserInfo = user => {
-    let username = user.attributes.username;
-    let email = user.attributes.email;
-    let first_name = user.attributes.first_name;
-    let last_name = user.attributes.last_name;
-    let notification_frequency = user.attributes.notification;
-
-    return {
-        username: username,
-        email: email,
-        first_name: first_name,
-        last_name: last_name,
-        notification_freq: notification_frequency
-    };
-};
 
 export default function authReducer(state = initialState, action) {
     switch (action.type) {
-        case types.LOGIN_REQUEST:
+      //Starting fetching user with username and password
+        case C.LOGIN_USER:
             return state.merge({
                 logging_in: true
             });
 
-        case types.REGISTRATION_SUCCESS:
-        case types.LOGIN_SUCCESS:
-            console.log("login_success reducer\n\n\n");
+            //Stopped logging in for whatever reason
+          case C.CANCEL_LOGIN:
+          return state.merge({
+            logging_in: false
+          })
+        case C.LOGIN_SUCCESS: // Add current user to the store
+            return state.merge({ currentUser: action.userModel, loggedIn: true});
 
-            let userInfo = getUserInfo(action.req);
-            return state.merge({ ...userInfo, logging_in: false, logged_in: true });
-
-        case types.LOGIN_FAILURE:
+        case C.LOGIN_FAILURE: //Add error to list of current errors
             return state.merge({
-                logging_in: false,
-                logged_in: false
+                errors: [...state.errors, action.error]
             });
 
-        case types.LOGOUT_SUCCESS:
+        case C.SIGN_UP_USER:
             return state.merge({
-                logged_in: false
-            }); // TODO: remove userInfo fields from state
+              signingUp: true
+            });
+
+        case C.CANCEL_REGISTRATION:
+            return state.merge({
+              signingUp: false
+            })
+
+        case C.REGISTRATION_FAILURE:
+           return state.merge({
+             errors: [...state.errors,action.newError]
+           })
+
 
         default:
             return state;

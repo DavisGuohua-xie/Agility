@@ -1,6 +1,10 @@
 import React from "react";
 
 import { ProjectTasks } from "./ProjectTasks";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { withRouter } from "react-router";
+import { taskActions } from "../../actions/taskActions";
 import v4 from "uuid";
 
 class ProjectTaskComponent extends React.Component {
@@ -45,6 +49,9 @@ class ProjectTaskComponent extends React.Component {
     handleCreateBoard() {
         if (this.state.newBoard === "") return;
 
+        this.props.actions.createBoard(this.state.newBoard, this.props.project_id);
+        
+        /*
         let boards = Object.assign({}, this.state.tasksData);
         boards.lanes.push({
             id: (boards.lanes.length) + "",
@@ -57,6 +64,7 @@ class ProjectTaskComponent extends React.Component {
         console.log(this.state.eventBus);
 
         this.state.eventBus.publish({ type: "UPDATE_LANES", lanes: boards.lanes });
+        */
         this.props.onToggleModal();
         this.props.updateTasks(boards);
     }
@@ -110,4 +118,18 @@ class ProjectTaskComponent extends React.Component {
     }
 }
 
-export default ProjectTaskComponent;
+
+function mapDispatchToProps(dispatch) {
+    return {
+        actions: bindActionCreators(taskActions, dispatch)
+    };
+}
+
+function mapStateToProps(state, ownProps) {
+    return {
+        ajaxCalls: state.ajaxCallsInProgress,
+    };
+}
+
+const connectedPage = withRouter(connect(mapStateToProps, mapDispatchToProps)(ProjectTaskComponent));
+export { connectedPage as ProjectTaskComponent };
