@@ -5,7 +5,7 @@ import history from '../history'
 
 export const taskActions = {
     createBoard,
-    createTask
+    //createTask
 };
 
 function createBoard(title, project_id) {
