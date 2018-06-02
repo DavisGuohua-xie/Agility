@@ -100,12 +100,7 @@ class ProjectListComponent extends React.Component {
         })
     }
 
-    componentDidMount(){
-      var currentUser = UserModel.current(()=>{
-        this.setState({projItems: currentUser.getProjects()})
-      });
 
-    }
 
     render() {
         return (

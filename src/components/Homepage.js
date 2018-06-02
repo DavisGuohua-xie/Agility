@@ -10,19 +10,20 @@ import { bindActionCreators } from "redux";
 import { withRouter } from "react-router";
 import * as projActions from "../actions/projActions";
 import { Parse } from "parse";
+import {UserModel} from '../models/UserModel';
 
 import { NavBar } from "./common/Navbar";
 import { ProjectListComponent } from "./home/ProjectListComponent";
 
 import v4 from "uuid";
 
-let projs = [
-    { name: "Project 1", id: v4() },
-    { name: "Project 2", id: v4() },
-    { name: "Project 3", id: v4() },
-    { name: "Project 4", id: v4() },
-    { name: "Project 5", id: v4() }
-];
+// let projs = [
+//     { name: "Project 1", id: v4() },
+//     { name: "Project 2", id: v4() },
+//     { name: "Project 3", id: v4() },
+//     { name: "Project 4", id: v4() },
+//     { name: "Project 5", id: v4() }
+// ];
 
 class Homepage extends React.Component {
     constructor(props) {
@@ -35,7 +36,7 @@ class Homepage extends React.Component {
         }
 
         this.state = {
-            projects: projs // TODO: change to action dispatch
+            projects: [] // TODO: change to action dispatch
         };
 
         this.projectClick = this.projectClick.bind(this);
@@ -44,6 +45,14 @@ class Homepage extends React.Component {
     projectClick(e) {
         this.props.history.push(`/${e.target.id}/overview`);
         // TODO: dispatch action to reflect current project name in store
+    }
+
+    componentDidMount(){
+      var currentUser = UserModel.current(()=>{
+        console.log("[PROJECTLISTCOMPONENTS]",currentUser.getProjects())
+        this.setState({projects: currentUser.getProjects()})
+      });
+
     }
 
     render() {
