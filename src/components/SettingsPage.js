@@ -77,12 +77,14 @@ class SettingsPage extends React.Component {
         }
 
         if(emailFreq){
-            um.setNotification(parseInt(emailFreq), function(){
-                console.log("frequency updated",um.getNotification())
-            },
-            function(title, error){
-                console.log('ERROR', error)
-            })
+            if(parseInt(emailFreq) > -1){
+                um.setNotification(parseInt(emailFreq), function(){
+                    console.log("frequency updated",um.getNotification())
+                },
+                function(title, error){
+                    console.log('ERROR', error)
+                })
+            }
         }
 
 

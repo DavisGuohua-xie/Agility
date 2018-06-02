@@ -72,7 +72,7 @@ const SettingsLayout = props => {
                                 onChange={props.onValueChange}
                             />
                             <Input
-                                type="confpassword"
+                                type="password"
                                 name="confpassword"
                                 id="confpassword"
                                 placeholder="Confirm new password"
@@ -91,8 +91,9 @@ const SettingsLayout = props => {
                                 id="emailNotif"
                                 name="emailFreq"
                                 onChange={props.onValueChange}
-                                defaultValue={props.emailFreq ? props.emailFreq : "0"}
+                                defaultValue={props.emailFreq ? props.emailFreq : "-1"}
                             >
+                                <option value="-1">Select Frequency</option>
                                 <option value="0">None</option>
                                 <option value="1">Daily</option>
                                 <option value="2">Weekly</option>
