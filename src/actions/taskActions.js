@@ -51,17 +51,16 @@ function createBoard(title, project_id) {
     }
 }
 
-
+/*
 function createTask(taskName, board) {
     return dispatch => {
-        console.log("creating task" + taskName + "...");
-        dispatch(request(taskName));
+        dispatch(ajaxActions.ajaxBegin());
+        dispatch(request());
 
         let task = Parse.Object.extend("Task");
         let task = new Task();
 
-        task.set("name", projectName);
-        task.set("boards", []);
+        task.set("title", taskName);
 
         task.save(null, {
             success: function(task) {
@@ -85,4 +84,4 @@ function createTask(taskName, board) {
         return { type: types.CREATE_TASK_FAILURE, req };
     }
 }
-
+*/
