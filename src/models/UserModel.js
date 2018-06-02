@@ -69,6 +69,9 @@ export class UserModel {
         return this.user.get(FIRST_NAME)
     }
 
+    getEmail() {
+        return this.user.get(EMAIL)
+    }
 
     //Setters/Modifiers
 
@@ -146,6 +149,28 @@ export class UserModel {
         // this.lastName = lastName;
 
         this.user.set(LAST_NAME, lastName)
+        this.saveData(this.user, successHandler, errorHandler)
+    }
+
+
+    setEmail(email, successHandler, errorHandler) {
+        // this.lastName = lastName;
+
+        this.user.set(EMAIL, email)
+        this.saveData(this.user, successHandler, errorHandler)
+    }
+
+
+    setPass(pass, successHandler, errorHandler) {
+        // this.lastName = lastName;
+
+        this.user.set(PASSWORD, pass)
+        this.saveData(this.user, successHandler, errorHandler)
+    }
+
+
+    setNotification(freq, successHandler, errorHandler) {
+        this.user.set(NOTIFICATION, freq)
         this.saveData(this.user, successHandler, errorHandler)
     }
 

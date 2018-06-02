@@ -99,7 +99,7 @@ const SettingsLayout = props => {
                             </select>
                         </div>
 
-                        <Button type="submit" color="primary" style={{ float: "right" }}>
+                        <Button type="submit" color="primary" style={{ float: "right" }} onClick={props.onHandleSave}>
                             Save
                         </Button>
                     </Form>

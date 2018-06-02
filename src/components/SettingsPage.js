@@ -7,7 +7,7 @@ import * as accountActions from "../actions/accountActions";
 import { NavBar } from "./common/Navbar";
 import SettingsLayout from "./settings/SettingsLayout";
 import Parse from "parse";
-
+import {UserModel} from "../models/UserModel";
 class SettingsPage extends React.Component {
     constructor(props) {
         super(props);
@@ -29,6 +29,65 @@ class SettingsPage extends React.Component {
         e.preventDefault();
         // TODO: save logic here
         console.log("saving...");
+        console.log();
+        var um = new UserModel();
+        // um.current()
+        um.user = Parse.User.current();
+        var firstName = this.state.fname
+        var lastName = this.state.lname
+        var email = this.state.email
+        var password = this.state.password
+        var passwordConf = this.state.confpassword
+        var emailFreq = this.state.emailFreq
+        if (firstName){
+            um.setFirstName(firstName,function(){
+                console.log("firstName updated",um.getFirstName())
+            }, function(title, error){
+               console.log('[ERROR] ', error)
+           }) 
+        }
+
+        if(lastName){
+            um.setLastName(lastName, function(){
+                console.log("lastName updated",um.getLastName())
+            },
+            function(title, error){
+                console.log('ERROR', error)
+            })
+        }
+
+        if(email){
+            um.setEmail(email, function(){
+                console.log("email updated",um.getEmail())
+            },
+            function(title, error){
+                console.log('ERROR', error)
+            })
+        }
+
+        if(password) {
+            if(password == passwordConf){
+                um.setPass(password, function(){
+                    console.log("password updated")
+                },
+                function(title, error){
+                    console.log('ERROR', error)
+                })
+            }
+        }
+
+        if(emailFreq){
+            um.setNotification(parseInt(emailFreq), function(){
+                console.log("frequency updated",um.getNotification())
+            },
+            function(title, error){
+                console.log('ERROR', error)
+            })
+        }
+
+
+
+
     }
 
     handleChange(e) {
@@ -40,10 +99,10 @@ class SettingsPage extends React.Component {
     render() {
         return (
             <div>
-                <NavBar history={this.props.history} />
-                <SettingsLayout onChange={this.handleChange} onSave={this.handleSave} />
-            </div>
-        );
+            <NavBar history={this.props.history} />
+            <SettingsLayout onValueChange={this.handleChange} onSave={this.handleSave} />
+            </div> //
+            );
     }
 }
 
