@@ -210,7 +210,7 @@ class ProjectOverviewPage extends React.Component {
         let task_list = this.props.project_data === undefined ? this.state.tasks : { lanes: JSON.parse(JSON.stringify(this.props.project_data.boards)) };
         console.log(task_list);
         
-        console.log(this.state);
+        //console.log(this.state);
         let sidebarContent = this.generateSidebar();
         let mainContent;
         let projectManage = null;
@@ -339,6 +339,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, ownProps) {
+    console.log(state);
     return {
         ajaxCalls: state.ajaxCallsInProgress,
         project_data: state.projectReducer.project_data,

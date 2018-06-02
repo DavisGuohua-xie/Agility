@@ -3,7 +3,7 @@ import * as ajaxActions from "./ajaxActions";
 import Parse from "parse";
 import createChannelNewProject from "./chatActions";
 import history from "../history";
-import {UserModel} from '../models/UserModel'
+import { UserModel } from "../models/UserModel";
 
 export const projActions = {
     createProject,
@@ -55,30 +55,51 @@ function createProject(projectName, projectManager, projectMembers) {
 }
 
 // get projects from current user
-const getProjects = ()  => dispatch =>{
-
+function getProjects() {
+    return dispatch => {
         dispatch(ajaxActions.ajaxBegin());
         dispatch(request());
-        let currentUser = Parse.User.current();
 
-        UserModel.current((userModel)=>{
-          dispatch(success(userModel.getProjects()))
-        }, (error)=> {
-          dispatch(failure(error))
-        })
+        UserModel.current(
+            userModel => {
+                console.log(userModel);
 
-  }
+                let projects = [];
+                let fields = ["roles", "tasks", "channels", "updates", "boards", "name"];
 
-    const request = () => {
+                userModel.getProjects().forEach(proj => {
+                    let obj = {};
+                    fields.forEach(field => {
+                        obj[field] = proj.get(field);
+                        console.log(proj.get(field));
+                    });
+
+                    obj['id'] = proj.id;
+                    console.log(proj.id);
+
+                    projects.push(obj);
+                });
+
+                dispatch(success(projects));
+            },
+            error => {
+                dispatch(failure(error));
+            }
+        );
+    };
+
+    function request() {
         return { type: types.GET_PROJECT_LIST_REQUEST };
     }
-    const success = (req) => {
+
+    function success(req) {
         return { type: types.GET_PROJECT_LIST_SUCCESS, projects: req };
     }
-    const failure = (req)  => {
+
+    function failure(req) {
         return { type: types.GET_PROJECT_LIST_FAILURE, req };
     }
-
+}
 
 // get project data given id
 function getProject(project_id) {
