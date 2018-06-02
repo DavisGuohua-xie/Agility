@@ -1,11 +1,14 @@
 import * as types from "./actionTypes";
 import Parse from "parse";
+import * as ajaxActions from './ajaxActions';
+import history from '../history'
 
 export const projActions = {
-    createProject
+    createProject,
+    getProjects
 };
 
-function createProject(projectName, projectManager, projectMembers, history) {
+function createProject(projectName, projectManager, projectMembers) {
     return dispatch => {
         console.log("creating project" + projectName + "...");
         dispatch(request(projectName));
@@ -21,7 +24,7 @@ function createProject(projectName, projectManager, projectMembers, history) {
 
         project.save(null, {
             success: function(project) {
-                saveMembersToProject(project, projectManager, projectMembers, history);
+                saveMembersToProject(project, projectManager, projectMembers);
                 dispatch(success(project));
             },
             error: function(project, error) {
@@ -42,7 +45,45 @@ function createProject(projectName, projectManager, projectMembers, history) {
     }
 }
 
-function saveMembersToProject(project, projectManager, projectMembers, history) {
+// get projects from current user
+function getProjects() {
+    return dispatch => {
+        dispatch(ajaxActions.ajaxBegin());
+        dispatch(request());
+        let currentUser = Parse.User.current();
+
+        currentUser
+            .fetch()
+            .then(user => {
+                let projects = user.get("projects");
+
+                let projectList = [];
+                projects.forEach(project => {
+                    projectList.push({
+                        name: project.get("name"),
+                        id: project.id
+                    });
+                });
+                dispatch(success(projectList));
+                return projectList;
+            })
+            .catch(error => {
+                dispatch(failure(error));
+            });
+    };
+
+    function request() {
+        return { type: types.GET_PROJECT_LIST_REQUEST };
+    }
+    function success(req) {
+        return { type: types.GET_PROJECT_LIST_SUCCESS, projects: req };
+    }
+    function failure(req) {
+        return { type: types.GET_PROJECT_LIST_FAILURE, req };
+    }
+}
+
+function saveMembersToProject(project, projectManager, projectMembers) {
     let roles = {};
     let promises = [];
     let failedUsers = [];
@@ -95,7 +136,6 @@ function saveMembersToProject(project, projectManager, projectMembers, history) 
 
                     // user does not exist, user failed to be added.
                 } else {
-
                     // TODO: passed failed users to error handler i guess...
                     failedUsers.push(projectMembers[i]);
                 }

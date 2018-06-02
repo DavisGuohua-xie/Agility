@@ -51,8 +51,7 @@ export default class LoginPage extends Component {
                 password,
                 email,
                 fname,
-                lname,
-                this.props.history
+                lname
             );
         }
     }

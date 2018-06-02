@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { BrowserRouter } from "react-router-dom";
+import { Router } from "react-router-dom";
 
 import registerServiceWorker from "./registerServiceWorker";
 import configureStore from "./store/configureStore";
@@ -24,6 +24,9 @@ import 'bootstrap-material-design/js/bootstrapMaterialDesign.js'*/
 import Parse from "parse";
 import parsecfg from "./server/parsecfg";
 
+// history
+import history from './history'
+
 Parse.initialize(parsecfg.APP_ID, parsecfg.MASTER_KEY);
 Parse.masterKey = parsecfg.MASTER_KEY;
 Parse.serverURL = parsecfg.SERVER_URL;
@@ -32,9 +35,9 @@ const store = configureStore();
 
 ReactDOM.render(
     <Provider store={store}>
-        <BrowserRouter>
+        <Router history={history}>
             <App routes={routes} />
-        </BrowserRouter>
+        </Router>
     </Provider>,
     document.getElementById("root")
 );

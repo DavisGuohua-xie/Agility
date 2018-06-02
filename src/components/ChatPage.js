@@ -155,7 +155,6 @@ class ChatPage extends Component {
         return (
             <div style={{ height: "100%" }}>
                 <NavBar
-                    history={this.props.history}
                     projName="Project name"
                     projID={this.state.projectID}
                 />
