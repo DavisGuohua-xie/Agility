@@ -18,17 +18,26 @@ export default function authReducer(state = initialState, action) {
         case C.LOGIN_SUCCESS: // Add current user to the store
             return state.merge({ currentUser: action.userModel, loggedIn: true});
 
-
-
         case C.LOGIN_FAILURE: //Add error to list of current errors
             return state.merge({
                 errors: [...state.errors, action.error]
             });
 
-        // case C.LOGOUT_SUCCESS:
-        //     return state.merge({
-        //         logged_in: false
-        //     });
+        case C.SIGN_UP_USER:
+            return state.merge({
+              signingUp: true
+            });
+
+        case C.CANCEL_REGISTRATION:
+            return state.merge({
+              signingUp: false
+            })
+
+        case C.REGISTRATION_FAILURE:
+           return state.merge({
+             errors: [...state.errors,action.newError]
+           })
+
 
         default:
             return state;

@@ -117,7 +117,8 @@ function getProject(project_id) {
                         members.push({
                             fname: member.get("first_name"),
                             lname: member.get("last_name"),
-                            member_id: member.id
+                            member_id: member.id,
+                            username: member.get("username")
                         });
                     });
                     res["members"] = members;
