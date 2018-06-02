@@ -12,7 +12,8 @@ export const chatActions = {
     sendMessage,
     switchToChannel,
     createChannel,
-    logoff
+    logoff,
+    createChannelNewProject
 };
 
 const MAX_MESSAGES_RETRIEVE = 100;
@@ -191,6 +192,27 @@ function logoff() {
         console.log("after logging off");
         console.log(currUser.roomSubscriptions);
     };
+}
+
+function createChannelNewProject() {
+    let newchatkitUser = creatorUsername + projId;
+    return fetch("http://localhost:3001/createchannel", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            creator: "root",
+            teamMembers: [],
+            channelName: "general",
+            isPrivate: false
+        })
+    }).then(response => {
+        console.log("in response");
+        if (response.status >= 400) throw "error";
+
+        return response.json();
+    });
 }
 
 /**************************PRIVATE FUNCTIONS*****************************/
