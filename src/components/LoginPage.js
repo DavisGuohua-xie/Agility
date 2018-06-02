@@ -4,9 +4,11 @@ import { connect } from "react-redux";
 
 import { bindActionCreators } from "redux";
 
-import { withRouter } from "react-router";
+import { withRouter, Redirect } from "react-router";
 
-import { authActions } from "../actions/authActions";
+import { login } from "../actions/authActions";
+
+import {UserModel} from '../models/UserModel'
 
 import LoginForm1 from "./login/LoginForm1";
 
@@ -19,7 +21,8 @@ export default class LoginPage extends Component {
             password: "",
             email: "",
             isOpenReg: false,
-            isOpenForgot: false
+            isOpenForgot: false,
+            loggedIn: false
         };
 
         this.handleLogin = this.handleLogin.bind(this);
@@ -34,7 +37,8 @@ export default class LoginPage extends Component {
         let password = this.state.password;
 
         if (username && password) {
-            this.props.actions.login(username, password, this.props.history);
+            this.props._login(username, password,
+              ()=>{console.log("success");this.setState({loggedIn: true})});
         }
     }
 
@@ -51,8 +55,7 @@ export default class LoginPage extends Component {
                 password,
                 email,
                 fname,
-                lname,
-                this.props.history
+                lname
             );
         }
     }
@@ -76,25 +79,33 @@ export default class LoginPage extends Component {
     }
 
     render() {
-        console.log(this.props.ajaxCalls);
-        return (
-            <LoginForm1
-                onInputChange={this.handleInputChange}
-                onLogin={this.handleLogin}
-                onCreateAccount={this.handleCreateAccount}
-                onToggleForgot={this.handleToggleForgot}
-                isOpenForgot={this.state.isOpenForgot}
-                onToggleReg={this.handleToggleReg}
-                isOpenReg={this.state.isOpenReg}
-                ajaxRequested={this.props.logging_in}
-            />
-        );
+
+      const loggedIn = UserModel.current() != null
+      var page = null;
+      if (!this.state.loggedIn){
+        page = <LoginForm1
+            onInputChange={this.handleInputChange}
+            onLogin={this.handleLogin}
+            onCreateAccount={this.handleCreateAccount}
+            onToggleForgot={this.handleToggleForgot}
+            isOpenForgot={this.state.isOpenForgot}
+            onToggleReg={this.handleToggleReg}
+            isOpenReg={this.state.isOpenReg}
+            ajaxRequested={this.props.logging_in}
+        />
+
+  }else {
+    page = <Redirect to="/"/>
+  }
+        return page
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators(authActions, dispatch)
+        _login(username, password, success){
+          dispatch(login(username, password, success))
+        }
     };
 }
 

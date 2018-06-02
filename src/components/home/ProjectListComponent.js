@@ -5,6 +5,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Parse } from "parse";
+import {UserModel} from '../../models/UserModel'
 
 import NewProjectModal from "./NewProjectModal";
 
@@ -16,6 +17,8 @@ const PROJECT_MEMBER = 0;
 class ProjectListComponent extends React.Component {
     constructor(props) {
         super(props);
+
+
         this.state = {
             projItems: props.projects,
             newProjectModalOpen: false,
@@ -55,7 +58,7 @@ class ProjectListComponent extends React.Component {
             console.log("project name: " + this.state.newProjectName);
 
             let projectManager = Parse.User.current();
-            this.props.actions.createProject(this.state.newProjectName, projectManager, this.state.newMembers, this.props.history);
+            this.props.actions.createProject(this.state.newProjectName, projectManager, this.state.newMembers);
         } else {
             console.log("no project name inputted");
         }
@@ -96,6 +99,8 @@ class ProjectListComponent extends React.Component {
             newProjectName: e.target.value
         })
     }
+
+
 
     render() {
         return (

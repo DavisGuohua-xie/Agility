@@ -14,6 +14,7 @@ let USERNAME = 'username'
 let PASSWORD = 'password'
 let EMAIL = 'email'
 let ID = '_id'
+let CURRENT_USER = 'current_user'
 
 //Default completion handlers..
 var defaultSuccessHandler = function(data) {
@@ -52,13 +53,22 @@ export class UserModel {
 
     }
 
+    getUsername(){
+      return this.user.get(USERNAME)
+    }
+
     //Getters
     getNotification() {
         return this.user.get(NOTIFICATION)
     }
 
-    getProjects() {
-        return this.user.get(PROJECTS)
+    getProjects(reload) {
+
+      var projects = this.user.get(PROJECTS)
+      var first = projects[0]
+
+      return projects
+
     }
 
     getLastName() {
@@ -99,7 +109,16 @@ export class UserModel {
               userQuery.find({
                 success: function(results){
                   var currUser = results[0];
-                  successHandler()
+                  console.log(currUser.get("projects"))
+                  var loggedIn = new UserModel();
+                  //Set the parse user to be populated object
+                  loggedIn.user = currUser
+                  //Update local storage
+                  localStorage[CURRENT_USER] = JSON.stringify(loggedIn)
+
+                  console.log("[loggedin], ", localStorage[CURRENT_USER])
+
+                  successHandler(loggedIn)
 
                 },
                 error: function(error){
@@ -111,26 +130,56 @@ export class UserModel {
         })
 
 
+
+
     }
 
-  static current(){
+ //Will return a model object that has it's data populated with projects
+  static current(successHandler, errorHandler){
+  var parseUser = Parse.User.current()
 
-  var currentUser = new UserModel();
-  currentUser.user = Parse.User.current();
+  if (parseUser === null) return null;
+
+  var currentUser = new UserModel()
+  //If everything is good then just update currentUser just to be sure.
+  currentUser.user = parseUser
+  // //Update local storage for good measure
+  // localStorage[CURRENT_USER] = currentUser
+
+
+  var userQuery = new Parse.Query(Parse.User);
+  userQuery.equalTo('username', parseUser.get('username'))
+  userQuery.include(PROJECTS)
+  userQuery.find({
+    success: function(results){
+      var currUser = results[0];
+      console.log(currUser.get("projects"))
+      var loggedIn = new UserModel();
+      //Set the parse user to be populated object
+      loggedIn.user = currUser
+      //Update local storage
+      localStorage[CURRENT_USER] = JSON.stringify(loggedIn)
+
+      console.log("[loggedin], ", localStorage[CURRENT_USER])
+
+      successHandler(loggedIn)
+
+    },
+    error: function(error){
+      errorHandler(error)
+    }
+  })
+
   return currentUser;
 }
 
   static logout(completionHandler){
+    localStorage.clear()
     Parse.currentUser().logout()
     .then(completionHandler)
   }
 
-  static current(){
 
-    var currentUser = new UserModel();
-    currentUser.user = Parse.User.current();
-    return currentUser;
-  }
 
 
 
