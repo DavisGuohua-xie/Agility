@@ -319,7 +319,6 @@ class ProjectOverviewPage extends React.Component {
                 </Modal>
 
                 <NavBar
-                    history={this.props.history}
                     projName="Project"
                     projID={this.state.projectID}
                     zIndex={2}
