@@ -38,7 +38,7 @@ class Homepage extends React.Component {
         this.projectClick = this.projectClick.bind(this);
     }
 
-    componentWillMount() {
+    componentDidMount() {
         console.log("dispatching...");
         this.props.actions.getProjects();
     }
