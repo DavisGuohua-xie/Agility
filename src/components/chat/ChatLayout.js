@@ -63,6 +63,9 @@ const ChatLayout = props => {
                 onInputChange={props.onInputChange}
                 onCreateChannel={props.onCreateChannel}
                 groupChannel={props.groupChannel}
+                members={props.members}
+                onMemberClick={props.onMemberClick}
+                selectedMembers={props.selectedMembers}
             />
         </div>
     );

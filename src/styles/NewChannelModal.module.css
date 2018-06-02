@@ -1,0 +1,21 @@
+.memberItemContainer {
+    height: 30px;
+    width: 100%;
+    border: 1px solid black;
+    background-color: var(--teal);
+}
+
+.memberItemContainer:hover {
+    background-color: var(--cyan);
+}
+
+.memberItemName {
+    cursor: default;
+}
+
+.selectedMember {
+    background-color: var(--indigo);
+    color: white;
+    border-radius: 10px;
+    height: 20px;
+}

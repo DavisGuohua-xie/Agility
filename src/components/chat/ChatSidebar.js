@@ -2,7 +2,7 @@ import React from "react";
 import styles from "../../styles/ChatLayout.module.css";
 
 const ChatSidebar = props => {
-    if(!props.channels) return null;
+    if (!props.channels) return null;
     let groupChannels = props.channels.filter(channel => !channel.isPrivate);
     let dmChannels = props.channels.filter(channel => channel.isPrivate);
 
@@ -35,7 +35,12 @@ const ChatSidebar = props => {
 
             <div className={styles.directChannels}>
                 <p className={styles.channelHeader}>
-                    Direct Messages {/*<i className={`fas fa-plus-circle ${styles.plus}`} />*/}
+                    Direct Messages{" "}
+                    <i
+                        className={`fas fa-plus-circle ${styles.plus}`}
+                        data-name="private"
+                        onClick={props.onToggle}
+                    />
                 </p>
                 <ul className={styles.channelList}>
                     {dmChannels.map(group => (

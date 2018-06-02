@@ -55,6 +55,7 @@ class ChatPage extends Component {
         this.handleCreateChannel = this.handleCreateChannel.bind(this);
         this.toggleModal = this.toggleModal.bind(this);
         this.switchToChannel = this.switchToChannel.bind(this);
+        this.handleMemberClick = this.handleMemberClick.bind(this);
 
         console.log(this.props.chatActions);
     }
@@ -100,8 +101,6 @@ class ChatPage extends Component {
         this.props.chatActions.reset(this.props.currentChannel, false);
     }
 
-    /*******************************CHATKIT SPECIFIC FUNCTIONS *******************/
-
     switchToChannel(e) {
         let channelId = parseInt(e.target.dataset.channelid);
         this.props.chatActions.switchToChannel(channelId, this.props.currentChannel);
@@ -109,23 +108,6 @@ class ChatPage extends Component {
             currentChannel: { id: channelId }
         }); // to make ui seem responsive
     }
-
-    createChannel(members, name, creatorId, isPrivate) {
-        return fetch("http://localhost:3001/createchannel", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                creator: creatorId,
-                teamMembers: members,
-                channelName: name,
-                isPrivate: isPrivate
-            })
-        });
-    }
-
-    /*******************************END CHATKIT SPECIFIC FUNCTIONS *******************/
 
     toggleModal(e) {
         this.setState({
@@ -143,27 +125,13 @@ class ChatPage extends Component {
             ? this.props.projectMembers
             : this.state.newChannelMembers;
 
-        this.createChannel(
+        this.props.chatActions.createChannel(
             members,
             this.state.newChannelName,
-            this.state.chatkitUser.id,
-            !this.state.createGroupChannel
-        )
-            .then(response => {
-                return response.json();
-            })
-            .then(roomObj => {
-                console.log(roomObj);
-                console.log(`channel created on server with name: ${roomObj.name}`);
-
-                console.log(this.state.chatkitUser);
-                this.setState({ channels: this.state.chatkitUser.rooms });
-
-                channelSwitchReqObj.target.dataset.channelid = roomObj.id;
-
-                this.switchToChannel(channelSwitchReqObj);
-            })
-            .catch(error => console.error("error", error));
+            this.state.chatkitUsername,
+            this.state.createGroupChannel,
+            this.props.currentChannelId
+        );
 
         this.resetNewChannelFields();
         this.toggleModal(channelSwitchReqObj);
@@ -205,6 +173,17 @@ class ChatPage extends Component {
         });
     }
 
+    handleMemberClick(e) {
+        let name = e.target.dataset.name;
+        console.log(name);
+        let newChannelMembers = this.state.newChannelMembers;
+
+        if (newChannelMembers.indexOf(name) < 0) newChannelMembers.push(name);
+        else newChannelMembers.splice(newChannelMembers.indexOf(name), 1);
+        
+        this.setState({ newChannelMembers: newChannelMembers });
+    }
+
     mediaQueryChanged() {
         this.setState({ sidebarDocked: this.state.mql.matches });
     }
@@ -228,8 +207,7 @@ class ChatPage extends Component {
                             channels={this.state.channels}
                             onToggle={this.toggleModal}
                             onChannelClick={this.switchToChannel}
-                            activeChannel={this.state.currentChannelId
-                            }
+                            activeChannel={this.state.currentChannelId}
                         />
                     }
                     open={this.state.sidebarOpen}
@@ -259,6 +237,11 @@ class ChatPage extends Component {
                             groupChannel={this.state.createGroupChannel}
                             currentRoom={this.state.currentChannel}
                             loading={this.props.loading}
+                            members={this.props.projectMembers.filter(
+                                id => id !== this.props.username
+                            )}
+                            onMemberClick={this.handleMemberClick}
+                            selectedMembers={this.state.newChannelMembers}
                         />
                     )}
                 </Sidebar>
@@ -286,7 +269,7 @@ function mapStateToProps(state, ownProps) {
         currentChannel: state.chatReducer.currentChannelName,
         currentChannelId: state.chatReducer.currentChannelId,
         loading: state.chatReducer.chat_loading,
-        projectMembers: ["undefinedid1"] // TODO: get actual project members
+        projectMembers: ["undefined", "bob", "testFL"] // TODO: get actual project members
         //channelIds: state.projReducer.currProject.channels,
         //projectMembers: state.projReducer.currProject.roles
     };

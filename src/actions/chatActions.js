@@ -28,7 +28,8 @@ export const chatActions = {
     connectChatkit,
     reset,
     sendMessage,
-    switchToChannel
+    switchToChannel,
+    createChannel
 };
 
 const MAX_MESSAGES_RETRIEVE = 100;
@@ -147,10 +148,40 @@ function sendMessage(messageText, channelId) {
             .sendMessage({
                 text: messageText,
                 roomId: channelId
-            }).then(() => {})
+            })
+            .then(() => {})
             .catch(err => {
-                toastr.error("error sending message");
+                toastr.error("Error sending message");
             });
+    };
+}
+
+function createChannel(members, name, creatorId, isPrivate, currentChannelId) {
+    return dispatch => {
+        fetch("http://localhost:3001/createchannel", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                creator: creatorId,
+                teamMembers: members,
+                channelName: name,
+                isPrivate: !isPrivate
+            })
+        })
+            .then(response => {
+                return response.json();
+            })
+            .then(roomObj => {
+                console.log(roomObj);
+                console.log(`channel created on server with name: ${roomObj.name}`);
+
+                dispatch(addNewChannel(roomObj));
+                dispatch(switchToChannel(roomObj.id, currentChannelId));
+                //TODO: add new group channel to project on Parse
+            })
+            .catch(error => console.error("error", error));
     };
 }
 
@@ -185,6 +216,11 @@ function fetchMessages(channel) {
     });
 }
 /********ACTION CREATORS***************/
+
+function addNewChannel(channel) {
+    return { type: types.ADD_NEW_CHANNEL, req: channel };
+}
+
 function saveMessages(messages) {
     return { type: types.SAVE_ALL_MESSAGES, req: messages };
 }

@@ -54,6 +54,10 @@ export default function chatReducer(state = initialState, action) {
             return state.merge({
                 chat_loading: false
             });
+        case types.ADD_NEW_CHANNEL:
+            return state.merge({
+                channelList: [...state.channelList, action.req]
+            });
         default:
             return state;
     }
