@@ -5,7 +5,7 @@
 	color: inherit;
 	background: none;
 	cursor: pointer;
-	padding: 25px 80px;
+	padding: 25px 25px;
 	display: inline-block;
 	margin: 15px 30px;
 	text-transform: uppercase;
@@ -16,6 +16,25 @@
 	-webkit-transition: all 0.3s;
 	-moz-transition: all 0.3s;
 	transition: all 0.3s;
+	background: #226FBE;
+	color: #fff;
+	box-shadow: 0 6px rgb(21, 71, 121);
+	-webkit-transition: none;
+	-moz-transition: none;
+	transition: none;
+	height: 150px;
+	width: 200px;
+	border-radius: 20px;
+	-ms-word-break: break-all;
+     word-break: break-all;
+
+     /* Non standard for webkit */
+     word-break: break-word;
+
+-webkit-hyphens: auto;
+   -moz-hyphens: auto;
+    -ms-hyphens: auto;
+        hyphens: auto;
 }
 
 .projectItem:after {
@@ -25,20 +44,6 @@
 	-webkit-transition: all 0.3s;
 	-moz-transition: all 0.3s;
 	transition: all 0.3s;
-}
-
-.projectItem {
-	background: #226FBE;
-	color: #fff;
-	box-shadow: 0 6px rgb(21, 71, 121);
-	-webkit-transition: none;
-	-moz-transition: none;
-	transition: none;
-	height: 150px;
-}
-
-.projectItem {
-	border-radius: 20px;
 }
 
 .projectItem:hover {
@@ -55,20 +60,15 @@
     outline: none;
 }
 
-.projectName {
-    margin-left: 10px;
-    margin-top: 10px;
-}
-
 @media (max-width: 469px) {
     .projectItem {
         width: 100%;
     }
 }
 
-@media (max-width: 574px) {
+@media (max-width: 992px) {
     .projectItem {
-        width: 100%;
-        margin: auto 20px 20px 20px;
+		width: 300px;
+		margin: 20px;
     }
 }
