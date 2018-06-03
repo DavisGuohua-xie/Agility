@@ -3,7 +3,7 @@ import initialState from "./initialState";
 import _ from 'lodash'
 
 
-export default function projectReducer(state = initialState, action) {
+export default function projectReducer(state = {}, action) {
     switch (action.type) {
         case types.GET_PROJECT_LIST_REQUEST:
             return _.merge(state,{

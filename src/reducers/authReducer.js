@@ -2,7 +2,7 @@ import * as C from "../actions/actionTypes";
 import initialState from "./initialState";
 import _ from 'lodash'
 
-export default function authReducer(state = initialState, action) {
+export default function authReducer(state = {}, action) {
     switch (action.type) {
         //Starting fetching user with username and password
         case C.LOGIN_USER:

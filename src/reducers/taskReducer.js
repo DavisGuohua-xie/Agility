@@ -4,7 +4,7 @@ import _ from 'lodash'
 
 
 
-export default function taskReducer(state = initialState, action) {
+export default function taskReducer(state = {}, action) {
     switch (action.type) {
         case types.CREATE_BOARD_REQUEST:
             return _.merge(state,{

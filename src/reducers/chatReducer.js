@@ -1,8 +1,8 @@
 import * as types from "../actions/actionTypes";
-import initialState from "./initialState";
+// import initialState from "./initialState";
 import _ from 'lodash'
 
-export default function chatReducer(state = initialState, action) {
+export default function chatReducer(state = {}, action) {
     switch (action.type) {
         case types.SAVE_MESSAGE_SUCCESS:
             console.log("saving message");
