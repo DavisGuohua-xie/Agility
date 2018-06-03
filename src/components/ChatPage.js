@@ -69,9 +69,6 @@ class ChatPage extends Component {
 
         mql.addListener(this.mediaQueryChanged);
         this.setState({ mql: mql, sidebarDocked: mql.matches });
-        
-        // TODO: fetch project data from server
-        // TODO: call redux action
 
         this.props.chatActions.instantiateChatkit(this.state.chatkitUsername);
         this.props.chatActions.login(
@@ -79,7 +76,8 @@ class ChatPage extends Component {
             this.props.firstName,
             this.props.lastName
         );
-        this.props.chatActions.connectChatkit();
+
+        this.props.chatActions.connectChatkit(this.props.publicChannels);
 
         this.setState({
             msgList: [],
@@ -246,7 +244,7 @@ class ChatPage extends Component {
                             currentRoom={this.state.currentChannel}
                             loading={this.props.chat_loading}
                             members={this.props.projectMembers.filter(
-                                id => id !== this.props.username
+                                member => member.username !== this.props.username
                             )}
                             onMemberClick={this.handleMemberClick}
                             selectedMembers={this.state.newChannelMembers}
@@ -279,7 +277,7 @@ function mapStateToProps(state, ownProps) {
         currentChannelId: state.chatReducer.currentChannelId,
         chat_loading: state.chatReducer.chat_loading,
         metadata_loading: state.chatReducer.metadata_loading,
-        channelIds: state.projectReducer.project_data.channels,
+        publicChannels: state.projectReducer.project_data.channels,
         projectMembers: state.projectReducer.project_data.members // {fname, lname, member_id, username}
     };
 }

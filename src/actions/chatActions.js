@@ -57,16 +57,16 @@ function login(chatkitUsername, firstName, lastName) {
     };
 }
 
-function connectChatkit() {
+function connectChatkit(publicChannels) {
     return dispatch => {
         chatManager
             .connect()
             .then(currentUser => {
                 console.log("current user: ", currentUser.rooms);
                 currUser = currentUser;
-                let currChannel = currentUser.rooms ? currentUser.rooms[0] : undefined;
+                let currChannel = publicChannels[0];
 
-                return currentUser.joinRoom({ roomId: currChannel.id });
+                return currentUser.joinRoom({ roomId: currChannel });
             })
             .then(room => {
                 console.log(`joined room with room id: ${room.id}`);
