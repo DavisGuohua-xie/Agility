@@ -221,31 +221,6 @@ export default function createChannelNewProject() {
     });
 }
 
-/**
- * Sign up all project members of new project on chatkit.
- *
- * @param {Array} project_members list of project members as follows
- * (exactly named properties in exact order)
- *      [ {first_name, last_name, username, projectID}, ... ]
- */
-export function createChatkitUsers(project_members) {
-    console.log("\n\n\n\n\n\n\n\n============================");
-    console.log(project_members);
-    console.log("\n\n\n\n\n\n\n\n============================");
-
-    fetch(`${SERVER_URL}/createusers`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            project_members: project_members
-        })
-    })
-        .then(response => {})
-        .catch(error => console.error("ERRORORROROROR", error));
-}
-
 /**************************PRIVATE FUNCTIONS*****************************/
 
 function subscribeToChannel(channelId, dispatch) {
