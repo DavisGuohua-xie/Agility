@@ -26,13 +26,19 @@ import parsecfg from "./server/parsecfg";
 
 // history
 import history from './history'
+import _ from 'lodash'
+
 
 Parse.initialize(parsecfg.APP_ID, parsecfg.MASTER_KEY);
 Parse.masterKey = parsecfg.MASTER_KEY;
 Parse.serverURL = parsecfg.SERVER_URL;
 
+const initialState = (localStorage['redux-store'])
+? JSON.parse(localStorage['redux-store']): {}
 
-const store = configureStore();
+const store = configureStore(initialState, _.merge({}, initialState));
+
+// window.store = store;
 
 ReactDOM.render(
     <Provider store={store}>

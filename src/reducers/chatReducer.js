@@ -1,5 +1,6 @@
 import * as types from "../actions/actionTypes";
 import initialState from "./initialState";
+import _ from 'lodash'
 
 export default function chatReducer(state = initialState, action) {
     switch (action.type) {
@@ -7,7 +8,7 @@ export default function chatReducer(state = initialState, action) {
             console.log("saving message");
             console.log(action.req);
             console.trace();
-            return state.merge({
+            return _.merge(state, {
                 msgList: [
                     ...state.msgList,
                     {
@@ -18,7 +19,7 @@ export default function chatReducer(state = initialState, action) {
                 ]
             });
         case types.SAVE_ALL_CHAT_DATA_SUCCESS:
-            return state.merge({
+            return _.merge(state, {
                 channelList: action.req.userChannels,
                 currentChannelName: action.req.currChannel.name,
                 currentChannelId: action.req.currChannel.id,
@@ -34,42 +35,42 @@ export default function chatReducer(state = initialState, action) {
                     sender: messages[i].sender.name
                 });
 
-            return state.merge({
+            return _.merge(state,{
                 msgList: msgList
             });
         case types.SAVE_NEW_ACTIVE_CHANNEL:
-            return state.merge({
+            return _.merge(state,{
                 currentChannelName: action.req ? action.req.name : null,
                 currentChannelId: action.req ? action.req.id : null
             });
         case types.CLEAR_CHAT_STATE:
-            return state.merge({
+            return _.merge(state,{
                 channelList: [],
                 currentChannelName: null,
                 currentChannelId: null,
                 msgList: []
             });
         case types.CLEAR_SOFT_CHAT_STATE:
-            return state.merge({
+            return _.merge(state,{
                 msgList: [],
                 currentChannelName: null,
                 currentChannelId: null
             });
         case types.LOADING_CHAT_MESSAGES:
-            return state.merge({
+            return _.merge(state,{
                 chat_loading: true,
                 metadata_loading: true
             });
         case types.FINISHED_LOADING_CHAT_MESSAGES:
-            return state.merge({
+            return _.merge(state,{
                 chat_loading: false
             });
         case types.FINISHED_LOADING_CHAT_METADATA:
-            return state.merge({
+            return _.merge(state,{
                 metadata_loading: false
             });
         case types.ADD_NEW_CHANNEL:
-            return state.merge({
+            return _.merge(state,{
                 channelList: [...state.channelList, action.req]
             });
         default:
