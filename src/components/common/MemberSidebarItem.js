@@ -3,19 +3,19 @@ import Avatar from "react-avatar";
 
 import styles from "../../styles/MemberSidebarItem.module.css";
 
-const MemberSidebarItem = ({ fname, lname }) => {
+const MemberSidebarItem = props => {
     return (
-        <li className={styles.member}>
+        <li className={styles.member} onClick={props.onSidebarMemberClick} data-username={props.username}>
             <Avatar
-                name={fname + " " + lname}
+                name={props.fname + " " + props.lname}
                 round={true}
                 maxInitials={2}
                 size={40}
                 textSizeRatio={2}
                 style={{ marginRight: 10 }}
             />
-            <span className={styles.memberName}>
-                {fname} {lname}
+            <span className={styles.memberName} data-username={props.username}>
+                {props.fname} {props.lname}
             </span>
         </li>
     );

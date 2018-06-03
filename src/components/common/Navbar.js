@@ -20,6 +20,8 @@ import { authActions } from "../../actions/authActions";
 
 import styles from "../../styles/navbar.module.css";
 
+import history from '../../history';
+
 class NavBar extends React.Component {
     constructor(props) {
         super(props);
@@ -30,9 +32,6 @@ class NavBar extends React.Component {
             isOpen: false,
             projectID: props.projID
         };
-
-        console.log(`navbar props:`);
-        console.log(this.props.actions);
     }
 
     toggle() {
@@ -42,8 +41,9 @@ class NavBar extends React.Component {
     }
 
     logout() {
-        this.props.history.push("/login");
-        this.props.actions.logout(this.props.history);
+        history.replace("/login");
+        console.log(this.props);
+        this.props.actions.logout();
     }
 
     render() {
@@ -114,7 +114,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, ownProps) {
-    console.log(state);
     return {
         name: state.authReducer.first_name
         //projName: state.projReducer.curr_proj

@@ -1,10 +1,11 @@
 .container {
     height: 100%;
     display: grid;
+    background-color: #E0FEFF;
 }
 
 .center {
-    margin: auto;
+    margin: 20px auto 0 auto;
     text-align: center;
 }
 
@@ -62,40 +63,18 @@
     text-align: left;
 }
 
-@media(max-width: 720px) {
-
+.logo {
+    height: 300px;
 }
 
-/*.hrCenterText {
-    line-height: 1em;
-    position: relative;
-    outline: 0;
-    border: 0;
-    color: black;
-    text-align: center;
-    height: 1.5em;
-    opacity: .5;
+@media screen and (max-width: 500px) {
+    .container {
+        padding-left: 30px;
+        padding-right: 30px;
+        display: block;
+    }
+
+    .logo {
+        max-width: 100%;
+    }
 }
-
-.hrCenterText::before {
-    content: '';
-    background: linear-gradient(to right, transparent, #818078, transparent);
-    position: absolute;
-    left: 0;
-    top: 50%;
-    width: 100%;
-    height: 1px;
-  }
-
-.hrCenterText::after {
-    content: attr(data-content);
-    position: relative;
-    display: inline-block;
-    color: black;
-
-    padding: 0 .5em;
-    line-height: 1.5em;
-    
-    color: #818078;
-    background-color: #fcfcfa;
-} */

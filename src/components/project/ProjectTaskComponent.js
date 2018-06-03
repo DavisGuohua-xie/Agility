@@ -1,6 +1,10 @@
 import React from "react";
 
 import { ProjectTasks } from "./ProjectTasks";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { withRouter } from "react-router";
+import { taskActions } from "../../actions/taskActions";
 import v4 from "uuid";
 
 class ProjectTaskComponent extends React.Component {
@@ -11,7 +15,8 @@ class ProjectTaskComponent extends React.Component {
             modalOpen: false,
             tasksData: props.taskList,
             newBoard: "",
-            eventBus: undefined
+            eventBus: undefined,
+            editing: false
         };
 
         this.handleLaneClick = this.handleLaneClick.bind(this);
@@ -19,12 +24,24 @@ class ProjectTaskComponent extends React.Component {
         this.setEventBus = this.setEventBus.bind(this);
         this.handleCreateBoard = this.handleCreateBoard.bind(this);
         this.handleBoardNameChange = this.handleBoardNameChange.bind(this);
+        this.toggleEditModal = this.toggleEditModal.bind(this);
+        this.handleSaveBoard = this.handleSaveBoard.bind(this);
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        return nextProps.modalOpen !== prevState.modalOpen
-            ? { modalOpen: nextProps.modalOpen }
-            : null;
+        if (
+            nextProps.modalOpen !== prevState.modalOpen ||
+            nextProps.taskList !== prevState.tasksData
+        ) {
+            console.log("updating lanes in projecttaskcomponent");
+            if (prevState.eventBus && nextProps.taskList !== prevState.tasksData)
+                prevState.eventBus.publish({
+                    type: "UPDATE_LANES",
+                    lanes: nextProps.taskList.lanes
+                });
+            return { modalOpen: nextProps.modalOpen, tasksData: nextProps.taskList };
+        }
+        return null;
     }
 
     handleLaneClick(e) {
@@ -42,9 +59,16 @@ class ProjectTaskComponent extends React.Component {
     handleCreateBoard() {
         if (this.state.newBoard === "") return;
 
+        this.props.actions.createBoard(
+            this.state.newBoard,
+            this.props.project_id,
+            this.state.eventBus
+        );
+
+        /*
         let boards = Object.assign({}, this.state.tasksData);
         boards.lanes.push({
-            id: v4(),
+            id: (boards.lanes.length) + "",
             title: this.state.newBoard,
             label: "",
             cards: []
@@ -52,12 +76,41 @@ class ProjectTaskComponent extends React.Component {
 
         this.setState({ tasksData: boards });
         console.log(this.state.eventBus);
-        this.state.eventBus.publish({ type: "UPDATE_LANES", lanes: boards.lanes });
+
+        
+        */
         this.props.onToggleModal();
+        //this.props.updateTasks(boards);
+    }
+
+    handleSaveBoard(e) {
+        e.preventDefault();
+        if (this.state.newBoard === "") return;
+
+        let boards = this.state.tasksData.lanes;
+        let boardID = this.state.boardID;
+
+        //let boardInd = parseInt(this.state.boardInd, 10);
+        debugger
+        boards.filter(board => board.id === boardID)[0].title = this.state.newBoard;
+
+        this.setState({ tasksData: {lanes: boards} });
+        this.state.eventBus.publish({ type: "UPDATE_LANES", lanes: boards });
+        this.toggleEditModal(e);
+        this.props.updateTasks({lanes: boards});
     }
 
     handleBoardNameChange(e) {
         this.setState({ newBoard: e.target.value });
+    }
+
+    toggleEditModal(e) {
+        let boardName = e.target.dataset.title;
+        let boardID = e.target.dataset.id;
+
+        if (this.state.editing) boardName = "";
+        this.setState({ newBoard: boardName, editing: !this.state.editing, boardID: boardID });
+        this.props.onToggleModal();
     }
 
     render() {
@@ -71,9 +124,22 @@ class ProjectTaskComponent extends React.Component {
                 onBoardNameChange={this.handleBoardNameChange}
                 onCreateBoard={this.handleCreateBoard}
                 onToggleModal={this.props.onToggleModal}
+                boardName={this.state.newBoard}
+                onToggleEditModal={this.toggleEditModal}
+                onSaveBoard={this.handleSaveBoard}
+                editing={this.state.editing}
             />
         );
     }
 }
 
-export default ProjectTaskComponent;
+function mapDispatchToProps(dispatch) {
+    return {
+        actions: bindActionCreators(taskActions, dispatch)
+    };
+}
+
+const connectedPage = withRouter(
+    connect(null, mapDispatchToProps)(ProjectTaskComponent)
+);
+export { connectedPage as ProjectTaskComponent };

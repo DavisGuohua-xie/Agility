@@ -14,8 +14,21 @@ import {
     Container
 } from "reactstrap";
 
+import styles from "../../styles/ProjectTasks.module.css";
+
 let CustomLaneHeader = props => {
-    return <p>{props.title}</p>;
+    return (
+        <p className={styles.p}>
+            {props.title}{" "}
+            <i
+                onClick={props.onToggleModal}
+                name="editBoardIcon"
+                data-id={props.id}
+                data-title={props.title}
+                className={`fas fa-pencil-alt ${styles.editIcon}`}
+            />
+        </p>
+    );
 };
 
 export const ProjectTasks = props => {
@@ -25,12 +38,11 @@ export const ProjectTasks = props => {
                 <Board
                     data={props.data}
                     eventBusHandle={props.eventBusHandle}
-                    draggable
                     collapsibleLanes
                     editable
                     onLaneClick={props.onLaneClick}
                     onCardClick={props.onCardClick}
-                    customLaneHeader={<CustomLaneHeader />}
+                    customLaneHeader={<CustomLaneHeader onToggleModal={props.onToggleEditModal} />}
                     style={{
                         padding: "30px 0 0 0",
                         backgroundColor: "#fff",
@@ -41,28 +53,41 @@ export const ProjectTasks = props => {
                 />
             </Container>
 
-            <Modal isOpen={props.modalOpen} toggle={props.onToggleModal}>
-                <ModalHeader toggle={props.onToggleModal}> New Board </ModalHeader>
+            <Modal
+                isOpen={props.modalOpen}
+                toggle={props.editing ? props.onToggleEditModal : props.onToggleModal}
+            >
+                <ModalHeader toggle={props.editing ? props.onToggleEditModal : props.onToggleModal}>
+                    {" "}
+                    {props.editing ? "Edit Board" : "New Board"}{" "}
+                </ModalHeader>
                 <ModalBody>
                     <Form>
                         <FormGroup>
                             <Label for="projectName">Board Name</Label>
                             <Input
                                 type="text"
-                                name="projectnameinput"
-                                id="projectName"
+                                name="boardName"
+                                id="boardName"
                                 placeholder="Enter board name"
                                 onChange={props.onBoardNameChange}
+                                value={props.boardName}
                             />
                         </FormGroup>
                     </Form>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="secondary" onClick={props.onToggleModal}>
+                    <Button
+                        color="secondary"
+                        onClick={props.editing ? props.onToggleEditModal : props.onToggleModal}
+                    >
                         Cancel
                     </Button>
-                    <Button color="primary" onClick={props.onCreateBoard}>
-                        Create Board
+                    <Button
+                        color="primary"
+                        onClick={props.editing ? props.onSaveBoard : props.onCreateBoard}
+                    >
+                        {props.editing ? "Save Board" : "Create Board"}
                     </Button>
                 </ModalFooter>
             </Modal>

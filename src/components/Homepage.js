@@ -7,38 +7,35 @@
 import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { withRouter } from "react-router";
-import * as projActions from "../actions/projActions";
+import { withRouter, Redirect } from "react-router";
+import { projActions } from "../actions/projActions";
 import { Parse } from "parse";
+import { UserModel } from "../models/UserModel";
 
 import { NavBar } from "./common/Navbar";
 import { ProjectListComponent } from "./home/ProjectListComponent";
 
 import v4 from "uuid";
 
-let projs = [
-    { name: "Project 1", id: v4() },
-    { name: "Project 2", id: v4() },
-    { name: "Project 3", id: v4() },
-    { name: "Project 4", id: v4() },
-    { name: "Project 5", id: v4() }
-];
-
 class Homepage extends React.Component {
     constructor(props) {
         super(props);
 
-        var currentUser = Parse.User.current();
-        if (!currentUser) {
-            this.props.history.push("/login");
-            return;
-        }
-
         this.state = {
-            projects: projs // TODO: change to action dispatch
+            projects: [] // TODO: change to action dispatch
         };
 
         this.projectClick = this.projectClick.bind(this);
+    }
+
+    componentDidMount() {
+        console.log("dispatching...");
+        this.props.actions.getProjects();
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.projects != state.projects) return { projects: props.projects };
+        return null;
     }
 
     projectClick(e) {
@@ -46,16 +43,26 @@ class Homepage extends React.Component {
         // TODO: dispatch action to reflect current project name in store
     }
 
+    // componentDidMount(){
+    //   var currentUser = UserModel.current(()=>{
+    //     console.log("[PROJECTLISTCOMPONENTS]",currentUser.getProjects())
+    //     this.setState({projects: currentUser.getProjects()})
+    //   });
+
+    // }
+
     render() {
-        return (
+        return this.props.logged_in ? (
             <div>
-                <NavBar history={this.props.history} zIndex={3} />
+                <NavBar zIndex={3} />
                 <ProjectListComponent
                     projects={this.state.projects}
                     onClick={this.projectClick}
                 />{" "}
                 {/* TODO: project list will be sent over by server */}
             </div>
+        ) : (
+            <Redirect to="/login" />
         );
     }
 }
@@ -67,9 +74,12 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, ownProps) {
+    console.log("HOMEPAGE");
     console.log(state);
     return {
-        loading: state.ajaxCallsInProgress > 0
+        loading: state.ajaxCallsInProgress > 0,
+        logged_in: state.authReducer.logged_in,
+        projects: state.projectReducer.projects
     };
 }
 

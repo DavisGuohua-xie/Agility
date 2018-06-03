@@ -1,0 +1,38 @@
+.memberItemContainer {
+    width: 100%;
+    background-color: hsl(215, 73%, 35%);
+    color: white;
+    font-weight: 500;
+}
+
+.memberItemContainer:first-of-type {
+    margin-top: 20px;
+}
+
+.memberItemContainerActive {
+    background-color: #247dc5;
+}
+
+.memberItemContainer:hover {
+    background-color: #103c5f;
+}
+
+.memberItemName {
+    cursor: default;
+    padding: 10px 0 10px 10px;
+    margin: 0;
+}
+
+.selectedMember {
+    background-color: #247dc5;
+    color: white;
+    border-radius: 5px;
+    padding: 5px;
+    cursor: default;
+    margin-right: 10px;
+    display: inline-block;
+}
+
+.selectedMember:last-of-type {
+    margin-right: 0;
+}
