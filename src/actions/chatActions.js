@@ -21,13 +21,15 @@ let chatManager = null;
 let currUser = null;
 let roomSubs = [];
 
+const SERVER_URL = "http://localhost:3001";
+
 function instantiateChatkit(chatkitUsername) {
     return dispatch => {
         chatManager = new Chatkit.ChatManager({
             instanceLocator: "v1:us1:dae44b3a-7d46-4d6b-8894-1302096c409d",
             userId: chatkitUsername,
             tokenProvider: new Chatkit.TokenProvider({
-                url: "http://localhost:3001/authenticate"
+                url: `${SERVER_URL}/authenticate`
             })
         }); // instantiate chatmanager instance on this client
     };
@@ -36,7 +38,7 @@ function instantiateChatkit(chatkitUsername) {
 function login(chatkitUsername, firstName, lastName) {
     return dispatch => {
         dispatch(loadingMessages());
-        fetch("http://localhost:3001/users", {
+        fetch(`${SERVER_URL}/users`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -149,7 +151,7 @@ function sendMessage(messageText, channelId) {
 function createChannel(members, name, creatorId, isPrivate, currentChannelId, projId) {
     return dispatch => {
         let chatkitMembers = members.map(user => user + projId);
-        fetch("http://localhost:3001/createchannel", {
+        fetch(`${SERVER_URL}/createchannel`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -194,7 +196,7 @@ function logoff() {
 }
 
 export default function createChannelNewProject() {
-    return fetch("http://localhost:3001/createchannel", {
+    return fetch(`${SERVER_URL}/createchannel`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -211,7 +213,37 @@ export default function createChannelNewProject() {
 
         return response.json();
     });
-};
+}
+
+/**
+ * Sign up all project members of new project on chatkit.
+ *
+ * @param {Array} project_members list of project members as follows 
+ * (exactly named properties in exact order)
+ *      [ {first_name, last_name, username, projectID}, ... ]
+ */
+export function createChatkitUsers(project_members) {
+    console.log("\n\n\n\n\n\n\n\n============================");
+    console.log(project_members);
+    console.log("\n\n\n\n\n\n\n\n============================");
+
+    fetch(`${SERVER_URL}/createusers`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            project_members: project_members
+        })
+    })
+        .then(response => {
+            if (response.status === 200)
+                console.log(`user already on chatkit server with username: ${chatkitUsername}`);
+            else if (response.status === 201)
+                console.log(`user created on chatkit server with username: ${chatkitUsername}`);
+        })
+        .catch(error => console.error("ERRORORROROROR", error));
+}
 
 /**************************PRIVATE FUNCTIONS*****************************/
 

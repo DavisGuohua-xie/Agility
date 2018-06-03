@@ -10,6 +10,10 @@ const chatkit = new Chatkit.default({
     key: "75abc6fe-28d5-488b-9104-b45873c863cf:s4hgU9MqAV2FyWNslm3EMGrSBGtiyf3l8r6cAvwAHdI="
 });
 
+const GOOD_STATUS = 201;
+const OKAY_STATUS = 200;
+const BAD_STATUS = 400;
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
@@ -23,13 +27,38 @@ app.post("/users", (req, res) => {
             id: username,
             name: firstName + " " + lastName
         })
-        .then(() => res.sendStatus(201))
+        .then(() => res.sendStatus(GOOD_STATUS))
         .catch(error => {
             if (error.error === "services/chatkit/user_already_exists") {
-                res.sendStatus(200);
+                res.sendStatus(OKAY_STATUS);
             } else {
-                res.status(error.status).json(error);
+                res.status(BAD_STATUS).json(error);
             }
+        });
+});
+
+app.post("/createusers", (req, res) => {
+    const { project_members } = req.body;
+    console.log(project_members);
+
+    let formatted_members = [];
+    project_members.forEach(user => {
+        let { first_name, last_name, username, projectID } = user;
+        formatted_members.push({
+            id: username + projectID,
+            name: first_name + " " + last_name
+        });
+    });
+
+    chatkit
+        .createUsers({ users: formatted_members })
+        .then(response => {
+            res.sendStatus(GOOD_STATUS);
+            console.log("created all users on project");
+        })
+        .catch(err => {
+            res.status(BAD_STATUS).json(error);
+            console.log(err.error);
         });
 });
 
@@ -46,10 +75,10 @@ app.post("/createchannel", (req, res) => {
         })
         .then(room => {
             console.log(room);
-            return res.json(room);
+            return res.status(GOOD_STATUS).json(room);
         })
         .catch(error => {
-            return res.status(error.status).json(error);
+            return res.status(BAD_STATUS).json(error);
         });
 });
 
