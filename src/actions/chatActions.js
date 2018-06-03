@@ -21,13 +21,15 @@ let chatManager = null;
 let currUser = null;
 let roomSubs = [];
 
+const SERVER_URL = "http://localhost:3001";
+
 function instantiateChatkit(chatkitUsername) {
     return dispatch => {
         chatManager = new Chatkit.ChatManager({
             instanceLocator: "v1:us1:dae44b3a-7d46-4d6b-8894-1302096c409d",
             userId: chatkitUsername,
             tokenProvider: new Chatkit.TokenProvider({
-                url: "http://localhost:3001/authenticate"
+                url: `${SERVER_URL}/authenticate`
             })
         }); // instantiate chatmanager instance on this client
     };
@@ -36,7 +38,7 @@ function instantiateChatkit(chatkitUsername) {
 function login(chatkitUsername, firstName, lastName) {
     return dispatch => {
         dispatch(loadingMessages());
-        fetch("http://localhost:3001/users", {
+        fetch(`${SERVER_URL}/users`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -57,16 +59,16 @@ function login(chatkitUsername, firstName, lastName) {
     };
 }
 
-function connectChatkit() {
+function connectChatkit(publicChannels) {
     return dispatch => {
         chatManager
             .connect()
             .then(currentUser => {
                 console.log("current user: ", currentUser.rooms);
                 currUser = currentUser;
-                let currChannel = currentUser.rooms ? currentUser.rooms[0] : undefined;
+                let currChannel = publicChannels[0];
 
-                return currentUser.joinRoom({ roomId: currChannel.id });
+                return currentUser.joinRoom({ roomId: currChannel });
             })
             .then(room => {
                 console.log(`joined room with room id: ${room.id}`);
@@ -146,10 +148,12 @@ function sendMessage(messageText, channelId) {
     };
 }
 
-function createChannel(members, name, creatorId, isPrivate, currentChannelId, projId) {
+function createChannel(members, name, creatorId, isPrivate, currentChannelId, projId, idNameMap) {
     return dispatch => {
-        let chatkitMembers = members.map(user => user + projId);
-        fetch("http://localhost:3001/createchannel", {
+        let chatkitMembers = !isPrivate
+            ? members.map(user => user + projId)
+            : members.map(user => user.username + projId);
+        fetch(`${SERVER_URL}/createchannel`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -158,12 +162,16 @@ function createChannel(members, name, creatorId, isPrivate, currentChannelId, pr
                 creator: creatorId,
                 teamMembers: chatkitMembers,
                 channelName: name,
-                isPrivate: !isPrivate
+                isPrivate: !isPrivate,
+                idNameMap: idNameMap
             })
         })
             .then(response => {
                 console.log("in response");
-                if (response.status >= 400) throw "error";
+                if (response.status >= 400) {
+                    console.error(response);
+                    throw "error";
+                }
 
                 return response.json();
             })
@@ -194,7 +202,7 @@ function logoff() {
 }
 
 export default function createChannelNewProject() {
-    return fetch("http://localhost:3001/createchannel", {
+    return fetch(`${SERVER_URL}/createchannel`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -211,7 +219,7 @@ export default function createChannelNewProject() {
 
         return response.json();
     });
-};
+}
 
 /**************************PRIVATE FUNCTIONS*****************************/
 

@@ -25,9 +25,14 @@ const MemberListItem = props => {
                 props.active ? styles.memberItemContainerActive : null
             }`}
             data-name={props.username}
+            data-fullname={props.name}
             onClick={props.onMemberSelect}
         >
-            <p className={styles.memberItemName} data-name={props.username}>
+            <p
+                className={styles.memberItemName}
+                data-name={props.username}
+                data-fullname={props.name}
+            >
                 {props.username}
             </p>
         </div>
@@ -40,16 +45,21 @@ const MemberList = props => {
             <Label>Selected Members</Label>
             <div>
                 {props.selectedMembers.map((member, index) => (
-                    <SelectedMemberItem username={member} key={index} />
+                    <SelectedMemberItem
+                        username={member}
+                        name={member.fname + " " + member.lname}
+                        key={index}
+                    />
                 ))}
             </div>
             <Label>Project Members</Label>
             {props.members.map((member, index) => (
                 <MemberListItem
-                    username={member}
+                    username={member.username}
+                    name={member.fname + " " + member.lname}
                     key={index}
                     onMemberSelect={props.onMemberSelect}
-                    active={props.selectedMembers.indexOf(member) >= 0}
+                    active={props.selectedMembers.indexOf(member.username) >= 0}
                 />
             ))}
         </div>

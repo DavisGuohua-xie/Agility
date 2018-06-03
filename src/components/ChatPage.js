@@ -10,7 +10,7 @@ import Sidebar from "react-sidebar";
 import Parse from "parse";
 import Chatkit from "@pusher/chatkit";
 import ReactLoading from "react-loading";
-import toastr from './common/toastrConfig';
+import toastr from "./common/toastrConfig";
 
 import { chatActions } from "../actions/chatActions";
 
@@ -62,16 +62,13 @@ class ChatPage extends Component {
     }
 
     componentDidMount() {
-        if(!this.props.logged_in) {
+        if (!this.props.logged_in) {
             this.props.history.replace("/login");
             return;
         }
 
         mql.addListener(this.mediaQueryChanged);
         this.setState({ mql: mql, sidebarDocked: mql.matches });
-        
-        // TODO: fetch project data from server
-        // TODO: call redux action
 
         this.props.chatActions.instantiateChatkit(this.state.chatkitUsername);
         this.props.chatActions.login(
@@ -79,7 +76,8 @@ class ChatPage extends Component {
             this.props.firstName,
             this.props.lastName
         );
-        this.props.chatActions.connectChatkit();
+
+        this.props.chatActions.connectChatkit(this.props.publicChannels);
 
         this.setState({
             msgList: [],
@@ -125,8 +123,10 @@ class ChatPage extends Component {
         let channelSwitchReqObj = { target: { dataset: { channelid: undefined } } };
 
         let members = this.state.createGroupChannel
-            ? this.props.projectMembers
+            ? JSON.parse(JSON.stringify(this.props.projectMembers))
             : this.state.newChannelMembers;
+
+        console.log(JSON.parse(JSON.stringify(this.props.projectMembers)));
 
         if (members.length == 0 || this.state.newChannelName.length == 0) {
             toastr.error("Specify channel name and/or members", "Can't create channel");
@@ -139,7 +139,8 @@ class ChatPage extends Component {
             this.state.chatkitUsername,
             this.state.createGroupChannel,
             this.props.currentChannelId,
-            this.state.projectID
+            this.state.projectID,
+            this.props.id_to_name_map
         );
 
         this.resetNewChannelFields();
@@ -184,7 +185,8 @@ class ChatPage extends Component {
 
     handleMemberClick(e) {
         let name = e.target.dataset.name;
-        console.log(name);
+        let fullname = e.target.dataset.fullname;
+        console.log(fullname);
         let newChannelMembers = this.state.newChannelMembers;
 
         if (newChannelMembers.indexOf(name) < 0) newChannelMembers.push(name);
@@ -204,11 +206,7 @@ class ChatPage extends Component {
     render() {
         return (
             <div style={{ height: "100%" }}>
-                <NavBar
-                    projName="Project name"
-                    projID={this.state.projectID}
-                    zIndex={2}
-                />
+                <NavBar projName="Project name" projID={this.state.projectID} zIndex={2} />
                 <Sidebar
                     sidebar={
                         <ChatSidebar
@@ -246,7 +244,7 @@ class ChatPage extends Component {
                             currentRoom={this.state.currentChannel}
                             loading={this.props.chat_loading}
                             members={this.props.projectMembers.filter(
-                                id => id !== this.props.username
+                                member => member.username !== this.props.username
                             )}
                             onMemberClick={this.handleMemberClick}
                             selectedMembers={this.state.newChannelMembers}
@@ -267,6 +265,13 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state, ownProps) {
     console.log(state);
     // TODO: need to get list of channel objects from store state
+
+    let id_to_name_map = {};
+
+    state.projectReducer.project_data.members.forEach(member => {
+        id_to_name_map[member.username + ownProps.match.params.projID] =
+            member.fname + " " + member.lname;
+    });
     return {
         ajaxCalls: state.ajaxCallsInProgress,
         logged_in: state.authReducer.logged_in,
@@ -279,8 +284,9 @@ function mapStateToProps(state, ownProps) {
         currentChannelId: state.chatReducer.currentChannelId,
         chat_loading: state.chatReducer.chat_loading,
         metadata_loading: state.chatReducer.metadata_loading,
-        channelIds: state.projectReducer.project_data.channels,
-        projectMembers: state.projectReducer.project_data.members // {fname, lname, member_id, username}
+        publicChannels: state.projectReducer.project_data.channels,
+        projectMembers: state.projectReducer.project_data.members, // {fname, lname, member_id, username}
+        id_to_name_map: id_to_name_map
     };
 }
 
