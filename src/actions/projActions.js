@@ -184,7 +184,7 @@ function addChannelToProject(room_id, project_id) {
     function request() {
         return { type: types.ADD_CHANNEL_TO_PROJECT_REQUEST };
     }
-    function success(req) {
+    function success() {
         return { type: types.ADD_CHANNEL_TO_PROJECT_SUCCESS  };
     }
     function failure(err) {
