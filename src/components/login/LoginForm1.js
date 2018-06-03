@@ -1,6 +1,6 @@
 import React from "react";
 
-import styles from "../../styles/login1.module.css";
+import styles from "../../styles/Login.module.css";
 
 import {
     Form,
@@ -14,10 +14,13 @@ import {
     ModalFooter
 } from "reactstrap";
 
+import logo from "../../img/logo.png";
+
 const LoginForm1 = props => {
     return (
         <div className={styles.container}>
             <div className={styles.center}>
+                <img className={styles.logo} src={logo} />
                 <h2 className={styles.loginHeader}>Agility</h2>
 
                 <Form>
@@ -45,11 +48,11 @@ const LoginForm1 = props => {
                         />
                     </FormGroup>
 
-                    <FormGroup check className={styles.formgroup}>
+                    {/*<FormGroup check className={styles.formgroup}>
                         <Label check>
                             <Input type="checkbox" /> Remember me
                         </Label>
-                    </FormGroup>
+                    </FormGroup>*/}
                 </Form>
                 <a className={styles.forgotPass} onClick={props.onToggleForgot}>
                     Forgot password?
