@@ -63,29 +63,100 @@ app.post("/createusers", (req, res) => {
 });
 
 app.post("/createchannel", (req, res) => {
-    const { creator, teamMembers, channelName, isPrivate } = req.body;
+    const { creator, teamMembers, channelName, isPrivate, idNameMap } = req.body;
     console.log(`creating new group channel: ${channelName}`);
 
-    chatkit
-        .createRoom({
-            creatorId: creator,
-            name: channelName,
-            isPrivate: isPrivate,
-            userIds: teamMembers
-        })
-        .then(room => {
-            console.log(room);
-            return res.status(GOOD_STATUS).json(room);
-        })
-        .catch(error => {
-            return res.status(BAD_STATUS).json(error);
-        });
+    if (creator === "root") {
+        chatkit
+            .createRoom({
+                creatorId: creator,
+                name: channelName,
+                isPrivate: isPrivate,
+                userIds: teamMembers
+            })
+            .then(room => {
+                console.log(room);
+                return res.status(GOOD_STATUS).json(room);
+            })
+            .catch(error => {
+                return res.status(BAD_STATUS).json(error);
+            });
+    } else {
+        get_missing_users(teamMembers)
+            .then(response => {
+                console.log("get_missing_users");
+                console.log(response);
+                console.log(teamMembers);
+
+                let missing = teamMembers.filter(member => {
+                    let found = false;
+                    response.forEach(responseUser => {
+                        if (responseUser.id === member) {
+                            found = true;
+                        }
+                    });
+                    return !found;
+                });
+
+                console.log("missing");
+                console.log(missing);
+
+                let missingUsers = missing.map(m => {
+                    return { id: m, name: idNameMap[m] };
+                });
+
+                console.log(idNameMap);
+
+                return chatkit.createUsers({ users: missingUsers });
+            })
+            .then(response => {
+                return chatkit.createRoom({
+                    creatorId: creator,
+                    name: channelName,
+                    isPrivate: isPrivate,
+                    userIds: teamMembers
+                });
+            })
+            .then(room => {
+                console.log(room);
+                return res.status(GOOD_STATUS).json(room);
+            })
+            .catch(error => {
+                return res.status(BAD_STATUS).json(error);
+            });
+    }
 });
 
 app.post("/authenticate", (req, res) => {
     const authData = chatkit.authenticate({ userId: req.query.user_id });
     res.status(authData.status).send(authData.body);
 });
+
+app.post("/getuser", (req, res) => {
+    const { username } = req.body;
+    console.log(username);
+
+    chatkit
+        .getUsersByIds({
+            userIds: [username]
+        })
+        .then(response => {
+            console.log(response);
+            if (response.length > 0) return res.status(200).json({ exists: true });
+
+            return res.status(200).json({ exists: false });
+        })
+        .catch(err => {
+            console.log(err);
+            return res.status(200).json({ exists: false });
+        });
+});
+
+let get_missing_users = function(members) {
+    return chatkit.getUsersByIds({
+        userIds: members
+    });
+};
 
 const PORT = 3001;
 app.listen(PORT, err => {

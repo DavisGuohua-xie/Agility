@@ -148,9 +148,11 @@ function sendMessage(messageText, channelId) {
     };
 }
 
-function createChannel(members, name, creatorId, isPrivate, currentChannelId, projId) {
+function createChannel(members, name, creatorId, isPrivate, currentChannelId, projId, idNameMap) {
     return dispatch => {
-        let chatkitMembers = members.map(user => user + projId);
+        let chatkitMembers = !isPrivate
+            ? members.map(user => user + projId)
+            : members.map(user => user.username + projId);
         fetch(`${SERVER_URL}/createchannel`, {
             method: "POST",
             headers: {
@@ -160,12 +162,16 @@ function createChannel(members, name, creatorId, isPrivate, currentChannelId, pr
                 creator: creatorId,
                 teamMembers: chatkitMembers,
                 channelName: name,
-                isPrivate: !isPrivate
+                isPrivate: !isPrivate,
+                idNameMap: idNameMap
             })
         })
             .then(response => {
                 console.log("in response");
-                if (response.status >= 400) throw "error";
+                if (response.status >= 400) {
+                    console.error(response);
+                    throw "error";
+                }
 
                 return response.json();
             })
@@ -218,7 +224,7 @@ export default function createChannelNewProject() {
 /**
  * Sign up all project members of new project on chatkit.
  *
- * @param {Array} project_members list of project members as follows 
+ * @param {Array} project_members list of project members as follows
  * (exactly named properties in exact order)
  *      [ {first_name, last_name, username, projectID}, ... ]
  */
@@ -236,12 +242,7 @@ export function createChatkitUsers(project_members) {
             project_members: project_members
         })
     })
-        .then(response => {
-            if (response.status === 200)
-                console.log(`user already on chatkit server with username: ${chatkitUsername}`);
-            else if (response.status === 201)
-                console.log(`user created on chatkit server with username: ${chatkitUsername}`);
-        })
+        .then(response => {})
         .catch(error => console.error("ERRORORROROROR", error));
 }
 
