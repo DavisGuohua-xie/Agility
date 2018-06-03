@@ -1,12 +1,17 @@
 import * as types from "./actionTypes";
 import * as ajaxActions from "./ajaxActions";
 import Parse from "parse";
+import createChannelNewProject from "./chatActions";
+import history from "../history";
+import { UserModel } from "../models/UserModel";
 
 export const projActions = {
-    createProject
+    createProject,
+    getProjects,
+    getProject
 };
 
-function createProject(projectName, projectManager, projectMembers, history) {
+function createProject(projectName, projectManager, projectMembers) {
     return dispatch => {
         console.log("creating project" + projectName + "...");
         dispatch(request(projectName));
@@ -20,16 +25,22 @@ function createProject(projectName, projectManager, projectMembers, history) {
         project.set("tasks", []);
         project.set("updates", []);
 
-        project.save(null, {
-            success: function(project) {
-                saveMembersToProject(project, projectManager, projectMembers, history);
-                dispatch(success(project));
-            },
-            error: function(project, error) {
-                dispatch(failure(error));
-                console.log(error);
-            }
-        });
+        createChannelNewProject()
+            .then(newChannel => {
+                return project.set("channels", [newChannel.id]);
+            })
+            .then(whatever => {
+                project.save(null, {
+                    success: function(project) {
+                        saveMembersToProject(project, projectManager, projectMembers);
+                        dispatch(success(project));
+                    },
+                    error: function(project, error) {
+                        dispatch(failure(error));
+                        console.log(error);
+                    }
+                });
+            });
     };
 
     function request(req) {
@@ -43,7 +54,112 @@ function createProject(projectName, projectManager, projectMembers, history) {
     }
 }
 
-function saveMembersToProject(project, projectManager, projectMembers, history) {
+// get projects from current user
+function getProjects() {
+    return dispatch => {
+        dispatch(ajaxActions.ajaxBegin());
+        dispatch(request());
+
+        UserModel.current(
+            userModel => {
+                console.log(userModel);
+
+                let projects = [];
+                let fields = ["roles", "tasks", "channels", "updates", "boards", "name"];
+
+                userModel.getProjects().forEach(proj => {
+                    let obj = {};
+                    fields.forEach(field => {
+                        obj[field] = proj.get(field);
+                        console.log(proj.get(field));
+                    });
+
+                    obj['id'] = proj.id;
+                    console.log(proj.id);
+
+                    projects.push(obj);
+                });
+
+                dispatch(success(projects));
+            },
+            error => {
+                dispatch(failure(error));
+            }
+        );
+    };
+
+    function request() {
+        return { type: types.GET_PROJECT_LIST_REQUEST };
+    }
+
+    function success(req) {
+        return { type: types.GET_PROJECT_LIST_SUCCESS, projects: req };
+    }
+
+    function failure(req) {
+        return { type: types.GET_PROJECT_LIST_FAILURE, req };
+    }
+}
+
+// get project data given id
+function getProject(project_id) {
+    return dispatch => {
+        dispatch(ajaxActions.ajaxBegin());
+        dispatch(request());
+
+        var res = {};
+        var query = new Parse.Query(Parse.Object.extend("Project"));
+        query.equalTo("objectId", project_id);
+        query
+            .first()
+            .then(project => {
+                console.log(project);
+                res["name"] = project.get("name");
+                var boards = project.get("boards");
+                res["boards"] = getTaskList(boards);
+
+                var channels = project.get("channels");
+                res["channels"] = channels;
+
+                var member_map = project.get("roles");
+                var member_ids = [];
+
+                for (var member_id in member_map) {
+                    member_ids.push(member_id);
+                }
+
+                getMembersFromId(member_ids).then(result => {
+                    var members = [];
+                    result.forEach(member => {
+                        members.push({
+                            fname: member.get("first_name"),
+                            lname: member.get("last_name"),
+                            member_id: member.id,
+                            username: member.get("username")
+                        });
+                    });
+                    res["members"] = members;
+                    dispatch(success(res));
+                    return res;
+                });
+            })
+            .catch(error => {
+                dispatch(failure(error));
+            });
+    };
+
+    function request() {
+        return { type: types.GET_PROJECT_REQUEST };
+    }
+    function success(req) {
+        return { type: types.GET_PROJECT_SUCCESS, project_data: req };
+    }
+    function failure(err) {
+        return { type: types.GET_PROJECT_FAILURE, error: err };
+    }
+}
+
+function saveMembersToProject(project, projectManager, projectMembers) {
     let roles = {};
     let promises = [];
     let failedUsers = [];
@@ -96,7 +212,6 @@ function saveMembersToProject(project, projectManager, projectMembers, history) 
 
                     // user does not exist, user failed to be added.
                 } else {
-
                     // TODO: passed failed users to error handler i guess...
                     failedUsers.push(projectMembers[i]);
                 }
@@ -129,4 +244,63 @@ function getMembers(projectMembers) {
         promises[i] = query.find();
     }
     return Promise.all(promises);
+}
+
+function getMembersFromId(member_ids) {
+    var promises = [];
+
+    for (var i = 0; i < member_ids.length; i++) {
+        var query = new Parse.Query(Parse.User);
+
+        // TODO: email search functionality?
+        query.equalTo("objectId", member_ids[i]);
+        promises[i] = query.first();
+    }
+    return Promise.all(promises);
+}
+
+function getTaskList(boards) {
+    let res = [];
+    boards.forEach(board => {
+        var Board = Parse.Object.extend("Board");
+        var query = new Parse.Query(Board);
+
+        query.equalTo("objectId", board.id);
+        query.first().then(board => {
+            var task_list = board.get("task_list");
+            var real_task_list = [];
+
+            if (task_list !== undefined) {
+                task_list.forEach(task => {
+                    var Task = Parse.Object.extend("Task");
+                    var query = new Parse.Query(Task);
+                    query.equalTo("objectId", task.id);
+
+                    query.first().then(task => {
+                        real_task_list.push({
+                            id: task.id,
+                            title: task.get("title"),
+                            description: task.get("content"),
+                            metadata: {
+                                assigned_to: task.get("assigned_to"),
+                                started_at: task.get("started_at"),
+                                due_date: task.get("due_date"),
+                                complettion_date: task.get("completion_date"),
+                                priority: task.get("priority")
+                            }
+                        });
+                    });
+                });
+            }
+
+            res.push({
+                id: board.id,
+                title: board.get("title"),
+                cards: real_task_list
+                //updated_at: board.get("_updated_at")
+            });
+        });
+    });
+
+    return res;
 }

@@ -5,17 +5,20 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Parse } from "parse";
+import {UserModel} from '../../models/UserModel'
 
 import NewProjectModal from "./NewProjectModal";
 
 const PROJECT_MEMBER = 0;
-const PROJECT_MANAGER = 1;
-const CUSTOMER = 2;
-const CEO = 3;
+//const PROJECT_MANAGER = 1;
+//const CUSTOMER = 2;
+//const CEO = 3;
 
 class ProjectListComponent extends React.Component {
     constructor(props) {
         super(props);
+
+
         this.state = {
             projItems: props.projects,
             newProjectModalOpen: false,
@@ -30,7 +33,7 @@ class ProjectListComponent extends React.Component {
         this.handleAddMember = this.handleAddMember.bind(this);
         this.handleDeleteNewMember = this.handleDeleteNewMember.bind(this);
         this.handleRoleChange = this.handleRoleChange.bind(this);
-        this.handleNewProjectNameChange = this.handleNewProjectNameChange.bind(this);
+        this.handleNewProjectNameChange = this.handleNewProjectNameChange.bind(this);     
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -55,7 +58,7 @@ class ProjectListComponent extends React.Component {
             console.log("project name: " + this.state.newProjectName);
 
             let projectManager = Parse.User.current();
-            this.props.actions.createProject(this.state.newProjectName, projectManager, this.state.newMembers, this.props.history);
+            this.props.actions.createProject(this.state.newProjectName, projectManager, this.state.newMembers);
         } else {
             console.log("no project name inputted");
         }
@@ -96,6 +99,8 @@ class ProjectListComponent extends React.Component {
             newProjectName: e.target.value
         })
     }
+
+
 
     render() {
         return (

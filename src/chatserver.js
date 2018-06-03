@@ -15,12 +15,13 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.post("/users", (req, res) => {
-    const { username } = req.body;
+    const { username, firstName, lastName } = req.body;
     console.log(username);
     chatkit
-        .createUser({ // TODO: check if user exists
+        .createUser({
+            // TODO: check if user exists
             id: username,
-            name: username
+            name: firstName + " " + lastName
         })
         .then(() => res.sendStatus(201))
         .catch(error => {
@@ -29,6 +30,26 @@ app.post("/users", (req, res) => {
             } else {
                 res.status(error.status).json(error);
             }
+        });
+});
+
+app.post("/createchannel", (req, res) => {
+    const { creator, teamMembers, channelName, isPrivate } = req.body;
+    console.log(`creating new group channel: ${channelName}`);
+
+    chatkit
+        .createRoom({
+            creatorId: creator,
+            name: channelName,
+            isPrivate: isPrivate,
+            userIds: teamMembers
+        })
+        .then(room => {
+            console.log(room);
+            return res.json(room);
+        })
+        .catch(error => {
+            return res.status(error.status).json(error);
         });
 });
 
