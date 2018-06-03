@@ -14,14 +14,14 @@ import {
     ModalFooter
 } from "reactstrap";
 
-import logo from "../../img/logo.png";
+import logo from "../../img/logo.svg";
 
 const LoginForm1 = props => {
     return (
         <div className={styles.container}>
             <div className={styles.center}>
                 <img className={styles.logo} src={logo} />
-                <h2 className={styles.loginHeader}>Agility</h2>
+                {/*<h2 className={styles.loginHeader}>Agility</h2>*/}
 
                 <Form>
                     <FormGroup className={styles.formgroup}>

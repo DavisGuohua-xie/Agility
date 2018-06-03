@@ -64,11 +64,17 @@
 }
 
 .logo {
-    border-radius: 20px;
     height: 200px;
-    object-fit: contain;
 }
 
-@media(max-width: 720px) {
+@media screen and (max-width: 500px) {
+    .container {
+        padding-left: 30px;
+        padding-right: 30px;
+        display: block;
+    }
 
+    .logo {
+        max-width: 100%;
+    }
 }
