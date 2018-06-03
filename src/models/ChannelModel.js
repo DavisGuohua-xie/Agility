@@ -34,7 +34,7 @@ export class ChannelModel extends Parse.Object {
     }
 
 
-    getHistory() {
+    getHistory() {   
         return this.get(HISTORY)
     }
 

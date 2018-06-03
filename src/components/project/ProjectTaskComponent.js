@@ -50,7 +50,7 @@ class ProjectTaskComponent extends React.Component {
         if (this.state.newBoard === "") return;
 
         this.props.actions.createBoard(this.state.newBoard, this.props.project_id, this.state.eventBus);
-        
+
         /*
         let boards = Object.assign({}, this.state.tasksData);
         boards.lanes.push({
@@ -63,7 +63,7 @@ class ProjectTaskComponent extends React.Component {
         this.setState({ tasksData: boards });
         console.log(this.state.eventBus);
 
-        
+
         */
         this.props.onToggleModal();
         //this.props.updateTasks(boards);
