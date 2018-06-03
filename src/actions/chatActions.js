@@ -181,6 +181,12 @@ function createChannel(members, name, creatorId, isPrivate, currentChannelId, pr
 
                 dispatch(addNewChannel(roomObj));
                 dispatch(switchToChannel(roomObj.id, currentChannelId));
+
+
+                return new Promise((resolve, reject) => {
+                    resolve(roomObj);
+                });
+            }).then(roomObj => {
                 //TODO: add new group channel to project on Parse
             })
             .catch(error => {
@@ -237,10 +243,16 @@ function subscribeToChannel(channelId, dispatch) {
 }
 
 function unsubscribeFromChannel(channelId) {
-    console.log(channelId);
-    currUser.roomSubscriptions[channelId].cancel();
-    console.log("in unsub");
-    console.log(channelId);
+    console.log("unsubbing ", channelId);
+    console.log(currUser.roomSubscriptions[channelId].hooks);
+    if (currUser.roomSubscriptions[channelId].hooks.onNewMessage) {
+        try {
+            currUser.roomSubscriptions[channelId].cancel();
+            delete currUser.roomSubscriptions[channelId];
+        } catch (err) {
+            console.error(err);
+        }
+    }
 }
 
 function fetchMessages(channel) {
