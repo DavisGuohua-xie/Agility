@@ -12,43 +12,83 @@ function addMember (username, project_id, user_role) {
     return dispatch => {
         // call create member request
         dispatch(request());
-        let query = Parse.Query(Parse.User);
+        let query = new Parse.Query(Parse.User);
         query.equalTo("username", username);
-
         query.first().then(user => {
-            let query = Parse.Query(Parse.Object.extend("Project"));
-
+            user.add("projects", project_id);
+            let query = new Parse.Query(Parse.Object.extend("Project"));
             query.equalTo("objectId", project_id);
-
             query.first().then(project => {
-                user.add("projects", project_id);
+                let user_id = user.id;
+                console.log(user_id);
+                project.addUnique("members", {user_id: user_role});
+                
                 let roles = project.get("roles");
-
-                roles[username] = user_role;
+                roles[user_id] = user_role;
 
                 project.set("roles", roles);
                 project.save().then( res => {
-                    // you finished saving, call dispatch success
-                }).catch( error => {
-                    // something went wrong, call dispatch failure
+                    dispatch(success())
                 })
-            })
+                }).catch( error => {
+                    console.log(error);
+                    dispatch(failure(error));
+                })
+            }).catch( error => {
+                console.log(error);
+                dispatch(failure(error));
         })
     }
 
     function request() {
-        return { type: types.CREATE_PROJECT_REQUEST };
+        return { type: types.ADD_MEMBER_REQUEST };
     }
-    function success(req) {
-        return { type: types.CREATE_PROJECT_SUCCESS, req };
+    function success() {
+        return { type: types.ADD_MEMBER_SUCCESS };
     }
-    function failure(req) {
-        return { type: types.CREATE_PROJECT_FAILURE, req };
+    function failure(err) {
+        return { type: types.ADD_MEMBER_FAILURE, error: err };
     }
 }
 
-function removeMember () {
+function removeMember (username, project_id,) {
     return dispatch => {
+        dispatch(request());
+        let query = new Parse.Query(Parse.User);
+        query.equalTo("username", username);
 
+        query.first().then(user => {
+            let query = new Parse.Query(Parse.Object.extend("Project"));
+
+            query.equalTo("objectId", project_id);
+
+            query.first().then(project => {
+                user.remove("projects", project_id);
+                let roles = project.get("roles");
+                roles.remove(username);
+
+                project.set("roles", roles);
+                project.save().then(res => {
+                    dispatch(success())
+                }).catch( error => {
+                    dispatch(failure(error))
+                })
+            })
+        })
+
+    }
+
+    function request() {
+        return { 
+            type: types.REMOVE_MEMBER_REQUEST,
+        };
+    }
+    function success() {
+        return { 
+            type: types.REMOVE_MEMBER_SUCCESS, 
+        };
+    }
+    function failure(err) {
+        return { type: types.REMOVE_MEMBER_FAILURE, error: err };
     }
 }
