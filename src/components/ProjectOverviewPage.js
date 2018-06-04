@@ -211,6 +211,35 @@ class ProjectOverviewPage extends React.Component {
         this.setState({ tasks: newData });
     }
 
+    updateBoard(boardId, newBoard) {
+        let title = newBoard.get("title");
+        let Board = Parse.Object.extend("Board");
+        let board = new Parse.Query(Board);
+        board.equalTo("objectId", boardId);
+        board.set("title", title);
+        // Need to update board "type"! How? 
+        board.save()
+    }
+
+    updateTask(taskId, newTask) {
+        let title = newTask.get("title");
+        let content = newTask.get("content");
+        let due_date = newTask.get("due_date");
+        let priority = newTask.get("priority");
+        let completion_date = newTask.get("completion_date");
+
+        // Will fix tmrw 
+        /*
+        let task = new Parse.Query(Task);
+        task.equalsTo("objectId", taskId);
+        task.set("title", title);
+        task.set("content", content);
+        task.set("due_date", due_date);
+        task.set("priority", priority);
+        task.set("completion_date", completion_date);
+        */
+    }
+
     toggleNewBoard() {
         this.setState({
             modalOpen: !this.state.modalOpen

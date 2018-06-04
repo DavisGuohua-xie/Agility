@@ -53,7 +53,7 @@ function createBoard(title, project_id, eventBus) {
     }
 }
 
-function createTask(title, board_id, username) {
+function createTask(card, board_id, username) {
     return dispatch => {
         dispatch(ajaxActions.ajaxBegin());
         dispatch(request());
@@ -61,10 +61,9 @@ function createTask(title, board_id, username) {
         let Task = Parse.Object.extend("Task");
         let task = new Task();
 
-        task.set("title", title);
-        //let username = UserModel.getUsername();
+        task.set("title", card.title);
         task.set("assigned_to", username);
-
+        task.set("content", card.description);
         // Set content ??
         // Set due date
         // Set completion date, sets to now by default, what to change to?
