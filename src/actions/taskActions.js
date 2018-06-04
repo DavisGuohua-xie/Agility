@@ -146,22 +146,23 @@ function updateTask(taskId, newTask) {
     return dispatch => {
         dispatch(ajaxActions.ajaxBegin());
         let Task = Parse.Object.extend("Task");
-        let task = new Parse.Query(Task);
-        task.equalTo("objectId", taskId);
-
-        task.set("title", newTask.title);
-        task.set("content", newTask.content);
-        task.set("due_date", newTask.due_date);
-        task.set("priority", newTask.priority);
-        task.set("completion_date", newTask.completion_date);
-        task
-            .save()
-            .then(task => {
-                dispatch(success(task));
-            })
-            .catch(error => {
-                dispatch(failure(error));
-            });
+        let query = new Parse.Query(Task);
+        query.equalTo("objectId", taskId);
+        query.first().then(task => {
+            task.set("title", newTask.title);
+            task.set("content", newTask.content);
+            task.set("due_date", newTask.due_date);
+            task.set("priority", newTask.priority);
+            task.set("completion_date", newTask.completion_date);
+            task
+                .save()
+                .then(task => {
+                    dispatch(success(newTask));
+                })
+                .catch(error => {
+                    dispatch(failure(error));
+                });
+        });
     };
 
     function success(req) {
