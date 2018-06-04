@@ -1,6 +1,6 @@
 var parsecfg = {
     APP_ID: "myAppId",
-    MASTER_KEY: "myMasterKey",
+    MASTER_KEY: "MASTER_KEY",
     SERVER_URL: "http://agiledirtybit.herokuapp.com/parse"
 };
 

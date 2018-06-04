@@ -1,12 +1,17 @@
-import * as types from "./actionTypes";
+import * as C from "./actionTypes";
 import * as ajaxActions from "./ajaxActions";
 import Parse from "parse";
 import history from "../history";
+import {sendResetPasswordEmail} from '../server/emailAPI'
+import _ from 'lodash'
 
 export const accountActions = {
     getUserInfo,
-    saveUserInfo
+    saveUserInfo,
+    resetPassword
 };
+
+
 
 function getUserInfo() {
     return dispatch => {
@@ -31,15 +36,54 @@ function getUserInfo() {
     };
 
     function request() {
-        return { type: types.GET_USERINFO_REQUEST };
+        return { type: C.GET_USERINFO_REQUEST };
     }
     function success(req) {
-        return { type: types.GET_USERINFO_SUCCESS, user_info: req };
+        return { type: C.GET_USERINFO_SUCCESS, user_info: req };
     }
     function failure(err) {
-        return { type: types.GET_USERINFO_FAILURE, error: err };
+        return { type: C.GET_USERINFO_FAILURE, error: err };
     }
 }
+
+
+
+export function resetPassword(email){
+  return (dispatch) => {
+
+    dispatch(resetPasswordRequest())
+    sendResetPasswordEmail(email)
+    .then((response)=>response.json())
+    .then((body) => {
+      console.log("response: ", body)
+      if (_.isEmpty(body)){ //Server returns empty object if works correctly... weird I know
+        dispatch(resetPasswordSuccess())
+      }else {
+       return Promise.reject(new Error("[ERROR]" + body))
+      }
+    })
+    .catch((error) => {
+      dispatch(resetPasswordFailure(error))
+    })
+
+  }
+
+}
+
+function resetPasswordRequest() {
+  return {type: C.RESET_PASSWORD_REQUEST}
+}
+function resetPasswordFailure (error) {
+  console.log("[ERROR]", error.message)
+
+  return {type: C.RESET_PASSWORD_FAILURE}
+}
+function resetPasswordSuccess() {
+  return {type: C.RESET_PASSWORD_SUCCESS}
+};
+
+
+
 
 function saveUserInfo(userInfo) {
     return dispatch => {
@@ -55,7 +99,7 @@ function saveUserInfo(userInfo) {
             if (userInfo.password !== '') {
                 user.set("password", userInfo.password)
             }
-            
+
             user.set("email", userInfo.email);
             user.set("notification", parseInt(userInfo.notification, 10));
 
@@ -68,12 +112,12 @@ function saveUserInfo(userInfo) {
     }
 
     function request() {
-        return { type: types.SAVE_USERINFO_REQUEST };
+        return { type: C.SAVE_USERINFO_REQUEST };
     }
     function success() {
-        return { type: types.SAVE_USERINFO_SUCCESS, save_userinfo_success: true };
+        return { type: C.SAVE_USERINFO_SUCCESS, save_userinfo_success: true };
     }
     function failure(err) {
-        return { type: types.SAVE_USERINFO_FAILURE, error: err };
+        return { type: C.SAVE_USERINFO_FAILURE, error: err };
     }
 }

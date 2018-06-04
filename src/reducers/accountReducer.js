@@ -34,7 +34,22 @@ export default function accountReducer(state = initialState, action) {
                 save_userinfo_request: false,
                 save_userinfo_error: action.error
             });
+        case types.RESET_PASSWORD_REQUEST:
+           return state.merge({
+             sending_password_reset: true,
+           });
 
+        case types.RESET_PASSWORD_FAILURE:
+           return state.merge({
+             sending_password_reset: false,
+             password_email_sent: false
+           })
+           
+        case types.RESET_PASSWORD_SUCCESS:
+            return state.merge({
+              sending_password_reset: false,
+              password_email_sent: true
+            })
         default:
             return state;
 
