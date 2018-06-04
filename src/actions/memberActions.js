@@ -15,7 +15,7 @@ function addMember (username, project_id, user_role) {
         let query = new Parse.Query(Parse.User);
         query.equalTo("username", username);
         query.first().then(user => {
-            user.add("projects", project_id);
+            user.addUnique("projects", project_id);
             let query = new Parse.Query(Parse.Object.extend("Project"));
             query.equalTo("objectId", project_id);
             query.first().then(project => {
@@ -51,29 +51,33 @@ function addMember (username, project_id, user_role) {
     }
 }
 
-function removeMember (username, project_id,) {
+function removeMember (username, project_id) {
     return dispatch => {
         dispatch(request());
         let query = new Parse.Query(Parse.User);
         query.equalTo("username", username);
-
         query.first().then(user => {
             let query = new Parse.Query(Parse.Object.extend("Project"));
-
+            console.log(query);
             query.equalTo("objectId", project_id);
 
             query.first().then(project => {
                 user.remove("projects", project_id);
+                let user_id = user.id;
                 let roles = project.get("roles");
-                roles.remove(username);
+                delete roles[user_id];
 
                 project.set("roles", roles);
                 project.save().then(res => {
                     dispatch(success())
-                }).catch( error => {
-                    dispatch(failure(error))
                 })
+            }).catch( error => {
+                console.log(error);
+                dispatch(failure(error));
             })
+        }).catch( error => {
+            console.log(error);
+            dispatch(failure(error));
         })
 
     }

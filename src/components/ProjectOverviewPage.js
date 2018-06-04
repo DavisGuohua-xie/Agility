@@ -132,12 +132,12 @@ class ProjectOverviewPage extends React.Component {
         this.setState({
             removeName: e.target.value
         });
-        console.log(this.state.removeName);
     }
 
     handleRemoveMember() {
         let username = this.state.removeName;
         let project_id = this.state.projectID;
+        this.toggleRemoveMemberModal();
         this.props.member_actions.removeMember(username, project_id);
     }
 
