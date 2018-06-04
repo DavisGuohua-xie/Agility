@@ -112,3 +112,35 @@ function createTask(card, board_id, username) {
         return { type: types.CREATE_TASK_FAILURE, req };
     }
 }
+
+function updateTask(taskId, newTask) {
+    return dispatch => {
+        dispatch(ajaxActions.ajaxBegin());
+        let Task = Parse.Object.extend("Task");
+        let task = new Parse.Query(Task);
+        task.equalTo("objectId", taskId);
+ 
+        task.set("title", newTask.title);
+        task.set("content", newTask.content);
+        task.set("due_date", newTask.due_date);
+        task.set("priority", newTask.priority);
+        task.set("completion_date", newTask.completion_date);
+        task
+            .save()
+            .then(task => {
+                dispatch(success(task));
+            })
+            .catch(error => {
+                dispatch(failure(error));
+            });
+    };
+ 
+    function success(req) {
+        return { type: types.UPDATE_TASK_SUCCESS, board: req };
+    }
+    function failure(req) {
+        return { type: types.UPDATE_TASK_FAILURE, req };
+    }
+ }
+
+
