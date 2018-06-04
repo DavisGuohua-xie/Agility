@@ -12,7 +12,8 @@ export function sendSignupEmail( username, email){
   return fetch(EMAIL_ENDPOINT, {
     body: JSON.stringify({
         user: {username: username},
-        recipients:[email]
+        recipients:[email],
+        type:"signup"
       }),
   headers: {
     'content-type':'application/json'
