@@ -1,6 +1,7 @@
 import { authAPI } from "../server/authAPI";
-import {sendSignupEmail} from '../server/emailAPI'
+import { sendSignupEmail } from "../server/emailAPI";
 import { UserModel } from "../models/UserModel";
+import toastr from "../components/common/toastrConfig";
 // import history from '../history'
 import * as C from "./actionTypes";
 
@@ -43,6 +44,7 @@ export const login = (username, password, success) => {
             },
             function(error) {
                 //No longer logging in anymore
+                toastr.error("Incorrect login credentials", "Login failed");
                 dispatch(cancelLogin());
                 dispatch(loginError(error));
             }
@@ -63,7 +65,7 @@ export const register = (firstname, lastname, username, email, password, success
             newUser.setLastName(lastname);
             dispatch(successRegister());
             dispatch(cancelRegistration());
-            dispatch(sendWelcomeMessage(email, username))
+            dispatch(sendWelcomeMessage(email, username));
 
             success(newUser);
         },
@@ -83,33 +85,32 @@ function logout() {
 }
 
 export const sendWelcomeMessage = (email, username) => dispatch => {
+    sendSignupEmail(username, email)
+        .then(response => {
+            console.log("[SEND_SIGNUP_RESPONSE: ]", response.json());
+            dispatch(signUpEmailSuccess());
+        })
+        .catch(error => {
+            dispatch(signupEmailFailure(error));
+        });
 
-  sendSignupEmail(username, email)
-  .then(response   => {
-  console.log("[SEND_SIGNUP_RESPONSE: ]", response.json())
-    dispatch(signUpEmailSuccess())
-  })
-  .catch(error => {
-    dispatch(signupEmailFailure(error))
-  })
+    return {
+        type: C.SEND_SIGNUP_EMAIL
+    };
+};
 
-  return {
-    type: C.SEND_SIGNUP_EMAIL,
-  }
-}
-
-const signupEmailFailure = (error) => {
-  return {
-    type: C.SEND_SIGNUP_EMAIL_FAILURE,
-    error: error
-  }
-}
+const signupEmailFailure = error => {
+    return {
+        type: C.SEND_SIGNUP_EMAIL_FAILURE,
+        error: error
+    };
+};
 
 const signUpEmailSuccess = () => {
-  return {
-    type: C.SEND_SIGNUP_EMAIL_SUCCESS
-  }
-}
+    return {
+        type: C.SEND_SIGNUP_EMAIL_SUCCESS
+    };
+};
 const successRegister = () => {
     return {
         type: C.REGISTRATION_SUCCESS
