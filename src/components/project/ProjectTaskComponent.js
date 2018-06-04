@@ -118,7 +118,7 @@ class ProjectTaskComponent extends React.Component {
 
     handleCardAdd(card,laneId) {
 	this.props.actions.createTask(
-		card.title,
+		card,
 		laneId,
 		this.props.username
 	);
