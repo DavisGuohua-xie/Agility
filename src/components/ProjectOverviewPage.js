@@ -11,6 +11,7 @@ import Sidebar from "react-sidebar";
 import { projActions } from "../actions/projActions";
 
 import { memberActions } from "../actions/memberActions";
+import {taskActions} from "../actions/taskActions";
 
 import { NavBar } from "./common/Navbar";
 
@@ -37,6 +38,7 @@ import {
 
 import { Parse } from "parse";
 import ManagementButton from "./project/ManagementButton";
+import toastr from "./common/toastrConfig";
 
 const mql = window.matchMedia(`(min-width: 900px)`);
 
@@ -90,6 +92,7 @@ class ProjectOverviewPage extends React.Component {
         this.toggleRemoveMemberModal = this.toggleRemoveMemberModal.bind(this);
         this.handleRemoveMember = this.handleRemoveMember.bind(this);
         this.handleRemoveName = this.handleRemoveName.bind(this);
+        this.updateBoard = this.updateBoard.bind(this);
     }
 
     componentDidMount() {
@@ -122,7 +125,7 @@ class ProjectOverviewPage extends React.Component {
     }
 
     toggleAddMemberModal() {
-        this.setState({addMemberModalOpen: !this.state.addMemberModalOpen});
+        this.setState({ addMemberModalOpen: !this.state.addMemberModalOpen });
     }
 
     handleNewName(e) {
@@ -134,11 +137,15 @@ class ProjectOverviewPage extends React.Component {
     }
 
     handleAddMember() {
-        if (this.state.newUserName === "") alert("User name can not be empty.");
-        else if (this.state.newRole === "") alert("Role can not be empty!");
-        else if (this.state.newRole !== "ProjectManager" && this.state.newRole !== "CEO" &&
-                this.state.newRole !== "TeamMember" && this.state.newRole !== "Customer")
-                alert("Invalid role entered.")
+        if (this.state.newUserName === "") toastr.error("User name cannot be empty.");
+        else if (this.state.newRole === "") toastr.error("Role can not be empty!");
+        else if (
+            this.state.newRole !== "ProjectManager" &&
+            this.state.newRole !== "CEO" &&
+            this.state.newRole !== "TeamMember" &&
+            this.state.newRole !== "Customer"
+        )
+            toastr.error("Invalid role entered.");
         else {
             this.toggleAddMemberModal();
             let project_id = this.state.projectID;
@@ -183,10 +190,7 @@ class ProjectOverviewPage extends React.Component {
     generateSidebar() {
         // TODO: generate list of project members for DM-ing
 
-        var members =
-            this.props.project_data === undefined
-                ? []
-                : this.props.project_data.members;
+        var members = this.props.project_data === undefined ? [] : this.props.project_data.members;
 
         return (
             <ul className={styles.sidebarUL}>
@@ -212,13 +216,10 @@ class ProjectOverviewPage extends React.Component {
     }
 
     updateBoard(boardId, newBoard) {
-        let title = newBoard.get("title");
-        let Board = Parse.Object.extend("Board");
-        let board = new Parse.Query(Board);
-        board.equalTo("objectId", boardId);
-        board.set("title", title);
-        // Need to update board "type"! How? 
-        board.save()
+        // Need to update board "type"! How?
+        //board.save();
+        console.log(boardId, newBoard);
+        this.props.taskActions.updateBoard(boardId, newBoard);
     }
 
     updateTask(taskId, newTask) {
@@ -228,7 +229,7 @@ class ProjectOverviewPage extends React.Component {
         let priority = newTask.get("priority");
         let completion_date = newTask.get("completion_date");
 
-        // Will fix tmrw 
+        // Will fix tmrw
         /*
         let task = new Parse.Query(Task);
         task.equalsTo("objectId", taskId);
@@ -253,7 +254,7 @@ class ProjectOverviewPage extends React.Component {
     render() {
         let task_list =
             this.props.board_data === undefined
-                ? {lanes: []}
+                ? { lanes: [] }
                 : { lanes: JSON.parse(JSON.stringify(this.props.board_data)) };
         console.log(task_list);
 
@@ -288,6 +289,7 @@ class ProjectOverviewPage extends React.Component {
                         onCardClick={this.handleCardClick}
                         modalOpen={this.state.modalOpen}
                         onToggleModal={this.toggleNewBoard}
+                        updateBoard={this.updateBoard}
                         updateTasks={this.updateTasks}
                         project_id={this.props.match.params.projID}
                         boards={this.props.board_data}
@@ -316,7 +318,8 @@ class ProjectOverviewPage extends React.Component {
                 <Modal
                     isOpen={this.state.addMemberModalOpen}
                     toggle={this.toggleAddMemberModal}
-                    className={this.props.className}>
+                    className={this.props.className}
+                >
                     <ModalHeader toggle={this.toggleAddMemberModal}>
                         Add New Team Member
                     </ModalHeader>
@@ -355,7 +358,8 @@ class ProjectOverviewPage extends React.Component {
                 <Modal
                     isOpen={this.state.removeMemberModalOpen}
                     toggle={this.toggleRemoveMemberModal}
-                    className={this.props.className}>
+                    className={this.props.className}
+                >
                     <ModalHeader toggle={this.toggleRemoveMemberModal}>
                         Remove New Team Member
                     </ModalHeader>
@@ -420,7 +424,8 @@ class ProjectOverviewPage extends React.Component {
 function mapDispatchToProps(dispatch) {
     return {
         actions: bindActionCreators(projActions, dispatch),
-        member_actions: bindActionCreators(memberActions, dispatch)
+        member_actions: bindActionCreators(memberActions, dispatch),
+        taskActions: bindActionCreators(taskActions, dispatch)
     };
 }
 

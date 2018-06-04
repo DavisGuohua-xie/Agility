@@ -18,6 +18,7 @@ class ProjectTaskComponent extends React.Component {
             eventBus: undefined,
             editing: false,
             showCardModal: false,
+            is_done: false,
             cardObject: {}
         };
 
@@ -25,11 +26,12 @@ class ProjectTaskComponent extends React.Component {
         this.handleCardClick = this.handleCardClick.bind(this);
         this.setEventBus = this.setEventBus.bind(this);
         this.handleCreateBoard = this.handleCreateBoard.bind(this);
-	this.handleCardAdd = this.handleCardAdd.bind(this);
+        this.handleCardAdd = this.handleCardAdd.bind(this);
         this.handleBoardNameChange = this.handleBoardNameChange.bind(this);
         this.toggleEditModal = this.toggleEditModal.bind(this);
         this.handleSaveBoard = this.handleSaveBoard.bind(this);
         this.handleCardClick = this.handleCardClick.bind(this);
+        this.handleBoardTypeChange = this.handleBoardTypeChange.bind(this);
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -104,32 +106,42 @@ class ProjectTaskComponent extends React.Component {
         let boards = this.state.tasksData.lanes;
         let boardID = this.state.boardID;
 
-        boards.filter(board => board.id === boardID)[0].title = this.state.newBoard;
+        let newBoard = { title: this.state.newBoard, is_done: this.state.is_done };
 
-        this.setState({ tasksData: { lanes: boards } });
-        this.state.eventBus.publish({ type: "UPDATE_LANES", lanes: boards });
         this.toggleEditModal(e);
-        this.props.updateTasks({ lanes: boards });
+        this.props.updateBoard(boardID, newBoard);
     }
 
     handleBoardNameChange(e) {
         this.setState({ newBoard: e.target.value });
     }
 
-    handleCardAdd(card,laneId) {
-	this.props.actions.createTask(
-		card,
-		laneId,
-		this.props.username
-	);
+    handleBoardTypeChange(e) {
+        this.setState({ is_done: e.target.checked });
+    }
+
+    handleCardAdd(card, laneId) {
+        this.props.actions.createTask(card, laneId, this.props.username);
     }
 
     toggleEditModal(e) {
+        if (this.props.modalOpen) {
+            this.setState({ editing: !this.state.editing, newBoard: "" });
+            this.props.onToggleModal();
+            return;
+        }
+
         let boardName = e.target.dataset.title;
         let boardID = e.target.dataset.id;
 
         if (this.state.editing) boardName = "";
-        this.setState({ newBoard: boardName, editing: !this.state.editing, boardID: boardID });
+        this.setState({
+            newBoard: boardName,
+            editing: !this.state.editing,
+            boardID: boardID,
+            is_done: this.props.boards.filter(b => b.id === boardID)[0].is_done ? true : false
+        });
+
         this.props.onToggleModal();
     }
 
@@ -139,7 +151,7 @@ class ProjectTaskComponent extends React.Component {
                 data={this.state.tasksData}
                 eventBusHandle={this.setEventBus}
                 onLaneClick={this.handleLaneClick}
-		onCardAdd={this.handleCardAdd}
+                onCardAdd={this.handleCardAdd}
                 onCardClick={this.handleCardClick}
                 modalOpen={this.state.modalOpen}
                 onBoardNameChange={this.handleBoardNameChange}
@@ -151,6 +163,8 @@ class ProjectTaskComponent extends React.Component {
                 editing={this.state.editing}
                 showCardModal={this.state.showCardModal}
                 onToggleCardModal={this.handleCardClick}
+                onBoardTypeChange={this.handleBoardTypeChange}
+                editBoardType={this.state.is_done}
                 cardObject={this.state.cardObject}
             />
         );

@@ -6,7 +6,8 @@ import { UserModel } from "../models/UserModel";
 
 export const taskActions = {
     createBoard,
-    createTask
+    createTask,
+    updateBoard
 };
 
 function createBoard(title, project_id, eventBus) {
@@ -110,5 +111,33 @@ function createTask(card, board_id, username) {
     }
     function failure(req) {
         return { type: types.CREATE_TASK_FAILURE, req };
+    }
+}
+
+function updateBoard(boardId, newBoard) {
+    return dispatch => {
+        dispatch(ajaxActions.ajaxBegin());
+        let Board = Parse.Object.extend("Board");
+        let query = new Parse.Query(Board);
+        query.equalTo("objectId", boardId);
+        query.first().then(board => {
+            board.set("title", newBoard.title);
+            board.set("is_done", newBoard.is_done);
+            board
+                .save()
+                .then(board => {
+                    dispatch(success(newBoard));
+                })
+                .catch(error => {
+                    dispatch(failure(error));
+                });
+        });
+    };
+
+    function success(boardId, newBoard) {
+        return { type: types.UPDATE_BOARD_SUCCESS, req: { board_id: boardId, board: newBoard } };
+    }
+    function failure(req) {
+        return { type: types.UPDATE_BOARD_FAILURE, req };
     }
 }
