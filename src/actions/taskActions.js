@@ -30,7 +30,7 @@ function createBoard(title, project_id, eventBus) {
 
                     project.save().then( res => {
                         dispatch(success(board));
-                        window.location.reload(true);
+                        //window.location.reload(true);
                         return board;
                     })
                 });

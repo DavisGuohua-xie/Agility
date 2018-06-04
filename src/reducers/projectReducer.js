@@ -36,6 +36,21 @@ export default function projectReducer(state = initialState, action) {
                 project_request: false,
                 project_error: action.error
             });
+        case types.ADD_CHANNEL_TO_PROJECT_REQUEST:
+            return state.merge({
+                actp_request: true,
+            });
+
+        case types.ADD_CHANNEL_TO_PROJECT_SUCCESS:
+            return state.merge({
+                actp_request: false,
+            });
+            
+        case types.ADD_CHANNEL_TO_PROJECT_FAILURE:
+            return state.merge({
+                actp_request: false,
+                actp_error: action.error
+            });
 
         default:
             return state;

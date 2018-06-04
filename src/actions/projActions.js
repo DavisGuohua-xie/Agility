@@ -8,7 +8,8 @@ import { UserModel } from "../models/UserModel";
 export const projActions = {
     createProject,
     getProjects,
-    getProject
+    getProject,
+    addChannelToProject
 };
 
 function createProject(projectName, projectManager, projectMembers) {
@@ -156,6 +157,38 @@ function getProject(project_id) {
     }
     function failure(err) {
         return { type: types.GET_PROJECT_FAILURE, error: err };
+    }
+}
+
+// save roomid to project
+
+function addChannelToProject(room_id, project_id) {
+    return dispatch => {
+        dispatch(ajaxActions.ajaxBegin());
+        dispatch(request());
+
+        var query = new Parse.Query(Parse.Object.extend("Project"));
+        query.equalTo("objectId", project_id);
+
+        query.first().then(project => {
+            project.add("channels", room_id);
+            project.save().then(() => {
+                dispatch(success());
+            }).catch(error => {
+                dispatch(failure(error));
+            });
+        });
+    }
+
+
+    function request() {
+        return { type: types.ADD_CHANNEL_TO_PROJECT_REQUEST };
+    }
+    function success() {
+        return { type: types.ADD_CHANNEL_TO_PROJECT_SUCCESS  };
+    }
+    function failure(err) {
+        return { type: types.ADD_CHANNEL_TO_PROJECT_FAILURE, error: err };
     }
 }
 

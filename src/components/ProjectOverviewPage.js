@@ -228,9 +228,9 @@ class ProjectOverviewPage extends React.Component {
 
     render() {
         let task_list =
-            this.props.project_data === undefined
+            this.props.board_data === undefined
                 ? {lanes: []}
-                : { lanes: JSON.parse(JSON.stringify(this.props.project_data.boards)) };
+                : { lanes: JSON.parse(JSON.stringify(this.props.board_data)) };
         console.log(task_list);
 
         //console.log(this.state);
@@ -406,7 +406,7 @@ function mapStateToProps(state, ownProps) {
     return {
         ajaxCalls: state.ajaxCallsInProgress,
         project_data: state.projectReducer.project_data,
-        board_data: null //state.taskReducer.board_data
+        board_data: state.taskReducer.board_data
     };
 }
 
