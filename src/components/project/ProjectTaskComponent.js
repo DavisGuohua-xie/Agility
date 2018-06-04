@@ -25,7 +25,7 @@ class ProjectTaskComponent extends React.Component {
         this.handleCardClick = this.handleCardClick.bind(this);
         this.setEventBus = this.setEventBus.bind(this);
         this.handleCreateBoard = this.handleCreateBoard.bind(this);
-	this.handleCardAdd = this.handleCardAdd.bind(this);
+        this.handleCardAdd = this.handleCardAdd.bind(this);
         this.handleBoardNameChange = this.handleBoardNameChange.bind(this);
         this.toggleEditModal = this.toggleEditModal.bind(this);
         this.handleSaveBoard = this.handleSaveBoard.bind(this);
@@ -116,12 +116,8 @@ class ProjectTaskComponent extends React.Component {
         this.setState({ newBoard: e.target.value });
     }
 
-    handleCardAdd(card,laneId) {
-	this.props.actions.createTask(
-		card.title,
-		laneId,
-		this.props.username
-	);
+    handleCardAdd(card, laneId) {
+        this.props.actions.createTask(card.title, laneId, this.props.username);
     }
 
     toggleEditModal(e) {
@@ -139,7 +135,7 @@ class ProjectTaskComponent extends React.Component {
                 data={this.state.tasksData}
                 eventBusHandle={this.setEventBus}
                 onLaneClick={this.handleLaneClick}
-		onCardAdd={this.handleCardAdd}
+                onCardAdd={this.handleCardAdd}
                 onCardClick={this.handleCardClick}
                 modalOpen={this.state.modalOpen}
                 onBoardNameChange={this.handleBoardNameChange}

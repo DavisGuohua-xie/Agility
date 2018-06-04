@@ -41,6 +41,9 @@ export default function taskReducer(state = initialState, action) {
                 ]
             });
 
+        case types.SAVE_BOARD_SUCCESS:
+            return state;
+
         case types.CREATE_BOARD_FAILURE:
             return state.merge({
                 get_boards_request: false,

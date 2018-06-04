@@ -60,6 +60,7 @@ export const ProjectTasks = props => {
                 modalOpen={props.showCardModal}
                 onToggleModal={props.onToggleCardModal}
                 cardObject={props.cardObject}
+                onTextInputChange={props.onCardTextInputChange}
             />
 
             <Modal
