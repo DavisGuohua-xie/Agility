@@ -88,15 +88,15 @@ const SettingsLayout = props => {
                             </div>
                             <select
                                 className="custom-select"
-                                id="emailNotif"
-                                name="emailFreq"
+                                id="notification"
+                                name="notification"
                                 onChange={props.onValueChange}
-                                defaultValue={props.emailFreq ? props.emailFreq : "-1"}
+                                value={props.notification}
                             >
-                                <option value="-1">Select Frequency</option>
-                                <option value="0">None</option>
-                                <option value="1">Daily</option>
-                                <option value="2">Weekly</option>
+                                <option value={-1}>Select Frequency</option>
+                                <option value={0}>None</option>
+                                <option value={1}>Daily</option>
+                                <option value={2}>Weekly</option>
                             </select>
                         </div>
 

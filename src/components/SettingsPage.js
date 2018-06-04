@@ -2,18 +2,23 @@ import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withRouter } from "react-router";
-import * as accountActions from "../actions/accountActions";
+import { accountActions } from "../actions/accountActions";
 
 import { NavBar } from "./common/Navbar";
 import SettingsLayout from "./settings/SettingsLayout";
 import Parse from "parse";
 import {UserModel} from "../models/UserModel";
+import { consolidateStreamedStyles } from "styled-components";
 class SettingsPage extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            // TODO: set initial user info here from redux store (props)
+        this.state = {        
+            fname: "",
+            lname: "",
+            email: "",
+            username: "",
+            notification: -1
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -25,71 +30,40 @@ class SettingsPage extends React.Component {
         }
     }
 
+    componentDidMount() {
+        this.props.actions.getUserInfo();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.user_info !== undefined) {
+            this.setState({
+                fname: nextProps.user_info.first_name,
+                lname: nextProps.user_info.last_name,
+                email: nextProps.user_info.email,
+                username: nextProps.user_info.username,
+                notification: nextProps.user_info.notification
+            });
+        }
+    }
+
     handleSave(e) {
         e.preventDefault();
-        // TODO: save logic here
         console.log("saving...");
-        console.log();
-        var um = new UserModel();
-        // um.current()
-        um.user = Parse.User.current();
-        var firstName = this.state.fname
-        var lastName = this.state.lname
-        var email = this.state.email
-        var password = this.state.password
-        var passwordConf = this.state.confpassword
-        var emailFreq = this.state.emailFreq
-        if (firstName){
-            um.setFirstName(firstName,function(){
-                console.log("firstName updated",um.getFirstName())
-            }, function(title, error){
-               console.log('[ERROR] ', error)
-           }) 
+
+        let req = {}
+
+        req.first_name = this.state.fname;
+        req.last_name = this.state.lname;
+        req.email = this.state.email;
+        req.notification = this.state.notification;
+
+        if (this.state.password == this.state.confpassword) {
+            req.password = this.state.password;
+        } else {
+            req.password = '';
         }
 
-        if(lastName){
-            um.setLastName(lastName, function(){
-                console.log("lastName updated",um.getLastName())
-            },
-            function(title, error){
-                console.log('ERROR', error)
-            })
-        }
-
-        if(email){
-            um.setEmail(email, function(){
-                console.log("email updated",um.getEmail())
-            },
-            function(title, error){
-                console.log('ERROR', error)
-            })
-        }
-
-        if(password) {
-            if(password == passwordConf){
-                um.setPass(password, function(){
-                    console.log("password updated")
-                },
-                function(title, error){
-                    console.log('ERROR', error)
-                })
-            }
-        }
-
-        if(emailFreq){
-            if(parseInt(emailFreq) > -1){
-                um.setNotification(parseInt(emailFreq), function(){
-                    console.log("frequency updated",um.getNotification())
-                },
-                function(title, error){
-                    console.log('ERROR', error)
-                })
-            }
-        }
-
-
-
-
+        this.props.actions.saveUserInfo(req);
     }
 
     handleChange(e) {
@@ -102,7 +76,7 @@ class SettingsPage extends React.Component {
         return (
             <div>
             <NavBar history={this.props.history} />
-            <SettingsLayout onValueChange={this.handleChange} onSave={this.handleSave} />
+            <SettingsLayout fname={this.state.fname} lname={this.state.lname} email={this.state.email} username={this.state.username} notification={this.state.notification} onValueChange={this.handleChange} onSave={this.handleSave} />
             </div> //
             );
     }
@@ -115,10 +89,9 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, ownProps) {
-    console.log(state);
     return {
-        loading: state.ajaxCallsInProgress > 0
-        // TODO: map user info from state into this component's props
+        loading: state.ajaxCallsInProgress > 0,
+        user_info: state.accountReducer.user_info
     };
 }
 
