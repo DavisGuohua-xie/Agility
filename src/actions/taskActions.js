@@ -53,7 +53,7 @@ function createBoard(title, project_id, eventBus) {
 }
 
 
-function createTask(title, board_id) {
+function createTask(title, board_id, username) {
     
     return dispatch => {
         dispatch(ajaxActions.ajaxBegin());
@@ -63,7 +63,7 @@ function createTask(title, board_id) {
         let task = new Task();
 
         task.set("title", title);
-        let username = UserModel.getUsername();
+        //let username = UserModel.getUsername();
         task.set("assigned_to", username);
     
         // Set content ??
@@ -77,7 +77,7 @@ function createTask(title, board_id) {
 
                 query.equalTo("objectId", board_id);
                 query.first().then(board => {
-                    board.add("boards", board);
+                    board.add("task_list", task);
 
                     board.save().then( res => {
                         dispatch(success(task));
