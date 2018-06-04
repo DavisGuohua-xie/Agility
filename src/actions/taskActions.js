@@ -2,6 +2,7 @@ import * as types from "./actionTypes";
 import Parse from "parse";
 import * as ajaxActions from './ajaxActions';
 import history from '../history'
+import { UserModel } from "../models/UserModel";
 
 export const taskActions = {
     createBoard,
@@ -52,7 +53,7 @@ function createBoard(title, project_id, eventBus) {
 }
 
 
-function createTask(title, boardId) {
+function createTask(title, board_id) {
     
     return dispatch => {
         dispatch(ajaxActions.ajaxBegin());
@@ -62,7 +63,7 @@ function createTask(title, boardId) {
         let task = new Task();
 
         task.set("title", title);
-        let username = userModel.getUsername();
+        let username = UserModel.getUsername();
         task.set("assigned_to", username);
     
         // Set content ??
