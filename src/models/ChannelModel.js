@@ -55,21 +55,21 @@ export class ChannelModel extends Parse.Object {
 
     setIsChannel(isGroup, sucessHandler, errorHandler) {
         this.set(IS_CHANNEL, isGroup)
-        saveData(this, sucessHandler, errorHandler)
+        return saveData(this, sucessHandler, errorHandler)
     }
 
     addParticipant(user, successHandler, errorHandler) {
         var particpants = this.get(PARTICIPANTS)
         participants.add(user);
         this.set(PARTICIPANTS, particpants)
-        saveData(this, sucessHandler, errorHandler)
+        return saveData(this, sucessHandler, errorHandler)
     }
 
     removeParticipantByIndex(index, successHandler, errorHandler) {
         var particpants = this.get(PARTICIPANTS)
         participants.splice(index, 0)
         this.set(PARTICIPANTS, particpants)
-        saveData(this, sucessHandler, errorHandler)
+        return saveData(this, sucessHandler, errorHandler)
     }
 
 
@@ -84,12 +84,12 @@ export class ChannelModel extends Parse.Object {
             return participantId != userId
         })
         this.set(PARTICIPANTS, particpants)
-        saveData(this, successHandler, errorHandler)
+        return saveData(this, successHandler, errorHandler)
     }
 
     updateName(newName, successHandler, errorHandler) {
         this.set(NAME, newName)
-        saveData(this, successHandler, errorHandler)
+        return saveData(this, successHandler, errorHandler)
 
     }
 
@@ -98,8 +98,11 @@ export class ChannelModel extends Parse.Object {
         var history = this.get(HISTORY)
         history.push(message)
         this.set(HISTORY, history)
-        saveData(this, successHandler, errorHandler)
+      return  saveData(this, successHandler, errorHandler)
     }
+
+
+
 
 }
 
@@ -114,10 +117,7 @@ saveData(pfobject, successHandler, errorHandler) {
         errorHandler = this.defaultErrorHandler
     }
 
-    pfobject.save(null, {
-        success: successHandler,
-        error: errorHandler
-    })
+    reuturn pfobject.save()
 }
 
 

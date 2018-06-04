@@ -26,7 +26,7 @@ export class BoardModel extends Parse.Object {
 
     updateTitle(newTitle, successHandler, errorHandler) {
         this.set(TITLE, newTitle);
-        saveData(this, successHandler, errorHandler)
+        return saveData(this, successHandler, errorHandler)
 
     }
     // Pass in a javascript object with fields of task (Not handled by mongoDB)
@@ -34,7 +34,7 @@ export class BoardModel extends Parse.Object {
         var taskList = this.get(TASK_LIST)
         taskList.push(task);
         this.set(TASK_LIST, taskList);
-        saveData(this, sucessHandler, errorHandler)
+        return saveData(this, sucessHandler, errorHandler)
 
     }
 
@@ -46,7 +46,7 @@ export class BoardModel extends Parse.Object {
             return currTaskId != taskId;
         })
         this.set(TaskModel.TASK_LIST, taskList);
-        saveData(this, successHandler, errorHandler)
+      return  saveData(this, successHandler, errorHandler)
     }
 
 
@@ -59,7 +59,7 @@ export class BoardModel extends Parse.Object {
             errorHandler = this.defaultErrorHandler
         }
 
-        pfobject.save(null, successHandler, errorHandler) // Using promises!
+      return  pfobject.save() // Using promises!
     }
 
 }
