@@ -287,8 +287,7 @@ class ProjectOverviewPage extends React.Component {
                 <Modal
                     isOpen={this.state.addMemberModalOpen}
                     toggle={this.toggleAddMemberModal}
-                    className={this.props.className}
-                >
+                    className={this.props.className}>
                     <ModalHeader toggle={this.toggleAddMemberModal}>
                         Add New Team Member
                     </ModalHeader>
@@ -327,8 +326,7 @@ class ProjectOverviewPage extends React.Component {
                 <Modal
                     isOpen={this.state.removeMemberModalOpen}
                     toggle={this.toggleRemoveMemberModal}
-                    className={this.props.className}
-                >
+                    className={this.props.className}>
                     <ModalHeader toggle={this.toggleRemoveMemberModal}>
                         Remove New Team Member
                     </ModalHeader>

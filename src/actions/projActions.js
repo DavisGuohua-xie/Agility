@@ -63,7 +63,7 @@ function getProjects() {
 
         UserModel.current(
             userModel => {
-                console.log(userModel);
+                //console.log(userModel);
 
                 let projects = [];
                 let fields = ["roles", "tasks", "channels", "updates", "boards", "name"];
@@ -72,11 +72,11 @@ function getProjects() {
                     let obj = {};
                     fields.forEach(field => {
                         obj[field] = proj.get(field);
-                        console.log(proj.get(field));
+                        //console.log(proj.get(field));
                     });
 
-                    obj['id'] = proj.id;
-                    console.log(proj.id);
+                    obj["id"] = proj.id;
+                    //console.log(proj.id);
 
                     projects.push(obj);
                 });
@@ -117,34 +117,71 @@ function getProject(project_id) {
                 console.log(project);
                 res["name"] = project.get("name");
                 var boards = project.get("boards");
-                res["boards"] = getTaskList(boards);
+                //res["boards"] = getTaskList(boards);
+                getTaskList(boards).then(d => {
+                    let boarddata = [];
+                    let { promises, b_list } = d;
+                    let i = 0;
+                    promises.then(listOfTaskLists => {
+                        console.log(listOfTaskLists);
 
-                var channels = project.get("channels");
-                res["channels"] = channels;
+                        listOfTaskLists.forEach((taskList, taskIndex) => {
+                            let newBoard = {
+                                id: b_list[i].id,
+                                title: b_list[i].get("title"),
+                                cards: []
+                                //updated_at: board.get("_updated_at")
+                            };
+                            taskList.forEach(task =>
+                                newBoard.cards.push({
+                                    id: task.id,
+                                    title: task.get("title"),
+                                    description: task.get("content"),
+                                    metadata: {
+                                        assigned_to: task.get("assigned_to"),
+                                        started_at: task.get("started_at"),
+                                        due_date: task.get("due_date"),
+                                        completion_date: task.get("completion_date"),
+                                        priority: task.get("priority")
+                                    }
+                                })
+                            );
 
-                var member_map = project.get("roles");
-                var member_ids = [];
+                            boarddata.push(newBoard);
+                            i++;
+                        });
 
-                for (var member_id in member_map) {
-                    member_ids.push(member_id);
-                }
+                        res["boards"] = JSON.parse(JSON.stringify(boarddata));
 
-                getMembersFromId(member_ids).then(result => {
-                    var members = [];
-                    result.forEach(member => {
-                        members.push({
-                            fname: member.get("first_name"),
-                            lname: member.get("last_name"),
-                            member_id: member.id,
-                            username: member.get("username")
+                        var channels = project.get("channels");
+                        res["channels"] = channels;
+
+                        var member_map = project.get("roles");
+                        var member_ids = [];
+
+                        for (var member_id in member_map) {
+                            member_ids.push(member_id);
+                        }
+
+                        getMembersFromId(member_ids).then(result => {
+                            var members = [];
+                            result.forEach(member => {
+                                members.push({
+                                    fname: member.get("first_name"),
+                                    lname: member.get("last_name"),
+                                    member_id: member.id,
+                                    username: member.get("username")
+                                });
+                            });
+                            res["members"] = members;
+                            dispatch(success(res));
+                            return res;
                         });
                     });
-                    res["members"] = members;
-                    dispatch(success(res));
-                    return res;
                 });
             })
             .catch(error => {
+                console.log(error);
                 dispatch(failure(error));
             });
     };
@@ -172,20 +209,22 @@ function addChannelToProject(room_id, project_id) {
 
         query.first().then(project => {
             project.add("channels", room_id);
-            project.save().then(() => {
-                dispatch(success());
-            }).catch(error => {
-                dispatch(failure(error));
-            });
+            project
+                .save()
+                .then(() => {
+                    dispatch(success());
+                })
+                .catch(error => {
+                    dispatch(failure(error));
+                });
         });
-    }
-
+    };
 
     function request() {
         return { type: types.ADD_CHANNEL_TO_PROJECT_REQUEST };
     }
     function success() {
-        return { type: types.ADD_CHANNEL_TO_PROJECT_SUCCESS  };
+        return { type: types.ADD_CHANNEL_TO_PROJECT_SUCCESS };
     }
     function failure(err) {
         return { type: types.ADD_CHANNEL_TO_PROJECT_FAILURE, error: err };
@@ -294,46 +333,42 @@ function getMembersFromId(member_ids) {
 
 function getTaskList(boards) {
     let res = [];
+    let boardQueries = [];
     boards.forEach(board => {
-        var Board = Parse.Object.extend("Board");
-        var query = new Parse.Query(Board);
+        let Board = Parse.Object.extend("Board");
+        let query = new Parse.Query(Board);
 
         query.equalTo("objectId", board.id);
-        query.first().then(board => {
-            var task_list = board.get("task_list");
-            var real_task_list = [];
+        boardQueries.push(query.first());
+    });
+
+    let b_list;
+
+    return Promise.all(boardQueries).then(boardList => {
+        b_list = boardList;
+        let taskListPromises = [];
+        boardList.forEach(board => {
+            let task_list = board.get("task_list");
+            let real_task_list = [];
+
+            let promises = [];
 
             if (task_list !== undefined) {
                 task_list.forEach(task => {
-                    var Task = Parse.Object.extend("Task");
-                    var query = new Parse.Query(Task);
+                    console.log(task);
+                    let Task = Parse.Object.extend("Task");
+                    let query = new Parse.Query(Task);
                     query.equalTo("objectId", task.id);
 
-                    query.first().then(task => {
-                        real_task_list.push({
-                            id: task.id,
-                            title: task.get("title"),
-                            description: task.get("content"),
-                            metadata: {
-                                assigned_to: task.get("assigned_to"),
-                                started_at: task.get("started_at"),
-                                due_date: task.get("due_date"),
-                                complettion_date: task.get("completion_date"),
-                                priority: task.get("priority")
-                            }
-                        });
-                    });
+                    promises.push(query.first());
                 });
             }
 
-            res.push({
-                id: board.id,
-                title: board.get("title"),
-                cards: real_task_list
-                //updated_at: board.get("_updated_at")
-            });
-        });
-    });
+            //console.log(promises);
 
-    return res;
+            taskListPromises.push(Promise.all(promises));
+        });
+
+        return { promises: Promise.all(taskListPromises), b_list: b_list };
+    });
 }

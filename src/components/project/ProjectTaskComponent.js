@@ -16,7 +16,9 @@ class ProjectTaskComponent extends React.Component {
             tasksData: props.taskList,
             newBoard: "",
             eventBus: undefined,
-            editing: false
+            editing: false,
+            showCardModal: false,
+            cardObject: {}
         };
 
         this.handleLaneClick = this.handleLaneClick.bind(this);
@@ -27,6 +29,7 @@ class ProjectTaskComponent extends React.Component {
         this.handleBoardNameChange = this.handleBoardNameChange.bind(this);
         this.toggleEditModal = this.toggleEditModal.bind(this);
         this.handleSaveBoard = this.handleSaveBoard.bind(this);
+        this.handleCardClick = this.handleCardClick.bind(this);
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -49,8 +52,18 @@ class ProjectTaskComponent extends React.Component {
         console.log(e);
     }
 
-    handleCardClick(e) {
-        console.log(e);
+    handleCardClick(cardId, metadata, laneId) {
+        console.log(cardId);
+
+        let cardObj = this.state.tasksData.lanes
+            .filter(board => board.id === laneId)[0]
+            .cards.filter(card => card.id === cardId)[0]; // get proper card object
+        console.log(cardObj);
+
+        this.setState({
+            showCardModal: true,
+            cardObject: cardObj
+        });
     }
 
     setEventBus = handle => {
@@ -91,14 +104,12 @@ class ProjectTaskComponent extends React.Component {
         let boards = this.state.tasksData.lanes;
         let boardID = this.state.boardID;
 
-        //let boardInd = parseInt(this.state.boardInd, 10);
-        debugger
         boards.filter(board => board.id === boardID)[0].title = this.state.newBoard;
 
-        this.setState({ tasksData: {lanes: boards} });
+        this.setState({ tasksData: { lanes: boards } });
         this.state.eventBus.publish({ type: "UPDATE_LANES", lanes: boards });
         this.toggleEditModal(e);
-        this.props.updateTasks({lanes: boards});
+        this.props.updateTasks({ lanes: boards });
     }
 
     handleBoardNameChange(e) {
@@ -138,6 +149,9 @@ class ProjectTaskComponent extends React.Component {
                 onToggleEditModal={this.toggleEditModal}
                 onSaveBoard={this.handleSaveBoard}
                 editing={this.state.editing}
+                showCardModal={this.state.showCardModal}
+                onToggleCardModal={this.handleCardClick}
+                cardObject={this.state.cardObject}
             />
         );
     }
@@ -149,7 +163,5 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-const connectedPage = withRouter(
-    connect(null, mapDispatchToProps)(ProjectTaskComponent)
-);
+const connectedPage = withRouter(connect(null, mapDispatchToProps)(ProjectTaskComponent));
 export { connectedPage as ProjectTaskComponent };
