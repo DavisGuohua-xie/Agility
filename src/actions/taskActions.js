@@ -6,7 +6,8 @@ import { UserModel } from "../models/UserModel";
 
 export const taskActions = {
     createBoard,
-    createTask
+    createTask,
+    updateTask
 };
 
 function createBoard(title, project_id, eventBus) {
