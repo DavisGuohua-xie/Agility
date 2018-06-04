@@ -121,18 +121,18 @@ function updateBoard(boardId, newBoard) {
         let Board = Parse.Object.extend("Board");
         let query = new Parse.Query(Board);
         query.equalTo("objectId", boardId);
-        query.first().then(board => {
-            board.set("title", newBoard.title);
-            board.set("is_done", newBoard.is_done);
-            board
-                .save()
-                .then(board => {
-                    dispatch(success(newBoard));
-                })
-                .catch(error => {
-                    dispatch(failure(error));
+        query
+            .first()
+            .then(board => {
+                board.set("title", newBoard.title);
+                board.set("is_done", newBoard.is_done);
+                board.save().then(board => {
+                    dispatch(success(boardId, newBoard));
                 });
-        });
+            })
+            .catch(error => {
+                dispatch(failure(error));
+            });
     };
 
     function success(boardId, newBoard) {
