@@ -71,7 +71,7 @@ function createTask(title, board_id, username) {
         // Set completion date, sets to now by default, what to change to?
 
         task.save().then(
-            board => {
+            task => {
                 let Board = Parse.Object.extend("Board");
                 let query = new Parse.Query(Board);
 
