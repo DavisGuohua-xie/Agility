@@ -12,43 +12,76 @@ import {
     Container
 } from "reactstrap";
 
+import DatePicker from "react-datepicker";
+import moment from "moment";
+import "react-datepicker/dist/react-datepicker-cssmodules.css";
+
 const TaskDetail = props => {
+    let cardTitle = props.cardObject.title;
+    let cardDescription = props.cardObject.description;
+    let cardDeadline;
+
+    try {
+        cardDeadline = new Date(props.cardObject.due_date);
+        if (!cardDeadline instanceof Date) throw "error";
+    } catch (err) {
+        cardDeadline = undefined;
+    }
+
+    let cardAssignedTo = props.cardObject.assigned_to;
+    let cardPriority = props.cardObject.priority;
+
     return (
-        <Modal
-            isOpen={props.modalOpen}
-            toggle={props.editing ? props.onToggleEditModal : props.onToggleModal}
-        >
-            <ModalHeader toggle={props.editing ? props.onToggleEditModal : props.onToggleModal}>
-                {" "}
-                {props.editing ? "Edit Board" : "New Board"}{" "}
-            </ModalHeader>
+        <Modal isOpen={props.modalOpen} toggle={props.onToggleModal}>
+            <ModalHeader toggle={props.onToggleModal}>Edit Task Details</ModalHeader>
             <ModalBody>
                 <Form>
                     <FormGroup>
-                        <Label for="projectName">Board Name</Label>
+                        <Label for="projectName">Task Name</Label>
                         <Input
                             type="text"
-                            name="boardName"
-                            id="boardName"
-                            placeholder="Enter board name"
-                            onChange={props.onBoardNameChange}
-                            value={props.boardName}
+                            name="taskName"
+                            id="taskName"
+                            placeholder="Enter task name"
+                            onChange={undefined}
+                            value={cardTitle}
+                        />
+                        <Label for="projectName">Task Description</Label>
+                        <Input
+                            type="text"
+                            name="taskDescription"
+                            id="taskDescription"
+                            placeholder="Enter task description"
+                            onChange={undefined}
+                            value={cardDescription}
+                        />
+                        <Label for="projectName">Deadline</Label>
+                        <Input
+                            type="text"
+                            name="deadline"
+                            id="taskName"
+                            placeholder="Enter task name"
+                            onChange={undefined}
+                            value={cardTitle}
+                        />
+                        <Label for="projectName">Task Name</Label>
+                        <Input
+                            type="text"
+                            name="taskName"
+                            id="taskName"
+                            placeholder="Enter task name"
+                            onChange={undefined}
+                            value={cardTitle}
                         />
                     </FormGroup>
                 </Form>
             </ModalBody>
             <ModalFooter>
-                <Button
-                    color="secondary"
-                    onClick={props.editing ? props.onToggleEditModal : props.onToggleModal}
-                >
+                <Button color="secondary" onClick={props.onToggleModal}>
                     Cancel
                 </Button>
-                <Button
-                    color="primary"
-                    onClick={props.editing ? props.onSaveBoard : props.onCreateBoard}
-                >
-                    {props.editing ? "Save Board" : "Create Board"}
+                <Button color="primary" onClick={props.onToggleModal}>
+                    Save Task
                 </Button>
             </ModalFooter>
         </Modal>

@@ -15,6 +15,7 @@ import {
 } from "reactstrap";
 
 import styles from "../../styles/ProjectTasks.module.css";
+import TaskDetail from "./TaskDetail";
 
 let CustomLaneHeader = props => {
     return (
@@ -52,6 +53,13 @@ export const ProjectTasks = props => {
                     }}
                 />
             </Container>
+
+            <TaskDetail
+                taskName={props.clickedTaskName}
+                modalOpen={props.showCardModal}
+                onToggleModal={props.onToggleCardModal}
+                cardObject={props.cardObject}
+            />
 
             <Modal
                 isOpen={props.modalOpen}
