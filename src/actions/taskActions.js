@@ -5,7 +5,7 @@ import history from '../history'
 
 export const taskActions = {
     createBoard,
-    //createTask
+    createTask
 };
 
 function createBoard(title, project_id, eventBus) {
@@ -51,27 +51,43 @@ function createBoard(title, project_id, eventBus) {
     }
 }
 
-/*
-function createTask(taskName, board) {
+
+function createTask(title, boardId) {
+    
     return dispatch => {
         dispatch(ajaxActions.ajaxBegin());
         dispatch(request());
 
-        let task = Parse.Object.extend("Task");
+        let Task = Parse.Object.extend("Task");
         let task = new Task();
 
-        task.set("title", taskName);
+        task.set("title", title);
+        let username = userModel.getUsername();
+        task.set("assigned_to", username);
+    
+        // Set content ??
+        // Set due date 
+        // Set completion date, sets to now by default, what to change to?
 
-        task.save(null, {
-            success: function(task) {
+        task.save().then(
+            board => {
+                let Board = Parse.Object.extend("Board");
+                let query = new Parse.Query(Board);
 
+                query.equalTo("objectId", board_id);
+                query.first().then(board => {
+                    board.add("boards", board);
 
-            },
-            error: function(project, error) {
-
-
-            }
-        });
+                    board.save().then( res => {
+                        dispatch(success(task));
+                        window.location.reload(true);
+                        return task;
+                    })
+                });
+                
+            }).catch(error => {
+                dispatch(failure(error));
+            })
     };
 
     function request(req) {
@@ -84,4 +100,4 @@ function createTask(taskName, board) {
         return { type: types.CREATE_TASK_FAILURE, req };
     }
 }
-*/
+
