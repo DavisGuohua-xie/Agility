@@ -8,6 +8,7 @@ import toastr from "./common/toastrConfig";
 import { withRouter, Redirect } from "react-router";
 
 import { login, register } from "../actions/authActions";
+import {resetPassword} from '../actions/accountActions'
 
 import {UserModel} from '../models/UserModel'
 
@@ -27,6 +28,7 @@ export default class LoginPage extends Component {
         };
 
         this.handleLogin = this.handleLogin.bind(this);
+        this.handlePasswordReset = this.handlePasswordReset.bind(this)
         this.handleCreateAccount = this.handleCreateAccount.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleToggleForgot = this.handleToggleForgot.bind(this);
@@ -66,6 +68,11 @@ export default class LoginPage extends Component {
         }
     }
 
+    handlePasswordReset(){
+      let email =  this.state.recoverUsername
+      this.props._resetPassword(email)
+    }
+
     handleInputChange(e) {
         this.setState({
             [e.target.name]: e.target.value
@@ -87,6 +94,7 @@ export default class LoginPage extends Component {
     render() {
       return !this.props.logged_in ?
         (<LoginForm1
+            onPasswordReset={this.handlePasswordReset}
             onInputChange={this.handleInputChange}
             onLogin={this.handleLogin}
             onCreateAccount={this.handleCreateAccount}
@@ -95,8 +103,8 @@ export default class LoginPage extends Component {
             onToggleReg={this.handleToggleReg}
             isOpenReg={this.state.isOpenReg}
             ajaxRequested={this.props.logging_in}
-        />) : <Redirect to="/" />;
-    }
+        />) : <Redirect to="/"/>;
+  }
 }
 
 function mapDispatchToProps(dispatch) {
@@ -106,7 +114,12 @@ function mapDispatchToProps(dispatch) {
         }
         ,_register(username, pass,email, fname, lname, success){
           dispatch(register(fname, lname, username, email, pass, success))
+        },
+        _resetPassword(email){
+          dispatch(resetPassword(email))
         }
+
+
     };
 }
 

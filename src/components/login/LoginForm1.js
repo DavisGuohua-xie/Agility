@@ -76,7 +76,7 @@ const LoginForm1 = props => {
                     Register
                 </Button>
 
-                {/* 
+                {/*
                 * modal for password reset
                 */}
                 <Modal
