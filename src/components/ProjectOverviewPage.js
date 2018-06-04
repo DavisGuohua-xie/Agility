@@ -10,6 +10,8 @@ import Sidebar from "react-sidebar";
 
 import { projActions } from "../actions/projActions";
 
+import { memberActions } from "../actions/memberActions";
+
 import { NavBar } from "./common/Navbar";
 
 import { OverviewSubnav } from "./common/OverviewSubnav";
@@ -120,8 +122,7 @@ class ProjectOverviewPage extends React.Component {
     }
 
     toggleAddMemberModal() {
-        console.log(Parse.User.current().id);
-        this.setState({ addMemberModalOpen: !this.state.addMemberModalOpen });
+        this.setState({addMemberModalOpen: !this.state.addMemberModalOpen});
     }
 
     handleNewName(e) {
@@ -133,13 +134,18 @@ class ProjectOverviewPage extends React.Component {
     }
 
     handleAddMember() {
-        let newMember = {
-            fname: this.state.newUserName,
-            lname: this.state.newUserName
-        };
-
-        this.state.members.push(newMember);
-        this.toggleAddMemberModal();
+        if (this.state.newUserName === "") alert("User name can not be empty.");
+        else if (this.state.newRole === "") alert("Role can not be empty!");
+        else if (this.state.newRole !== "ProjectManager" && this.state.newRole !== "CEO" &&
+                this.state.newRole !== "TeamMember" && this.state.newRole !== "Customer")
+                alert("Invalid role entered.")
+        else {
+            this.toggleAddMemberModal();
+            let project_id = this.state.projectID;
+            let username = this.state.newUserName;
+            let new_role = this.state.newRole;
+            this.props.member_actions.addMember(username, project_id, new_role);
+        }
     }
 
     handleNewRole(e) {
@@ -157,24 +163,13 @@ class ProjectOverviewPage extends React.Component {
         this.setState({
             removeName: e.target.value
         });
-        console.log(this.state.removeName);
     }
 
     handleRemoveMember() {
-        let newMembers = this.state.members;
-        console.log(newMembers);
-        for (var i = newMembers.length - 1; i >= 0; i--) {
-            if (
-                newMembers[i].fname == this.state.removeName ||
-                newMembers[i].lname == this.state.removeName
-            ) {
-                newMembers.splice(i, 1);
-                break;
-            }
-        }
-        this.setState({
-            members: newMembers
-        });
+        let username = this.state.removeName;
+        let project_id = this.state.projectID;
+        this.toggleRemoveMemberModal();
+        this.props.member_actions.removeMember(username, project_id);
     }
 
     mediaQueryChanged() {
@@ -397,7 +392,8 @@ class ProjectOverviewPage extends React.Component {
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators(projActions, dispatch)
+        actions: bindActionCreators(projActions, dispatch),
+        member_actions: bindActionCreators(memberActions, dispatch)
     };
 }
 
@@ -406,7 +402,8 @@ function mapStateToProps(state, ownProps) {
     return {
         ajaxCalls: state.ajaxCallsInProgress,
         project_data: state.projectReducer.project_data,
-        board_data: state.taskReducer.board_data
+        board_data: state.taskReducer.board_data,
+        members: state.memberReducer.members
     };
 }
 
