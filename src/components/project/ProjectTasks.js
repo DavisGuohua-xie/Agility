@@ -43,6 +43,7 @@ export const ProjectTasks = props => {
                     editable
                     onLaneClick={props.onLaneClick}
                     onCardClick={props.onCardClick}
+	    	    onCardAdd={props.onCardAdd}
                     customLaneHeader={<CustomLaneHeader onToggleModal={props.onToggleEditModal} />}
                     style={{
                         padding: "30px 0 0 0",
