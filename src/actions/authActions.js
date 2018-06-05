@@ -29,26 +29,37 @@ export const login = (username, password, success) => {
     return dispatch => {
         //Now logging in
         dispatch(loginUser());
-        UserModel.login(
-            username,
-            password,
-            function(newUserModel) {
-                //No longer logging in anymoe
-                dispatch(cancelLogin());
-                //Successful login
-                dispatch(successLogin(newUserModel));
-                //Navigate to
-                // console.log('[USER]: ', newUserModel.getProjects())
-                // console.log(success)
-                success();
-            },
-            function(error) {
-                //No longer logging in anymore
-                toastr.error("Incorrect login credentials", "Login failed");
-                dispatch(cancelLogin());
-                dispatch(loginError(error));
-            }
-        );
+        // UserModel.login(
+        //     username,
+        //     password,
+        //     function(newUserModel) {
+        //         //No longer logging in anymoe
+        //         dispatch(cancelLogin());
+        //         //Successful login
+        //         dispatch(successLogin(newUserModel));
+        //         //Navigate to
+        //         // console.log('[USER]: ', newUserModel.getProjects())
+        //         // console.log(success)
+        //         success();
+        //     },
+        //     function(error) {
+        //         //No longer logging in anymore
+        //         toastr.error("Incorrect login credentials", "Login failed");
+        //         dispatch(cancelLogin());
+        //         dispatch(loginError(error));
+        //     }
+        // );
+        UserModel.login(username, password)
+        .then((userModel)=>{
+          dispatch(cancelLogin())
+          dispatch(successLogin(userModel))
+        })
+        .catch((error)=>{
+          console.log("[ERROR]", error)
+          toastr.error("Incorrect login credentials", "Login failed");
+          dispatch(cancelLogin());
+          dispatch(loginError(error));
+        })
     };
 };
 
