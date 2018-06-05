@@ -56,7 +56,12 @@ const TaskDetail = props => {
                             value={cardDescription}
                         />
                         <Label for="deadline">Deadline</Label>
-                        <DatePicker selected={new Date()} onChange={props.onTaskDeadlineChange} />
+                        <DatePicker
+                            name="deadline"
+                            id="deadline"
+                            selected={moment()}
+                            onChange={props.onTaskDeadlineChange}
+                        />
                         <Label for="taskPriority">Priority</Label>
                         <Input
                             type="select"

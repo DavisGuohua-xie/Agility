@@ -32,6 +32,7 @@ class ProjectTaskComponent extends React.Component {
         this.handleSaveBoard = this.handleSaveBoard.bind(this);
         this.handleCardClick = this.handleCardClick.bind(this);
         this.handleBoardTypeChange = this.handleBoardTypeChange.bind(this);
+        this.toggleEditCardModal = this.toggleEditCardModal.bind(this);
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -60,12 +61,18 @@ class ProjectTaskComponent extends React.Component {
         let cardObj = this.state.tasksData.lanes
             .filter(board => board.id === laneId)[0]
             .cards.filter(card => card.id === cardId)[0]; // get proper card object
+
         console.log(cardObj);
 
         this.setState({
-            showCardModal: true,
             cardObject: cardObj
         });
+
+        this.toggleEditCardModal();
+    }
+
+    toggleEditCardModal() {
+        this.setState({ showCardModal: !this.state.showCardModal });
     }
 
     setEventBus = handle => {
@@ -162,7 +169,7 @@ class ProjectTaskComponent extends React.Component {
                 onSaveBoard={this.handleSaveBoard}
                 editing={this.state.editing}
                 showCardModal={this.state.showCardModal}
-                onToggleCardModal={this.handleCardClick}
+                onToggleCardModal={this.toggleEditCardModal}
                 onBoardTypeChange={this.handleBoardTypeChange}
                 editBoardType={this.state.is_done}
                 cardObject={this.state.cardObject}
