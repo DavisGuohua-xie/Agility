@@ -9,6 +9,8 @@ import SettingsLayout from "./settings/SettingsLayout";
 import Parse from "parse";
 import {UserModel} from "../models/UserModel";
 import { consolidateStreamedStyles } from "styled-components";
+import toastr from "../components/common/toastrConfig";
+
 class SettingsPage extends React.Component {
     constructor(props) {
         super(props);
@@ -55,13 +57,25 @@ class SettingsPage extends React.Component {
         req.first_name = this.state.fname;
         req.last_name = this.state.lname;
         req.email = this.state.email;
+
+        if (this.state.fname === '' || this.state.lname === '' || this.state.email === '') {
+            toastr.error("Required field left blank.", "Savig failed!");
+            return;
+        }
+
+        if (parseInt(this.state.notification, 10) === -1) {
+            toastr.error("Did not select an email frequency.", "Saving failed!");
+            return;
+        }
+
         req.notification = this.state.notification;
 
-        if (this.state.password == this.state.confpassword) {
-            req.password = this.state.password;
-        } else {
-            req.password = '';
+        if (this.state.password !== this.state.confpassword) {
+            
+            toastr.error("Passwords are not the same.", "Saving failed!");
+            return;
         }
+        req.password = this.state.password;
 
         this.props.actions.saveUserInfo(req);
     }
