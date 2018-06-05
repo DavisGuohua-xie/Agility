@@ -1,7 +1,9 @@
 import * as types from "../actions/actionTypes";
 import initialState from "./initialState";
 
-export default function memberReducer (state = initialState, action) {
+export default function memberReducer (state = {
+    error: false
+}, action) {
     switch (action.types) {
         case types.ADD_MEMBER_REQUEST:
             return state.merge ({
@@ -14,7 +16,8 @@ export default function memberReducer (state = initialState, action) {
 
         case types.ADD_MEMBER_FAILURE:
             return state.merge ({
-                add_member_request: false
+                add_member_request: false,
+                error: true
             })
 
         case types.REMOVE_MEMBER_REQUEST:
