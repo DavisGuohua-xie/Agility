@@ -23,7 +23,7 @@ const LoginForm1 = props => {
                 <img className={styles.logo} src={logo} />
                 {/*<h2 className={styles.loginHeader}>Agility</h2>*/}
 
-                <Form>
+                <Form onSubmit={props.onLogin}>
                     <FormGroup className={styles.formgroup}>
                         <Label for="usernameInput" className={styles.label}>
                             Email address
@@ -117,7 +117,7 @@ const LoginForm1 = props => {
                 >
                     <ModalHeader toggle={props.onToggleReg}>New User Registration</ModalHeader>
                     <ModalBody>
-                        <Form>
+                        <Form onSubmit={props.onCreateAccount}>
                             <FormGroup>
                                 <Label for="fname">First Name</Label>
                                 <Input

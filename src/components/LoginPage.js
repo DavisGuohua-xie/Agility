@@ -35,7 +35,9 @@ export default class LoginPage extends Component {
         this.handleToggleReg = this.handleToggleReg.bind(this);
     }
 
-    handleLogin() {
+    handleLogin(e) {
+        e.preventDefault();
+
         let username = this.state.username;
         let password = this.state.password;
 
@@ -47,14 +49,16 @@ export default class LoginPage extends Component {
         }
     }
 
-    handleCreateAccount() {
+    handleCreateAccount(e) {
+        e.preventDefault();
+
         let username = this.state.registerUsername;
         let password = this.state.registerPassword;
         let email = this.state.registerEmail;
         let fname = this.state.fname;
         let lname = this.state.lname;
 
-        if (username && password && email) {
+        if (username && password && email && fname && lname) {
             this.props._register(
                 username,
                 password,
@@ -65,6 +69,8 @@ export default class LoginPage extends Component {
                   loggedIn: true
                 })}
             );
+        } else {
+            toastr.error("Enter all required information!", "Registration failed");
         }
     }
 

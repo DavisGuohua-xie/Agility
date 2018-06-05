@@ -41,6 +41,9 @@ export default function taskReducer(state = initialState, action) {
                 ]
             });
 
+        case types.SAVE_BOARD_SUCCESS:
+            return state;
+
         case types.CREATE_BOARD_FAILURE:
             return state.merge({
                 get_boards_request: false,
@@ -62,15 +65,22 @@ export default function taskReducer(state = initialState, action) {
             });
 
         case types.UPDATE_BOARD_SUCCESS:
-            let editingBoard = state.board_data.filter(b => b.id !== action.req.board_id)[0];
-            board_data: [
-                ...state.board_data.filter(b => b.id !== action.req.board_id),
-                {
-                    ...editingBoard,
-                    title: action.req.board.title,
-                    is_done: action.req.board.is_done
-                }
-            ];
+            let editingBoard = Object.assign(
+                {},
+                state.board_data.filter(b => b.id === action.req.board_id)[0]
+            );
+
+
+            return state.merge({
+                board_data: [
+                    ...state.board_data.filter(b => b.id !== action.req.board_id),
+                    {
+                        ...editingBoard,
+                        title: action.req.board.title,
+                        is_done: action.req.board.is_done
+                    }
+                ]
+            });
 
         default:
             return state;

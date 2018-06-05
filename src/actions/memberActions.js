@@ -30,13 +30,10 @@ function addMember (username, project_id, user_role) {
                 project.save().then( res => {
                     dispatch(success())
                 })
-                }).catch( error => {
-                    console.log(error);
-                    dispatch(failure(error));
                 })
             }).catch( error => {
                 console.log(error);
-                dispatch(failure(error));
+                dispatch(failure());
         })
     }
 
@@ -46,8 +43,8 @@ function addMember (username, project_id, user_role) {
     function success() {
         return { type: types.ADD_MEMBER_SUCCESS };
     }
-    function failure(err) {
-        return { type: types.ADD_MEMBER_FAILURE, error: err };
+    function failure() {
+        return { type: types.ADD_MEMBER_FAILURE};
     }
 }
 

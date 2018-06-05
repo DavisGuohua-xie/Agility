@@ -1,8 +1,8 @@
 import * as C from "./actionTypes";
 import * as ajaxActions from "./ajaxActions";
 import Parse from "parse";
-import history from "../history";
 import {sendResetPasswordEmail} from '../server/emailAPI'
+import toastr from "../components/common/toastrConfig";
 import _ from 'lodash'
 
 export const accountActions = {
@@ -105,8 +105,10 @@ function saveUserInfo(userInfo) {
 
             user.save().then(() => {
                 dispatch(success());
+                toastr.success("Profile saved.", "Success!");
             }).catch(error => {
                 dispatch(failure(error))
+                toastr.error("Unable to save profile: " + error, "Something went wrong.");
             })
         });
     }
