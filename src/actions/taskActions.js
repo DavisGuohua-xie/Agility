@@ -6,7 +6,9 @@ import { UserModel } from "../models/UserModel";
 
 export const taskActions = {
     createBoard,
-    createTask
+    createTask,
+    updateBoard,
+    updateTask
 };
 
 function createBoard(title, project_id, eventBus) {
@@ -53,7 +55,7 @@ function createBoard(title, project_id, eventBus) {
     }
 }
 
-function createTask(title, board_id, username) {
+function createTask(card, board_id, username) {
     return dispatch => {
         dispatch(ajaxActions.ajaxBegin());
         dispatch(request());
@@ -61,10 +63,9 @@ function createTask(title, board_id, username) {
         let Task = Parse.Object.extend("Task");
         let task = new Task();
 
-        task.set("title", title);
-        //let username = UserModel.getUsername();
+        task.set("title", card.title);
         task.set("assigned_to", username);
-
+        task.set("content", card.description);
         // Set content ??
         // Set due date
         // Set completion date, sets to now by default, what to change to?
@@ -111,5 +112,63 @@ function createTask(title, board_id, username) {
     }
     function failure(req) {
         return { type: types.CREATE_TASK_FAILURE, req };
+    }
+}
+
+function updateBoard(boardId, newBoard) {
+    return dispatch => {
+        dispatch(ajaxActions.ajaxBegin());
+        let Board = Parse.Object.extend("Board");
+        let query = new Parse.Query(Board);
+        query.equalTo("objectId", boardId);
+        query
+            .first()
+            .then(board => {
+                board.set("title", newBoard.title);
+                board.set("is_done", newBoard.is_done);
+                board.save().then(board => {
+                    dispatch(success(boardId, newBoard));
+                });
+            })
+            .catch(error => {
+                dispatch(failure(error));
+            });
+    };
+
+    function success(boardId, newBoard) {
+        return { type: types.UPDATE_BOARD_SUCCESS, req: { board_id: boardId, board: newBoard } };
+    }
+    function failure(req) {
+        return { type: types.UPDATE_BOARD_FAILURE, req };
+    }
+}
+function updateTask(taskId, newTask) {
+    return dispatch => {
+        dispatch(ajaxActions.ajaxBegin());
+        let Task = Parse.Object.extend("Task");
+        let query = new Parse.Query(Task);
+        query.equalTo("objectId", taskId);
+        query.first().then(task => {
+            task.set("title", newTask.title);
+            task.set("content", newTask.content);
+            task.set("due_date", newTask.due_date);
+            task.set("priority", newTask.priority);
+            task.set("completion_date", newTask.completion_date);
+            task
+                .save()
+                .then(task => {
+                    dispatch(success(newTask));
+                })
+                .catch(error => {
+                    dispatch(failure(error));
+                });
+        });
+    };
+
+    function success(req) {
+        return { type: types.UPDATE_TASK_SUCCESS, board: req };
+    }
+    function failure(req) {
+        return { type: types.UPDATE_TASK_FAILURE, req };
     }
 }

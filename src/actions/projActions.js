@@ -61,8 +61,8 @@ function getProjects() {
         dispatch(ajaxActions.ajaxBegin());
         dispatch(request());
 
-        UserModel.current(
-            userModel => {
+        UserModel.current()
+            .then(userModel => {
                 //console.log(userModel);
 
                 let projects = [];
@@ -82,11 +82,10 @@ function getProjects() {
                 });
 
                 dispatch(success(projects));
-            },
-            error => {
+            })
+            .catch(error => {
                 dispatch(failure(error));
-            }
-        );
+            });
     };
 
     function request() {

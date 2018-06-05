@@ -206,7 +206,7 @@ class ChatPage extends Component {
     render() {
         return (
             <div style={{ height: "100%" }}>
-                <NavBar projName="Project name" projID={this.state.projectID} zIndex={2} />
+                <NavBar projName={this.props.project_name} projID={this.state.projectID} zIndex={2} />
                 <Sidebar
                     sidebar={
                         <ChatSidebar
@@ -286,7 +286,8 @@ function mapStateToProps(state, ownProps) {
         metadata_loading: state.chatReducer.metadata_loading,
         publicChannels: state.projectReducer.project_data.channels,
         projectMembers: state.projectReducer.project_data.members, // {fname, lname, member_id, username}
-        id_to_name_map: id_to_name_map
+        id_to_name_map: id_to_name_map,
+        project_name: state.projectReducer.project_data.name
     };
 }
 

@@ -44,8 +44,24 @@ export default function authReducer(state = initialState, action) {
                 username: "",
                 email: "",
                 first_name: "",
-                last_name: ""                
+                last_name: ""
             });
+        case C.SEND_SIGNUP_EMAIL_FAILURE:
+            return state.merge({
+              errors: [...state.errors, action.error],
+              sentWelcome: false,
+              sendingSignup: false
+            })
+        case C.SEND_SIGNUP_EMAIL:
+             return state.merge({
+               sendingSignup: true
+             })
+        case C.SEND_SIGNUP_EMAIL_SUCCESS:
+             return state.merge({
+               sendingSignup: false,
+               sentWelcome: true
+             })
+
         default:
             return state;
     }

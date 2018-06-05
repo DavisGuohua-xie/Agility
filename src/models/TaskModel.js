@@ -92,7 +92,7 @@ export class TaskModel extends Parse.Object {
         //Modify data
         this.set(ASSIGNED_TO, actualAssigned)
         //Update it
-        this.saveData(this, successHandler, errorHandler)
+      return this.saveData(this, successHandler, errorHandler)
     }
 
 
@@ -102,7 +102,7 @@ export class TaskModel extends Parse.Object {
         var actualAssigned = this.get(ASSIGNED_TO)
         actualAssigned.splice(index, 1)
         this.set(ASSIGNED_TO, actualAssigned)
-        this.saveData(this, successHandler, errorHandler)
+      return   this.saveData(this, successHandler, errorHandler)
 
     }
 
@@ -115,28 +115,28 @@ export class TaskModel extends Parse.Object {
         })
 
         this.set(ASSIGNED_TO, actualAssigned)
-        this.saveData(this, successHandler, errorHandler)
+      return  this.saveData(this, successHandler, errorHandler)
     }
 
 
     updateTitle(newTitle, successHandler, errorHandler) {
         this.set(TITLE, newTitle);
-        this.saveData(this, successHandler, errorHandler)
+      return   this.saveData(this, successHandler, errorHandler)
     }
 
     updateContent(newContent, successHandler, errorHandler) {
         this.set(CONTENT, newContent)
-        this.saveData(this, successHandler, errorHandler)
+        return this.saveData(this, successHandler, errorHandler)
     }
 
     updateDueDate(newDueDate, successHandler, errorHandler) {
         this.set(DUE_DATE, newDueDate)
-        this.saveData(this, successHandler, errorHandler)
+      return   this.saveData(this, successHandler, errorHandler)
     }
 
     upadateCompletionDate(newCompletionDate, sucessHandler, errorHandler) {
         this.set(COMPLETION_DATE, newCompletionDate)
-        this.saveData(this, sucessHandler, errorHandler)
+        return this.saveData(this, sucessHandler, errorHandler)
     }
 
     updatePriority(newPriority, successHandler, errorHandler) {
@@ -149,7 +149,7 @@ export class TaskModel extends Parse.Object {
             newPriority = MIN_PRIORITY;
         }
         this.set(PRIORITY, newPriority);
-        this.saveData(this, successHandler, errorHandler)
+        return this.saveData(this, successHandler, errorHandler)
 
     }
 
@@ -162,10 +162,7 @@ export class TaskModel extends Parse.Object {
             errorHandler = this.defaultErrorHandler
         }
 
-        pfobject.save(null, {
-            success: successHandler,
-            error: errorHandler
-        })
+        return pfobject.save()
     }
 
 

@@ -43,7 +43,7 @@ export const ProjectTasks = props => {
                     editable
                     onLaneClick={props.onLaneClick}
                     onCardClick={props.onCardClick}
-	    	    onCardAdd={props.onCardAdd}
+                    onCardAdd={props.onCardAdd}
                     customLaneHeader={<CustomLaneHeader onToggleModal={props.onToggleEditModal} />}
                     style={{
                         padding: "30px 0 0 0",
@@ -83,6 +83,19 @@ export const ProjectTasks = props => {
                                 onChange={props.onBoardNameChange}
                                 value={props.boardName}
                             />
+
+                            {props.editing ? (
+                                <Container>
+                                    <Label check>
+                                        <Input
+                                            type="checkbox"
+                                            checked={props.editBoardType}
+                                            onChange={props.onBoardTypeChange}
+                                        />{" "}
+                                        Tasks in this board are completed
+                                    </Label>
+                                </Container>
+                            ) : null}
                         </FormGroup>
                     </Form>
                 </ModalBody>

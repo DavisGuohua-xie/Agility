@@ -30,7 +30,7 @@ class Homepage extends React.Component {
 
     componentDidMount() {
         console.log("dispatching...");
-        this.props.actions.getProjects();
+        if (this.props.logged_in) this.props.actions.getProjects();
     }
 
     static getDerivedStateFromProps(props, state) {

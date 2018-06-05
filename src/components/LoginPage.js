@@ -8,6 +8,7 @@ import toastr from "./common/toastrConfig";
 import { withRouter, Redirect } from "react-router";
 
 import { login, register } from "../actions/authActions";
+import {resetPassword} from '../actions/accountActions'
 
 import {UserModel} from '../models/UserModel'
 
@@ -27,13 +28,16 @@ export default class LoginPage extends Component {
         };
 
         this.handleLogin = this.handleLogin.bind(this);
+        this.handlePasswordReset = this.handlePasswordReset.bind(this)
         this.handleCreateAccount = this.handleCreateAccount.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleToggleForgot = this.handleToggleForgot.bind(this);
         this.handleToggleReg = this.handleToggleReg.bind(this);
     }
 
-    handleLogin() {
+    handleLogin(e) {
+        e.preventDefault();
+
         let username = this.state.username;
         let password = this.state.password;
 
@@ -45,14 +49,16 @@ export default class LoginPage extends Component {
         }
     }
 
-    handleCreateAccount() {
+    handleCreateAccount(e) {
+        e.preventDefault();
+
         let username = this.state.registerUsername;
         let password = this.state.registerPassword;
         let email = this.state.registerEmail;
         let fname = this.state.fname;
         let lname = this.state.lname;
 
-        if (username && password && email) {
+        if (username && password && email && fname && lname) {
             this.props._register(
                 username,
                 password,
@@ -63,7 +69,14 @@ export default class LoginPage extends Component {
                   loggedIn: true
                 })}
             );
+        } else {
+            toastr.error("Enter all required information!", "Registration failed");
         }
+    }
+
+    handlePasswordReset(){
+      let email =  this.state.recoverUsername
+      this.props._resetPassword(email)
     }
 
     handleInputChange(e) {
@@ -87,6 +100,7 @@ export default class LoginPage extends Component {
     render() {
       return !this.props.logged_in ?
         (<LoginForm1
+            onPasswordReset={this.handlePasswordReset}
             onInputChange={this.handleInputChange}
             onLogin={this.handleLogin}
             onCreateAccount={this.handleCreateAccount}
@@ -95,8 +109,8 @@ export default class LoginPage extends Component {
             onToggleReg={this.handleToggleReg}
             isOpenReg={this.state.isOpenReg}
             ajaxRequested={this.props.logging_in}
-        />) : <Redirect to="/" />;
-    }
+        />) : <Redirect to="/"/>;
+  }
 }
 
 function mapDispatchToProps(dispatch) {
@@ -106,7 +120,12 @@ function mapDispatchToProps(dispatch) {
         }
         ,_register(username, pass,email, fname, lname, success){
           dispatch(register(fname, lname, username, email, pass, success))
+        },
+        _resetPassword(email){
+          dispatch(resetPassword(email))
         }
+
+
     };
 }
 

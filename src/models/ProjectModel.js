@@ -1,4 +1,5 @@
 import Parse from 'parse'
+import _ from 'lodash'
 
 
 
@@ -96,7 +97,17 @@ export class ProjectModel extends Parse.Object {
         roles[user.id] = role;
         this.set(ROLES, roles)
 
-        this.saveData(this, successHandler, errorHandler)
+        return this.saveData(this, successHandler, errorHandler)
+    }
+
+
+    setRoles(newRoles, successHandler, errorHandler){
+      var roles = this.get(ROLES)
+      _.merge(roles, newRoles)
+      this.set(ROLES, roles)
+
+      return this.saveData(this, successHandler, errorHandler)
+
     }
 
 
@@ -107,7 +118,7 @@ export class ProjectModel extends Parse.Object {
 
         this.set(ROLES, roles);
 
-        this.saveData(this, successHandler, errorHandler)
+        return this.saveData(this, successHandler, errorHandler)
     }
 
 
@@ -117,7 +128,7 @@ export class ProjectModel extends Parse.Object {
         channels.push(channel)
 
         this.set(CHANNELS)
-        this.saveData(this, successHandler, errorHandler)
+        return this.saveData(this, successHandler, errorHandler)
     }
 
 
@@ -129,7 +140,7 @@ export class ProjectModel extends Parse.Object {
 
         this.set(UPDATES, updates)
 
-        this.saveData(this, successHandler, errorHandler)
+        return this.saveData(this, successHandler, errorHandler)
     }
 
 
@@ -139,7 +150,7 @@ export class ProjectModel extends Parse.Object {
 
         this.set(BOARDS, boards)
 
-        this.saveData(this, successHandler, errorHandler)
+        return this.saveData(this, successHandler, errorHandler)
 
     }
 
@@ -149,7 +160,7 @@ export class ProjectModel extends Parse.Object {
 
         this.set(BOARDS, boards)
 
-        this.saveData(this, successHandler, errorHandler)
+        return this.saveData(this, successHandler, errorHandler)
     }
 
     removeBoardByBoard(board, successHandler, errorHandler) {
@@ -164,7 +175,7 @@ export class ProjectModel extends Parse.Object {
 
         this.set(BOARDS, boards)
 
-        this.saveData(this, successHandler, errorHandler)
+        return this.saveData(this, successHandler, errorHandler)
 
     }
 
@@ -172,7 +183,7 @@ export class ProjectModel extends Parse.Object {
     renameProject(newName, successHandler, errorHandler) {
 
         this.set(NAME, newName)
-        this.saveData(this, successHandler, errorHandler)
+        return this.saveData(this, successHandler, errorHandler)
     }
 
     saveData(pfobject, successHandler, errorHandler) {
@@ -184,10 +195,7 @@ export class ProjectModel extends Parse.Object {
             errorHandler = this.defaultErrorHandler
         }
 
-        pfobject.save(null, {
-            success: successHandler,
-            error: errorHandler
-        })
+        return pfobject.save()
     }
 
 }

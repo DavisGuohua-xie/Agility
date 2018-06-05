@@ -64,6 +64,24 @@ export default function taskReducer(state = initialState, action) {
                 board_data: []
             });
 
+        case types.UPDATE_BOARD_SUCCESS:
+            let editingBoard = Object.assign(
+                {},
+                state.board_data.filter(b => b.id === action.req.board_id)[0]
+            );
+
+
+            return state.merge({
+                board_data: [
+                    ...state.board_data.filter(b => b.id !== action.req.board_id),
+                    {
+                        ...editingBoard,
+                        title: action.req.board.title,
+                        is_done: action.req.board.is_done
+                    }
+                ]
+            });
+
         default:
             return state;
     }

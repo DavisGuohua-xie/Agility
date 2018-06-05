@@ -66,9 +66,16 @@ function connectChatkit(publicChannels) {
             .then(currentUser => {
                 console.log("current user: ", currentUser.rooms);
                 currUser = currentUser;
-                let currChannel = publicChannels[0];
 
-                return currentUser.joinRoom({ roomId: currChannel });
+                let promises = [];
+                publicChannels.forEach(channelID => {
+                    promises.push(currentUser.joinRoom({ roomId: channelID }));
+                });
+
+                return Promise.all(promises);
+            })
+            .then(response => {
+                return Promise.resolve(response[0]);
             })
             .then(room => {
                 console.log(`joined room with room id: ${room.id}`);
@@ -182,11 +189,11 @@ function createChannel(members, name, creatorId, isPrivate, currentChannelId, pr
                 dispatch(addNewChannel(roomObj));
                 dispatch(switchToChannel(roomObj.id, currentChannelId));
 
-
                 return new Promise((resolve, reject) => {
                     resolve(roomObj);
                 });
-            }).then(roomObj => {
+            })
+            .then(roomObj => {
                 //TODO: add new group channel to project on Parse
             })
             .catch(error => {
