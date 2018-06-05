@@ -100,7 +100,7 @@ class ProjectOverviewPage extends React.Component {
 
     componentDidMount() {
         mql.addListener(this.mediaQueryChanged);
-        this.setState({ mql: mql, sidebarDocked: mql.matches });
+        this.setState({ mql: mql, sidebarDocked: mql.matches});
         this.props.actions.getProject(this.props.match.params.projID);
     }
 
@@ -153,18 +153,20 @@ class ProjectOverviewPage extends React.Component {
             let project_id = this.state.projectID;
             let username = this.state.newUserName;
             let new_role = this.state.newRole;
-            let query = new Parse.Query(Parse.User);
-            query.equalTo("username", username);
-            query.first().then(user => {
+            if (this.hasAuthority(username, project_id) === false) toastr.error("You don't have the authority to add members!");
+            else {
+                let query = new Parse.Query(Parse.User);
+                query.equalTo("username", username);
+                query.first().then(user => {
                 if (user === undefined) toastr.error("This user doesn't exist!");
                 else {
                     this.props.member_actions.addMember(username, project_id, new_role);
-                    console.log(this.props.error)
-                    if (this.props.error) toastr.error("This user doesn't exist!");
-                    else this.toggleAddMemberModal();
+                    this.toggleAddMemberModal();
                 }
             });
+            }
         }
+        console.log(this.props.feedback);
     }
 
     handleNewRole(e) {
@@ -188,7 +190,7 @@ class ProjectOverviewPage extends React.Component {
         let username = this.state.removeName;
         let project_id = this.state.projectID;
         let query = new Parse.Query(Parse.User);
-        if (this.hasAuthority(username, project_id) === false) toastr.error("You don't have the authority to remove member!");
+        if (this.hasAuthority(username, project_id) === false) toastr.error("You don't have the authority to remove members!");
         else {
             query.equalTo("username", username);
             query.first().then(user => {
@@ -372,16 +374,16 @@ class ProjectOverviewPage extends React.Component {
                     modalOpen={this.state.addMemberModalOpen}
                     toggleAddMemberModal={this.toggleAddMemberModal}
                     className={this.props.className}
-                    handleNewName={this.handleNewName}
-                    handleNewRole={this.handleNewRole}
-                    handleAddMember={this.handleAddMember}
+                    onNewName={this.handleNewName}
+                    onNewRole={this.handleNewRole}
+                    onAddMember={this.handleAddMember}
                 />
                 <RemoveMemberModal 
                     removeMemberModalOpen={this.state.removeMemberModalOpen}
                     toggleRemoveMemberModal={this.toggleRemoveMemberModal}
                     className={this.props.className}
-                    handleRemoveName={this.handleRemoveName}
-                    handleRemoveMember={this.handleRemoveMember}
+                    onRemoveName={this.handleRemoveName}
+                    onRemoveMember={this.handleRemoveMember}
                 />
                 <NavBar
                     projName={
@@ -431,7 +433,7 @@ function mapStateToProps(state, ownProps) {
         ajaxCalls: state.ajaxCallsInProgress,
         project_data: state.projectReducer.project_data,
         board_data: state.taskReducer.board_data,
-        error: state.memberReducer.error
+        feedback: state.memberReducer.feedback
     };
 }
 

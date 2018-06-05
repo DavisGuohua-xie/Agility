@@ -2,6 +2,7 @@ import * as types from "./actionTypes";
 import Parse from "parse";
 import * as ajaxActions from "./ajaxActions";
 import history from "../history";
+import {projActions} from "./projActions";
 
 export const memberActions = {
     addMember,
@@ -15,20 +16,20 @@ function addMember (username, project_id, user_role) {
         let query = new Parse.Query(Parse.User);
         query.equalTo("username", username);
         query.first().then(user => {
-            user.addUnique("projects", project_id);
             let query = new Parse.Query(Parse.Object.extend("Project"));
+            user.add("projects", project_id);
             query.equalTo("objectId", project_id);
             query.first().then(project => {
                 let user_id = user.id;
                 console.log(user_id);
-                project.addUnique("members", {user_id: user_role});
                 
                 let roles = project.get("roles");
                 roles[user_id] = user_role;
 
                 project.set("roles", roles);
                 project.save().then( res => {
-                    dispatch(success())
+                    dispatch(success());
+                    dispatch(projActions.getProject(project_id));
                 })
                 })
             }).catch( error => {
@@ -38,10 +39,10 @@ function addMember (username, project_id, user_role) {
     }
 
     function request() {
-        return { type: types.ADD_MEMBER_REQUEST };
+        return { type: types.ADD_MEMBER_REQUEST};
     }
     function success() {
-        return { type: types.ADD_MEMBER_SUCCESS };
+        return { type: types.ADD_MEMBER_SUCCESS};
     }
     function failure() {
         return { type: types.ADD_MEMBER_FAILURE};
@@ -54,19 +55,21 @@ function removeMember (username, project_id) {
         let query = new Parse.Query(Parse.User);
         query.equalTo("username", username);
         query.first().then(user => {
+            user.remove("projects", project_id);
             let query = new Parse.Query(Parse.Object.extend("Project"));
             console.log(query);
             query.equalTo("objectId", project_id);
 
             query.first().then(project => {
-                user.remove("projects", project_id);
+                //user.remove("projects", project_id);
                 let user_id = user.id;
                 let roles = project.get("roles");
                 delete roles[user_id];
 
                 project.set("roles", roles);
                 project.save().then(res => {
-                    dispatch(success())
+                    dispatch(success());
+                    dispatch(projActions.getProject(project_id));
                 })
             }).catch( error => {
                 console.log(error);
@@ -81,15 +84,15 @@ function removeMember (username, project_id) {
 
     function request() {
         return { 
-            type: types.REMOVE_MEMBER_REQUEST,
+            type: types.REMOVE_MEMBER_REQUEST
         };
     }
     function success() {
         return { 
-            type: types.REMOVE_MEMBER_SUCCESS, 
+            type: types.REMOVE_MEMBER_SUCCESS
         };
     }
-    function failure(err) {
-        return { type: types.REMOVE_MEMBER_FAILURE, error: err };
+    function failure() {
+        return { type: types.REMOVE_MEMBER_FAILURE};
     }
 }
