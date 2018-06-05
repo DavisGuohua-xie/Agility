@@ -37,42 +37,39 @@ const TaskDetail = props => {
             <ModalBody>
                 <Form>
                     <FormGroup>
-                        <Label for="projectName">Task Name</Label>
+                        <Label for="taskName">Task Name</Label>
                         <Input
                             type="text"
                             name="taskName"
                             id="taskName"
                             placeholder="Enter task name"
-                            onChange={undefined}
+                            onChange={props.onTextInputChange}
                             value={cardTitle}
                         />
-                        <Label for="projectName">Task Description</Label>
+                        <Label for="taskDescription">Task Description</Label>
                         <Input
                             type="text"
                             name="taskDescription"
                             id="taskDescription"
                             placeholder="Enter task description"
-                            onChange={undefined}
+                            onChange={props.onTextInputChange}
                             value={cardDescription}
                         />
-                        <Label for="projectName">Deadline</Label>
+                        <Label for="deadline">Deadline</Label>
+                        <DatePicker selected={new Date()} onChange={props.onTaskDeadlineChange} />
+                        <Label for="taskPriority">Priority</Label>
                         <Input
-                            type="text"
-                            name="deadline"
-                            id="taskName"
-                            placeholder="Enter task name"
-                            onChange={undefined}
-                            value={cardTitle}
-                        />
-                        <Label for="projectName">Task Name</Label>
-                        <Input
-                            type="text"
-                            name="taskName"
-                            id="taskName"
-                            placeholder="Enter task name"
-                            onChange={undefined}
-                            value={cardTitle}
-                        />
+                            type="select"
+                            name="taskPriority"
+                            id="taskPriority"
+                            defaultValue="0"
+                            onChange={props.onPriorityChange}
+                        >
+                            <option value="0">Low</option>
+                            <option value="1">Medium</option>
+                            <option value="2">High</option>
+                            <option value="3">Critical</option>
+                        </Input>
                     </FormGroup>
                 </Form>
             </ModalBody>
