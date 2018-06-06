@@ -441,7 +441,16 @@ function removeMember (username, project_id) {
                 console.log(user.get("projects"));
                 user.remove("projects", project);
                 console.log(user.get("projects"));
-                user.save();
+                user.save()(null, {
+                    useMasterKey: true,
+                    success: function (res) {
+                        console.log("successfully saved!")
+                    },
+                    error: function (res, err) {
+                        console.log(err);
+                        dispatch(failure());
+                    }
+                })
                 let user_id = user.id;
                 let roles = project.get("roles");
                 let user_role = roles[user_id];
