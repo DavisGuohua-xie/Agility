@@ -53,7 +53,8 @@ class ProjectListComponent extends React.Component {
         });
     }
 
-    handleCreateProject() {
+    handleCreateProject(e) {
+	e.preventDefault();
         if (this.state.newProjectName !== "") {
             console.log("project name: " + this.state.newProjectName);
 
