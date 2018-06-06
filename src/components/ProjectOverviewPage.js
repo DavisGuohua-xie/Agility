@@ -24,6 +24,7 @@ import { ProjectCalendar } from "./project/Calendar";
 import AddMemberModal from "./project/AddMemberModal";
 import RemoveMemberModal from "./project/RemoveMemberModal";
 import LeaveProjectModal from "./project/LeaveProjectModal";
+
 import moment from "moment";
 
 import {
@@ -143,8 +144,8 @@ class ProjectOverviewPage extends React.Component {
     }
 
     handleAddMember() {
-        if (this.state.newUserName === "") toastr.error("User name can not be empty!");
-        else if (this.state.newRole === "") toastr.error("Role can not be empty!");
+        if (this.state.newUserName === "") toastr.error("Username cannot be empty.");
+        else if (this.state.newRole === "") toastr.error("Role cannot be empty!");
         else if (
             this.state.newRole !== "ProjectManager" &&
             this.state.newRole !== "CEO" &&
@@ -153,6 +154,7 @@ class ProjectOverviewPage extends React.Component {
         )
             toastr.error("Invalid role entered.");
         else {
+            this.toggleAddMemberModal();
             let project_id = this.state.projectID;
             let username = this.state.newUserName;
             let new_role = this.state.newRole;
@@ -238,7 +240,7 @@ class ProjectOverviewPage extends React.Component {
                 }
                 else return false;
             })
-        })
+        });
     }
 
     toggleLeaveProjectModal() {
@@ -299,22 +301,8 @@ class ProjectOverviewPage extends React.Component {
     }
 
     updateTask(taskId, newTask) {
-        let title = newTask.get("title");
-        let content = newTask.get("content");
-        let due_date = newTask.get("due_date");
-        let priority = newTask.get("priority");
-        let completion_date = newTask.get("completion_date");
-
-        // Will fix tmrw
-        /*
-        let task = new Parse.Query(Task);
-        task.equalsTo("objectId", taskId);
-        task.set("title", title);
-        task.set("content", content);
-        task.set("due_date", due_date);
-        task.set("priority", priority);
-        task.set("completion_date", completion_date);
-        */
+        console.log(taskId, newTask);
+        this.props.taskActions.updateTask(taskId, newTask);
     }
 
     toggleNewBoard() {
@@ -392,9 +380,9 @@ class ProjectOverviewPage extends React.Component {
 
         return (
             <div style={{ height: "100%" }}>
-                <AddMemberModal 
-                    modalOpen={this.state.addMemberModalOpen}
-                    toggleAddMemberModal={this.toggleAddMemberModal}
+                <Modal
+                    isOpen={this.state.addMemberModalOpen}
+                    toggle={this.toggleAddMemberModal}
                     className={this.props.className}
                     onNewName={this.handleNewName}
                     onNewRole={this.handleNewRole}
@@ -413,6 +401,7 @@ class ProjectOverviewPage extends React.Component {
                     className={this.props.className}
                     handleLeaveProject={this.handleLeaveProject}
                 />
+
                 <NavBar
                     projName={
                         this.props.project_data === undefined ? "" : this.props.project_data.name

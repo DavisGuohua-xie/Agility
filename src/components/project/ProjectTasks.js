@@ -16,8 +16,9 @@ import {
 
 import styles from "../../styles/ProjectTasks.module.css";
 import TaskDetail from "./TaskDetail";
+import { StickyNote } from "../misc/StickyNote";
 
-let CustomLaneHeader = props => {
+const CustomLaneHeader = props => {
     return (
         <p className={styles.p}>
             {props.title}{" "}
@@ -33,6 +34,7 @@ let CustomLaneHeader = props => {
 };
 
 export const ProjectTasks = props => {
+    console.log(props.data);
     return (
         <div style={{ height: "calc(100% - 40px)" }}>
             <Container fluid style={{ height: "100%", padding: 0 }}>
@@ -45,14 +47,16 @@ export const ProjectTasks = props => {
                     onCardClick={props.onCardClick}
                     onCardAdd={props.onCardAdd}
                     customLaneHeader={<CustomLaneHeader onToggleModal={props.onToggleEditModal} />}
+                    customCardLayout
                     style={{
-                        padding: "30px 0 0 0",
                         backgroundColor: "#fff",
                         fontFamily: "unset",
                         height: "100%",
                         paddingLeft: 15
                     }}
-                />
+                >
+                    <StickyNote />
+                </Board>
             </Container>
 
             <TaskDetail
@@ -61,6 +65,9 @@ export const ProjectTasks = props => {
                 onToggleModal={props.onToggleCardModal}
                 cardObject={props.cardObject}
                 onTextInputChange={props.onCardTextInputChange}
+                onTaskDeadlineChange={props.onTaskDeadlineChange}
+                onPriorityChange={props.onPriorityChange}
+                saveTask={props.saveTask}
             />
 
             <Modal

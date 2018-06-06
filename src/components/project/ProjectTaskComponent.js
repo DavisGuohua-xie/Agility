@@ -19,7 +19,7 @@ class ProjectTaskComponent extends React.Component {
             editing: false,
             showCardModal: false,
             is_done: false,
-            cardObject: {}
+            cardObject: { metadata: {} }
         };
 
         this.handleLaneClick = this.handleLaneClick.bind(this);
@@ -30,8 +30,11 @@ class ProjectTaskComponent extends React.Component {
         this.handleBoardNameChange = this.handleBoardNameChange.bind(this);
         this.toggleEditModal = this.toggleEditModal.bind(this);
         this.handleSaveBoard = this.handleSaveBoard.bind(this);
+        this.handleSaveTask = this.handleSaveTask.bind(this);
         this.handleCardClick = this.handleCardClick.bind(this);
         this.handleBoardTypeChange = this.handleBoardTypeChange.bind(this);
+        this.toggleEditCardModal = this.toggleEditCardModal.bind(this);
+        this.handleCardInfoChange = this.handleCardInfoChange.bind(this);
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -40,6 +43,7 @@ class ProjectTaskComponent extends React.Component {
             nextProps.taskList !== prevState.tasksData
         ) {
             console.log("updating lanes in projecttaskcomponent");
+            console.log(nextProps.taskList.lanes);
             if (prevState.eventBus && nextProps.taskList !== prevState.tasksData)
                 prevState.eventBus.publish({
                     type: "UPDATE_LANES",
@@ -50,27 +54,111 @@ class ProjectTaskComponent extends React.Component {
         return null;
     }
 
-    handleLaneClick(e) {
-        console.log(e);
-    }
-
+    /************EVERYTHING ABOUT TASKS***********************/
     handleCardClick(cardId, metadata, laneId) {
         console.log(cardId);
 
         let cardObj = this.state.tasksData.lanes
             .filter(board => board.id === laneId)[0]
             .cards.filter(card => card.id === cardId)[0]; // get proper card object
+
         console.log(cardObj);
 
         this.setState({
-            showCardModal: true,
+            cardId: cardId,
+            cardBoardId: laneId,
             cardObject: cardObj
         });
+
+        this.toggleEditCardModal();
+    }
+
+    handleCardInfoChange(e) {
+        if (!e.target) {
+            console.log(e.valueOf());
+            this.setState({
+                cardObject: {
+                    title: this.state.cardObject.title,
+                    description: this.state.cardObject.description,
+                    metadata: { ...this.state.cardObject.metadata, due_date: e.valueOf() },
+                    laneId: this.state.laneId,
+                    id: this.state.cardId
+                }
+            });
+            return;
+        }
+        // if(e.target.name === "taskDeadline") {
+        //     this.setState({
+        //         cardObject: { due_date: e.target.}
+        //     })
+        // }
+        if (e.target.name === "priority") {
+            this.setState({
+                cardObject: {
+                    title: this.state.cardObject.title,
+                    description: this.state.cardObject.description,
+                    metadata: {
+                        ...this.state.cardObject.metadata,
+                        priority: parseInt(e.target.value)
+                    },
+                    laneId: this.state.laneId,
+                    id: this.state.cardId
+                }
+            });
+            return;
+        }
+
+        if (e.target.name === "description") {
+            this.setState({
+                cardObject: {
+                    description: e.target.value,
+                    metadata: this.state.cardObject.metadata,
+                    title: this.state.cardObject.title,
+                    laneId: this.state.laneId,
+                    id: this.state.cardId
+                }
+            });
+            return;
+        }
+
+        if (e.target.name === "title") {
+            this.setState({
+                cardObject: {
+                    title: e.target.value,
+                    metadata: this.state.cardObject.metadata,
+                    description: this.state.cardObject.description,
+                    laneId: this.state.cardObject.laneId,
+                    id: this.state.cardObject.cardId
+                }
+            });
+            return;
+        }
+    }
+
+    toggleEditCardModal() {
+        this.setState({ showCardModal: !this.state.showCardModal });
     }
 
     setEventBus = handle => {
         this.setState({ eventBus: handle });
     };
+
+    handleSaveTask(e) {
+        e.preventDefault();
+        this.props.actions.updateTask(
+            this.state.cardId,
+            this.state.cardBoardId,
+            this.state.cardObject
+        );
+
+        this.toggleEditCardModal();
+    }
+
+    /***********************EVERYTHING ABOUT BOARDS***************************/
+
+    handleLaneClick(e) {
+        console.log(e);
+    }
 
     handleCreateBoard() {
         if (this.state.newBoard === "") return;
@@ -81,22 +169,7 @@ class ProjectTaskComponent extends React.Component {
             this.state.eventBus
         );
 
-        /*
-        let boards = Object.assign({}, this.state.tasksData);
-        boards.lanes.push({
-            id: (boards.lanes.length) + "",
-            title: this.state.newBoard,
-            label: "",
-            cards: []
-        });
-
-        this.setState({ tasksData: boards });
-        console.log(this.state.eventBus);
-
-        
-        */
         this.props.onToggleModal();
-        //this.props.updateTasks(boards);
     }
 
     handleSaveBoard(e) {
@@ -124,6 +197,10 @@ class ProjectTaskComponent extends React.Component {
         this.props.actions.createTask(card, laneId, this.props.username);
     }
 
+    /**
+     * toggle edit modal for board
+     * @param {React event} e
+     */
     toggleEditModal(e) {
         if (this.props.modalOpen) {
             this.setState({ editing: !this.state.editing, newBoard: "" });
@@ -162,10 +239,14 @@ class ProjectTaskComponent extends React.Component {
                 onSaveBoard={this.handleSaveBoard}
                 editing={this.state.editing}
                 showCardModal={this.state.showCardModal}
-                onToggleCardModal={this.handleCardClick}
+                onToggleCardModal={this.toggleEditCardModal}
                 onBoardTypeChange={this.handleBoardTypeChange}
                 editBoardType={this.state.is_done}
                 cardObject={this.state.cardObject}
+                onCardTextInputChange={this.handleCardInfoChange}
+                onTaskDeadlineChange={this.handleCardInfoChange}
+                onPriorityChange={this.handleCardInfoChange}
+                saveTask={this.handleSaveTask}
             />
         );
     }
