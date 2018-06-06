@@ -8,5 +8,5 @@ export default Immutable({
     chat_loading: false,
     user: null,
     errors: [],
-    loggedIn: false
+    loggedIn: false,
 });

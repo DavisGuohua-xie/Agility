@@ -32,7 +32,7 @@ const RemoveMemberModal = props => {
                                     name="usernameinput"
                                     id="userName"
                                     placeholder="Agility"
-                                    onChange={props.handleRemoveName}
+                                    onChange={props.onRemoveName}
                                 />
                             </FormGroup>
                         </Form>
@@ -41,7 +41,7 @@ const RemoveMemberModal = props => {
                         <Button color="secondary" onClick={props.toggleRemoveMemberModal}>
                             Cancel
                         </Button>
-                        <Button color="primary" onClick={props.handleRemoveMember}>
+                        <Button color="primary" onClick={props.onRemoveMember}>
                             Remove
                         </Button>
                     </ModalFooter>
