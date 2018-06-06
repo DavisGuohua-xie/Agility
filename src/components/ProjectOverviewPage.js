@@ -10,7 +10,6 @@ import Sidebar from "react-sidebar";
 
 import { projActions } from "../actions/projActions";
 
-import { memberActions } from "../actions/memberActions";
 import {taskActions} from "../actions/taskActions";
 
 import { NavBar } from "./common/Navbar";
@@ -143,9 +142,9 @@ class ProjectOverviewPage extends React.Component {
         if (this.state.newUserName === "") toastr.error("User name can not be empty!");
         else if (this.state.newRole === "") toastr.error("Role can not be empty!");
         else if (
-            this.state.newRole !== "Project Manager" &&
+            this.state.newRole !== "ProjectManager" &&
             this.state.newRole !== "CEO" &&
-            this.state.newRole !== "Team Member" &&
+            this.state.newRole !== "TeamMember" &&
             this.state.newRole !== "Customer"
         )
             toastr.error("Invalid role entered.");
@@ -160,7 +159,9 @@ class ProjectOverviewPage extends React.Component {
                 query.first().then(user => {
                 if (user === undefined) toastr.error("This user doesn't exist!");
                 else {
-                    this.props.member_actions.addMember(username, project_id, new_role);
+                    var addRequest = this.props.addRequest === undefined ? 0 : this.props.addRequest;
+                    this.props.actions.addMember(username, project_id, new_role);
+                    console.log(addRequest);
                     this.toggleAddMemberModal();
                 }
             });
@@ -208,7 +209,9 @@ class ProjectOverviewPage extends React.Component {
                 if (!user_valid) toastr.error("This user is not a member of this project!");
                 else {
                     this.toggleRemoveMemberModal();
-                    this.props.member_actions.removeMember(username, project_id);
+                    var removeRequest = this.props.removeRequest === undefined ? 0 : this.props.removeRequest;
+                    this.props.actions.removeMember(username, project_id);
+                    console.log(removeRequest);
                 }
             }
         })
@@ -422,7 +425,6 @@ class ProjectOverviewPage extends React.Component {
 function mapDispatchToProps(dispatch) {
     return {
         actions: bindActionCreators(projActions, dispatch),
-        member_actions: bindActionCreators(memberActions, dispatch),
         taskActions: bindActionCreators(taskActions, dispatch)
     };
 }
@@ -433,7 +435,6 @@ function mapStateToProps(state, ownProps) {
         ajaxCalls: state.ajaxCallsInProgress,
         project_data: state.projectReducer.project_data,
         board_data: state.taskReducer.board_data,
-        feedback: state.memberReducer.feedback
     };
 }
 
