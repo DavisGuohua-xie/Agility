@@ -1,0 +1,38 @@
+.container {
+    width: 100%;
+    height: 100%;
+    word-wrap: break-word;
+    word-break: break-word;
+}
+
+.lightGreen {
+    background-color: lightgreen;
+}
+
+.lightGreen:hover {
+    background-color: #74bd74;
+}
+
+.lightBlue {
+    background-color: lightblue;
+}
+
+.lightBlue:hover {
+    background-color: rgb(136, 207, 231);
+}
+
+.lightYellow {
+    background-color: lightyellow;
+}
+
+.lightYellow:hover {
+    background-color: rgb(255, 255, 164);
+}
+
+.lightCoral {
+    background-color: lightcoral;
+}
+
+.lightCoral:hover {
+    background-color: coral;
+}
