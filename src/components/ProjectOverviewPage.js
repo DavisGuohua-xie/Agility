@@ -24,6 +24,7 @@ import { ProjectTaskComponent } from "./project/ProjectTaskComponent";
 import { ProjectCalendar } from "./project/Calendar";
 import AddMemberModal from "./project/AddMemberModal";
 import RemoveMemberModal from "./project/RemoveMemberModal";
+import LeaveProjectModal from "./project/LeaveProjectModal";
 import moment from "moment";
 
 import {
@@ -76,6 +77,7 @@ class ProjectOverviewPage extends React.Component {
             },
             addMemberModalOpen: false,
             removeMemberModalOpen: false,
+            leaveProjectModalOpen: false,
             newUserName: "",
             newRole: "",
             removeName: ""
@@ -96,6 +98,8 @@ class ProjectOverviewPage extends React.Component {
         this.handleRemoveName = this.handleRemoveName.bind(this);
         this.updateBoard = this.updateBoard.bind(this);
         this.hasAuthority = this.hasAuthority.bind(this);
+        this.toggleLeaveProjectModal = this.toggleLeaveProjectModal.bind(this);
+        this.handleLeaveProject = this.handleLeaveProject.bind(this);
     }
 
     componentDidMount() {
@@ -232,6 +236,20 @@ class ProjectOverviewPage extends React.Component {
         })
     }
 
+    toggleLeaveProjectModal() {
+        this.setState({
+            leaveProjectModalOpen: !this.state.leaveProjectModalOpen
+        });
+    }
+
+    handleLeaveProject() {
+        let currentUser =  Parse.User.current();
+        this.props.member_actions.removeMember(currentUser.get("username"), this.state.projectID);
+        this.toggleLeaveProjectModal();
+        this.props.history.push("/");
+        toastr.success("You have left the project.");
+    }
+
     mediaQueryChanged() {
         this.setState({ sidebarDocked: this.state.mql.matches });
     }
@@ -329,6 +347,7 @@ class ProjectOverviewPage extends React.Component {
                         show={this.state.showManageMenu}
                         onAddMember={this.toggleAddMemberModal}
                         onRemoveMember={this.toggleRemoveMemberModal}
+                        onLeaveProject={this.toggleLeaveProjectModal}
                     />
                 );
                 break;
@@ -382,6 +401,12 @@ class ProjectOverviewPage extends React.Component {
                     className={this.props.className}
                     handleRemoveName={this.handleRemoveName}
                     handleRemoveMember={this.handleRemoveMember}
+                />
+                <LeaveProjectModal 
+                    leaveProjectModalOpen={this.state.leaveProjectModalOpen}
+                    toggleLeaveProjectModal={this.toggleLeaveProjectModal}
+                    className={this.props.className}
+                    handleLeaveProject={this.handleLeaveProject}
                 />
                 <NavBar
                     projName={
