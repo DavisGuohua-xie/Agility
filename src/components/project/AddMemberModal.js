@@ -32,7 +32,7 @@ const AddMemberModal = props => {
                                     name="usernameinput"
                                     id="userName"
                                     placeholder="Agility"
-                                    onChange={props.handleNewName}
+                                    onChange={props.onNewName}
                                 />
                                 <Label for="role">Role</Label>
                                 <Input
@@ -40,7 +40,7 @@ const AddMemberModal = props => {
                                     name="role"
                                     id="role"
                                     placeholder="Software Architect, Algorithm Specialist, etc."
-                                    onChange={props.handleNewRole}
+                                    onChange={props.onNewRole}
                                 />
                             </FormGroup>
                         </Form>
@@ -49,7 +49,7 @@ const AddMemberModal = props => {
                         <Button color="secondary" onClick={props.toggleAddMemberModal}>
                             Cancel
                         </Button>
-                        <Button color="primary" onClick={props.handleAddMember}>
+                        <Button color="primary" onClick={props.onAddMember}>
                             Add
                         </Button>
                     </ModalFooter>

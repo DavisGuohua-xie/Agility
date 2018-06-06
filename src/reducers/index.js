@@ -5,7 +5,6 @@ import authReducer from "./authReducer";
 import chatReducer from "./chatReducer";
 import projectReducer from "./projectReducer";
 import taskReducer from "./taskReducer";
-import memberReducer from "./memberReducer";
 
 const rootReducer = combineReducers({
     accountReducer,
@@ -13,8 +12,7 @@ const rootReducer = combineReducers({
     authReducer,
     chatReducer,
     projectReducer,
-    taskReducer,
-    memberReducer
+    taskReducer
 });
 
 export default rootReducer;
