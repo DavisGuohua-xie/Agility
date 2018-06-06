@@ -16,6 +16,7 @@ const ManagementButton = props => {
                 <p onClick={props.onAddMember}>Add Members</p>
                 <p onClick={props.onRemoveMember}>Remove Members</p>
                 <p>Export Tasks</p>
+                <p onClick={props.onLeaveProject}>Leave Project</p>
             </div>
         </div>
     );

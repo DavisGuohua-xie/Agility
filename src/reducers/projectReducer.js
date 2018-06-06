@@ -52,6 +52,37 @@ export default function projectReducer(state = initialState, action) {
                 actp_error: action.error
             });
 
+        case types.ADD_MEMBER_REQUEST:
+            return state.merge ({
+                add_member_request: true,
+            })
+
+        case types.ADD_MEMBER_SUCCESS: 
+            return state.merge({
+                ...state.project_data,
+                members: [...state.project_data.members, action.payload]
+            });
+
+        case types.ADD_MEMBER_FAILURE:
+            return state.merge ({
+                add_member_request: false,
+            })
+
+        case types.REMOVE_MEMBER_REQUEST:
+            return state.merge ({
+                remove_member_request: true,
+            })
+        case types.REMOVE_MEMBER_SUCCESS: 
+            return state.merge({
+                ...state.project_data,
+                members: [...state.project_data.members, action.payload]
+            });
+        
+        case types.REMOVE_MEMBER_FAILURE:
+            return state.merge ({
+                remove_member_request: false
+            })
+
         default:
             return state;
 

@@ -49,6 +49,17 @@ export const login = (username, password, success) => {
                 dispatch(loginError(error));
             }
         );
+        // UserModel.login(username, password)
+        // .then((userModel)=>{
+        //   dispatch(cancelLogin())
+        //   dispatch(successLogin(userModel))
+        // })
+        // .catch((error)=>{
+        //   console.log("[ERROR]", error)
+        //   toastr.error("Incorrect login credentials", "Login failed");
+        //   dispatch(cancelLogin());
+        //   dispatch(loginError(error));
+        // })
     };
 };
 

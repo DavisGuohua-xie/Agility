@@ -19,7 +19,7 @@ const NewProjectModal = props => {
         <Modal isOpen={props.modalOpen} toggle={props.onToggleModal} size="lg">
             <ModalHeader toggle={this.onToggleModal}> Create New Project </ModalHeader>
             <ModalBody>
-                <Form>
+                <Form onSubmit={props.onCreateProject}>
                     <FormGroup>
                         <Label for="projectName">Project Name</Label>
                         <Input
