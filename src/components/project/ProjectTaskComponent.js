@@ -51,10 +51,6 @@ class ProjectTaskComponent extends React.Component {
         return null;
     }
 
-    handleLaneClick(e) {
-        console.log(e);
-    }
-
     handleCardClick(cardId, metadata, laneId) {
         console.log(cardId);
 
@@ -71,6 +67,12 @@ class ProjectTaskComponent extends React.Component {
         this.toggleEditCardModal();
     }
 
+    handleCardInfoChange(e) {
+        this.setState({
+            cardObject: { [e.target.name]: e.target.value }
+        });
+    }
+
     toggleEditCardModal() {
         this.setState({ showCardModal: !this.state.showCardModal });
     }
@@ -78,6 +80,12 @@ class ProjectTaskComponent extends React.Component {
     setEventBus = handle => {
         this.setState({ eventBus: handle });
     };
+
+    /***********************EVERYTHING ABOUT BOARDS***************************/
+
+    handleLaneClick(e) {
+        console.log(e);
+    }
 
     handleCreateBoard() {
         if (this.state.newBoard === "") return;
@@ -88,22 +96,7 @@ class ProjectTaskComponent extends React.Component {
             this.state.eventBus
         );
 
-        /*
-        let boards = Object.assign({}, this.state.tasksData);
-        boards.lanes.push({
-            id: (boards.lanes.length) + "",
-            title: this.state.newBoard,
-            label: "",
-            cards: []
-        });
-
-        this.setState({ tasksData: boards });
-        console.log(this.state.eventBus);
-
-        
-        */
         this.props.onToggleModal();
-        //this.props.updateTasks(boards);
     }
 
     handleSaveBoard(e) {
@@ -131,6 +124,10 @@ class ProjectTaskComponent extends React.Component {
         this.props.actions.createTask(card, laneId, this.props.username);
     }
 
+    /**
+     * toggle edit modal for board
+     * @param {React event} e
+     */
     toggleEditModal(e) {
         if (this.props.modalOpen) {
             this.setState({ editing: !this.state.editing, newBoard: "" });
