@@ -388,26 +388,36 @@ function addMember (username, project_id, user_role) {
             query.equalTo("objectId", project_id);
             query.first().then(project => {
                 user.addUnique("projects", project);
-                user.save();
-                project.add("members", user);
-                project.save();
-                let user_id = user.id;
-                let roles = project.get("roles");
-                console.log("IN ADD MEMBER ACTION")
-                roles[user_id] = user_role;
-                console.log("IN ADD MEMBER ACTION")
-                project.set("roles", roles);
-                console.log("IN ADD MEMBER ACTION")
-                project.save(null, {
+                user.save(null, {
                     useMasterKey: true,
                     success: function (res) {
-                        dispatch(success(project.get("members")));
+                        project.add("members", user);
+                        let user_id = user.id;
+                        let roles = project.get("roles");
+                        console.log("IN ADD MEMBER ACTION")
+                        roles[user_id] = user_role;
+                        console.log("IN ADD MEMBER ACTION")
+                        project.set("roles", roles);
+                        console.log("IN ADD MEMBER ACTION")
+                        project.save(null, {
+                            useMasterKey: true,
+                            success: function (res) {
+                                dispatch(success(project.get("members")));
+                            },
+                            error: function (res, err) {
+                                console.log(err);
+                                dispatch(failure());
+                            }
+                        })
                     },
                     error: function (res, err) {
-                        console.log(err);
                         dispatch(failure());
                     }
+                }).catch(error => {
+                    console.log(error);
+                    dispatch(failure);
                 })
+
             })
         }).catch( error => {
             console.log(error);
@@ -437,30 +447,36 @@ function removeMember (username, project_id) {
             query.equalTo("objectId", project_id);
 
             query.first().then(project => {
-                console.log("IN REMOVE MEMBER ACTION");
-                console.log(user.get("projects"));
                 user.remove("projects", project);
-                console.log(user.get("projects"));
-                user.save();
-                let user_id = user.id;
-                let roles = project.get("roles");
-                let user_role = roles[user_id];
-                console.log("IN REMOVE MEMBER ACTION");
-                project.remove("members", user);
-                delete roles[user_id];
-
-                project.set("roles", roles);
-                console.log("IN REMOVE MEMBER ACTION");
-                project.save(null, {
+                user.save(null, {
                     useMasterKey: true,
                     success: function (res) {
-                        dispatch(success(project.get("members")));
+                        let user_id = user.id;
+                        let roles = project.get("roles");
+                        let user_role = roles[user_id];
+                        project.remove("members", user);
+                        delete roles[user_id];
+        
+                        project.set("roles", roles);
+                        project.save(null, {
+                            useMasterKey: true,
+                            success: function (res) {
+                                dispatch(success(project.get("members")));
+                            },
+                            error: function (res, err) {
+                                console.log(err);
+                                dispatch(failure());
+                            }
+                        })
                     },
                     error: function (res, err) {
-                        console.log(err);
                         dispatch(failure());
                     }
+                }).catch(error => {
+                    console.log(error);
+                    dispatch(failure());
                 })
+ 
             })
         }).catch( error => {
             console.log(error);
