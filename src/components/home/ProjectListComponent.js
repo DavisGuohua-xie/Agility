@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Parse } from "parse";
-import {UserModel} from '../../models/UserModel'
+import { UserModel } from "../../models/UserModel";
 
 import NewProjectModal from "./NewProjectModal";
 
@@ -17,7 +17,6 @@ const PROJECT_MEMBER = 0;
 class ProjectListComponent extends React.Component {
     constructor(props) {
         super(props);
-
 
         this.state = {
             projItems: props.projects,
@@ -33,7 +32,7 @@ class ProjectListComponent extends React.Component {
         this.handleAddMember = this.handleAddMember.bind(this);
         this.handleDeleteNewMember = this.handleDeleteNewMember.bind(this);
         this.handleRoleChange = this.handleRoleChange.bind(this);
-        this.handleNewProjectNameChange = this.handleNewProjectNameChange.bind(this);     
+        this.handleNewProjectNameChange = this.handleNewProjectNameChange.bind(this);
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -54,12 +53,16 @@ class ProjectListComponent extends React.Component {
     }
 
     handleCreateProject(e) {
-	e.preventDefault();
+        e.preventDefault();
         if (this.state.newProjectName !== "") {
             console.log("project name: " + this.state.newProjectName);
 
             let projectManager = Parse.User.current();
-            this.props.actions.createProject(this.state.newProjectName, projectManager, this.state.newMembers);
+            this.props.actions.createProject(
+                this.state.newProjectName,
+                projectManager,
+                this.state.newMembers
+            );
         } else {
             console.log("no project name inputted");
         }
@@ -98,10 +101,8 @@ class ProjectListComponent extends React.Component {
     handleNewProjectNameChange(e) {
         this.setState({
             newProjectName: e.target.value
-        })
+        });
     }
-
-
 
     render() {
         return (
@@ -116,6 +117,7 @@ class ProjectListComponent extends React.Component {
                     onRoleChange={this.handleRoleChange}
                     onNameChange={this.handleNameChange}
                     onNewProjectNameChange={this.handleNewProjectNameChange}
+                    creating_project={this.props.creating_project}
                 />
 
                 <ProjectList
@@ -135,7 +137,14 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
+function mapStateToProps(state, ownProps) {
+    console.log(state.projectReducer.creating_project);
+    return {
+        creating_project: state.projectReducer.creating_project
+    };
+}
+
 const connectedProjectListComponent = withRouter(
-    connect(null, mapDispatchToProps)(ProjectListComponent)
+    connect(mapStateToProps, mapDispatchToProps)(ProjectListComponent)
 );
 export { connectedProjectListComponent as ProjectListComponent };

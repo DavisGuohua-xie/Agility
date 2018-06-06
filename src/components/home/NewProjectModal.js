@@ -15,6 +15,7 @@ import {
 import NewProjectMember from "./NewProjectMember";
 
 const NewProjectModal = props => {
+    console.log(props.creating_project);
     return (
         <Modal isOpen={props.modalOpen} toggle={props.onToggleModal} size="lg">
             <ModalHeader toggle={this.onToggleModal}> Create New Project </ModalHeader>
@@ -62,11 +63,11 @@ const NewProjectModal = props => {
                 </Form>
             </ModalBody>
             <ModalFooter>
-                <Button color="secondary" onClick={props.onToggleModal}>
+                <Button color="secondary" onClick={props.onToggleModal} disabled={props.creating_project}>
                     Cancel
                 </Button>
-                <Button color="primary" onClick={props.onCreateProject}>
-                    Create Project
+                <Button color="primary" onClick={props.onCreateProject} disabled={props.creating_project}>
+                    {props.creating_project ? "Creating project..." : "Create Project"}
                 </Button>
             </ModalFooter>
         </Modal>
