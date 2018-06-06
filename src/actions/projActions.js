@@ -383,7 +383,6 @@ function addMember (username, project_id, user_role) {
         let query = new Parse.Query(Parse.User);
         query.equalTo("username", username);
         query.first().then(user => {
-            console.log("IN ADD MEMBER ACTION")
             let query = new Parse.Query(Parse.Object.extend("Project"));
             query.equalTo("objectId", project_id);
             query.first().then(project => {
@@ -394,11 +393,8 @@ function addMember (username, project_id, user_role) {
                         project.add("members", user);
                         let user_id = user.id;
                         let roles = project.get("roles");
-                        console.log("IN ADD MEMBER ACTION")
                         roles[user_id] = user_role;
-                        console.log("IN ADD MEMBER ACTION")
                         project.set("roles", roles);
-                        console.log("IN ADD MEMBER ACTION")
                         project.save(null, {
                             useMasterKey: true,
                             success: function (res) {

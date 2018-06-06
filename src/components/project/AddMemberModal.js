@@ -17,10 +17,10 @@ const AddMemberModal = props => {
     return (
         <Modal
                     isOpen={props.modalOpen}
-                    toggle={props.toggleAddMemberModal}
+                    toggle={props.toggleModal}
                     className={props.className}
                 >
-                    <ModalHeader toggle={props.toggleAddMemberModal}>
+                    <ModalHeader toggle={props.toggleModal}>
                         Add New Team Member
                     </ModalHeader>
                     <ModalBody>
@@ -46,7 +46,7 @@ const AddMemberModal = props => {
                         </Form>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="secondary" onClick={props.toggleAddMemberModal}>
+                        <Button color="secondary" onClick={props.toggleModal}>
                             Cancel
                         </Button>
                         <Button color="primary" onClick={props.onAddMember}>

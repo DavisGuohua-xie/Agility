@@ -168,7 +168,7 @@ class ProjectOverviewPage extends React.Component {
                     var addRequest = this.props.addRequest === undefined ? 0 : this.props.addRequest;
                     this.props.actions.addMember(username, project_id, new_role);
                     console.log(addRequest);
-                    this.toggleAddMemberModal();
+                    //this.toggleAddMemberModal();
                 }
             });
             }
@@ -374,9 +374,9 @@ class ProjectOverviewPage extends React.Component {
 
         return (
             <div style={{ height: "100%" }}>
-                <Modal
-                    isOpen={this.state.addMemberModalOpen}
-                    toggle={this.toggleAddMemberModal}
+                <AddMemberModal
+                    modalOpen={this.state.addMemberModalOpen}
+                    toggleModal={this.toggleAddMemberModal}
                     className={this.props.className}
                     onNewName={this.handleNewName}
                     onNewRole={this.handleNewRole}
