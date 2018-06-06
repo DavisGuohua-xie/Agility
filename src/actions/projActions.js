@@ -335,7 +335,6 @@ function getMembersFromId(member_ids) {
 }
 
 function getTaskList(boards) {
-    let res = [];
     let boardQueries = [];
     boards.forEach(board => {
         let Board = Parse.Object.extend("Board");
@@ -352,7 +351,6 @@ function getTaskList(boards) {
         let taskListPromises = [];
         boardList.forEach(board => {
             let task_list = board.get("task_list");
-            let real_task_list = [];
 
             let promises = [];
 
@@ -449,7 +447,7 @@ function removeMember (username, project_id) {
                     success: function (res) {
                         let user_id = user.id;
                         let roles = project.get("roles");
-                        let user_role = roles[user_id];
+                        //let user_role = roles[user_id];
                         project.remove("members", user);
                         delete roles[user_id];
         

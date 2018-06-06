@@ -8,8 +8,7 @@ import {
     Modal,
     ModalHeader,
     ModalBody,
-    ModalFooter,
-    Container
+    ModalFooter
 } from "reactstrap";
 
 import styles from "../../styles/NewChannelModal.module.css";

@@ -24,7 +24,7 @@ import { ProjectCalendar } from "./project/Calendar";
 import AddMemberModal from "./project/AddMemberModal";
 import RemoveMemberModal from "./project/RemoveMemberModal";
 import LeaveProjectModal from "./project/LeaveProjectModal";
-
+/*
 import moment from "moment";
 
 import {
@@ -38,7 +38,7 @@ import {
     ModalBody,
     ModalFooter
 } from "reactstrap";
-
+*/
 import { Parse } from "parse";
 import ManagementButton from "./project/ManagementButton";
 import toastr from "./common/toastrConfig";
@@ -251,7 +251,7 @@ class ProjectOverviewPage extends React.Component {
 
     handleLeaveProject() {
         let currentUser =  Parse.User.current();
-        this.props.member_actions.removeMember(currentUser.get("username"), this.state.projectID);
+        this.props.actions.removeMember(currentUser.get("username"), this.state.projectID);
         this.toggleLeaveProjectModal();
         this.props.history.push("/");
         toastr.success("You have left the project.");

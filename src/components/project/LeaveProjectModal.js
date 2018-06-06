@@ -1,10 +1,6 @@
 import React from "react";
 import {
     Button,
-    Form,
-    FormGroup,
-    Input,
-    Label,
     Modal,
     ModalHeader,
     ModalBody,

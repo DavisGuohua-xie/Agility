@@ -8,8 +8,7 @@ import {
     Modal,
     ModalHeader,
     ModalBody,
-    ModalFooter,
-    Container
+    ModalFooter
 } from "reactstrap";
 
 import DatePicker from "react-datepicker";
@@ -30,7 +29,7 @@ const TaskDetail = props => {
         cardDeadline = moment();
     }
 
-    let cardAssignedTo = props.cardObject.assigned_to;
+    //let cardAssignedTo = props.cardObject.assigned_to;
     let cardPriority = props.cardObject.metadata.priority;
 
     return (

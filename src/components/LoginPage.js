@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 import { connect } from "react-redux";
 
-import { bindActionCreators } from "redux";
+//import { bindActionCreators } from "redux";
 
 import toastr from "./common/toastrConfig";
 import { withRouter, Redirect } from "react-router";
@@ -10,7 +10,7 @@ import { withRouter, Redirect } from "react-router";
 import { login, register } from "../actions/authActions";
 import {resetPassword} from '../actions/accountActions'
 
-import {UserModel} from '../models/UserModel'
+//import {UserModel} from '../models/UserModel'
 
 import LoginForm1 from "./login/LoginForm1";
 

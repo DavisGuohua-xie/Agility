@@ -2,7 +2,7 @@ import Parse from "parse";
 
 //Notification levels
 let NEVER = 0;
-let DAILY = 1;
+//let DAILY = 1;
 let HOURLY = 2;
 
 //User member fields/keys
@@ -210,7 +210,7 @@ export class UserModel {
             //Change to ProjectModel.ID
             var currProjectId = currProject.get(ID);
             var projectRemoveId = project.get(ID);
-            return currProjectId != projectRemoveId;
+            return currProjectId !== projectRemoveId;
         });
 
         this.user.set(PROJECTS, projects);
@@ -227,11 +227,11 @@ export class UserModel {
     }
 
     saveData(pfobject, successHandler, errorHandler) {
-        if (successHandler == null || successHandler == undefined) {
+        if (successHandler === null || successHandler === undefined) {
             successHandler = this.defaultSuccessHandler;
         }
 
-        if (errorHandler == null || errorHandler == undefined) {
+        if (errorHandler === null || errorHandler === undefined) {
             errorHandler = this.defaultErrorHandler;
         }
 

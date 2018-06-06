@@ -5,7 +5,6 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withRouter } from "react-router";
 import { taskActions } from "../../actions/taskActions";
-import v4 from "uuid";
 
 class ProjectTaskComponent extends React.Component {
     constructor(props) {
@@ -99,7 +98,7 @@ class ProjectTaskComponent extends React.Component {
                     description: this.state.cardObject.description,
                     metadata: {
                         ...this.state.cardObject.metadata,
-                        priority: parseInt(e.target.value)
+                        priority: parseInt(e.target.value, 10)
                     },
                     laneId: this.state.laneId,
                     id: this.state.cardId
@@ -176,7 +175,7 @@ class ProjectTaskComponent extends React.Component {
         e.preventDefault();
         if (this.state.newBoard === "") return;
 
-        let boards = this.state.tasksData.lanes;
+        //let boards = this.state.tasksData.lanes;
         let boardID = this.state.boardID;
 
         let newBoard = { title: this.state.newBoard, is_done: this.state.is_done };
