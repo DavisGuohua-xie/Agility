@@ -21,7 +21,7 @@ export const StickyNote = props => {
             break;
     }
 
-    console.log(color);
+    //console.log(color);
     return (
         <div className={`${styles.container} ${color}`}>
             <header

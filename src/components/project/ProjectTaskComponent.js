@@ -19,7 +19,7 @@ class ProjectTaskComponent extends React.Component {
             editing: false,
             showCardModal: false,
             is_done: false,
-            cardObject: {}
+            cardObject: { metadata: {} }
         };
 
         this.handleLaneClick = this.handleLaneClick.bind(this);
@@ -30,9 +30,11 @@ class ProjectTaskComponent extends React.Component {
         this.handleBoardNameChange = this.handleBoardNameChange.bind(this);
         this.toggleEditModal = this.toggleEditModal.bind(this);
         this.handleSaveBoard = this.handleSaveBoard.bind(this);
+        this.handleSaveTask = this.handleSaveTask.bind(this);
         this.handleCardClick = this.handleCardClick.bind(this);
         this.handleBoardTypeChange = this.handleBoardTypeChange.bind(this);
         this.toggleEditCardModal = this.toggleEditCardModal.bind(this);
+        this.handleCardInfoChange = this.handleCardInfoChange.bind(this);
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -41,6 +43,7 @@ class ProjectTaskComponent extends React.Component {
             nextProps.taskList !== prevState.tasksData
         ) {
             console.log("updating lanes in projecttaskcomponent");
+            console.log(nextProps.taskList.lanes);
             if (prevState.eventBus && nextProps.taskList !== prevState.tasksData)
                 prevState.eventBus.publish({
                     type: "UPDATE_LANES",
@@ -51,6 +54,7 @@ class ProjectTaskComponent extends React.Component {
         return null;
     }
 
+    /************EVERYTHING ABOUT TASKS***********************/
     handleCardClick(cardId, metadata, laneId) {
         console.log(cardId);
 
@@ -61,6 +65,8 @@ class ProjectTaskComponent extends React.Component {
         console.log(cardObj);
 
         this.setState({
+            cardId: cardId,
+            cardBoardId: laneId,
             cardObject: cardObj
         });
 
@@ -68,9 +74,65 @@ class ProjectTaskComponent extends React.Component {
     }
 
     handleCardInfoChange(e) {
-        this.setState({
-            cardObject: { [e.target.name]: e.target.value }
-        });
+        if (!e.target) {
+            console.log(e.valueOf());
+            this.setState({
+                cardObject: {
+                    title: this.state.cardObject.title,
+                    description: this.state.cardObject.description,
+                    metadata: { ...this.state.cardObject.metadata, due_date: e.valueOf() },
+                    laneId: this.state.laneId,
+                    id: this.state.cardId
+                }
+            });
+            return;
+        }
+        // if(e.target.name === "taskDeadline") {
+        //     this.setState({
+        //         cardObject: { due_date: e.target.}
+        //     })
+        // }
+        if (e.target.name === "priority") {
+            this.setState({
+                cardObject: {
+                    title: this.state.cardObject.title,
+                    description: this.state.cardObject.description,
+                    metadata: {
+                        ...this.state.cardObject.metadata,
+                        priority: parseInt(e.target.value)
+                    },
+                    laneId: this.state.laneId,
+                    id: this.state.cardId
+                }
+            });
+            return;
+        }
+
+        if (e.target.name === "description") {
+            this.setState({
+                cardObject: {
+                    description: e.target.value,
+                    metadata: this.state.cardObject.metadata,
+                    title: this.state.cardObject.title,
+                    laneId: this.state.laneId,
+                    id: this.state.cardId
+                }
+            });
+            return;
+        }
+
+        if (e.target.name === "title") {
+            this.setState({
+                cardObject: {
+                    title: e.target.value,
+                    metadata: this.state.cardObject.metadata,
+                    description: this.state.cardObject.description,
+                    laneId: this.state.cardObject.laneId,
+                    id: this.state.cardObject.cardId
+                }
+            });
+            return;
+        }
     }
 
     toggleEditCardModal() {
@@ -80,6 +142,17 @@ class ProjectTaskComponent extends React.Component {
     setEventBus = handle => {
         this.setState({ eventBus: handle });
     };
+
+    handleSaveTask(e) {
+        e.preventDefault();
+        this.props.actions.updateTask(
+            this.state.cardId,
+            this.state.cardBoardId,
+            this.state.cardObject
+        );
+
+        this.toggleEditCardModal();
+    }
 
     /***********************EVERYTHING ABOUT BOARDS***************************/
 
@@ -170,6 +243,10 @@ class ProjectTaskComponent extends React.Component {
                 onBoardTypeChange={this.handleBoardTypeChange}
                 editBoardType={this.state.is_done}
                 cardObject={this.state.cardObject}
+                onCardTextInputChange={this.handleCardInfoChange}
+                onTaskDeadlineChange={this.handleCardInfoChange}
+                onPriorityChange={this.handleCardInfoChange}
+                saveTask={this.handleSaveTask}
             />
         );
     }

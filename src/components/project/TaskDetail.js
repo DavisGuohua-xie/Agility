@@ -17,19 +17,21 @@ import moment from "moment";
 import "react-datepicker/dist/react-datepicker-cssmodules.css";
 
 const TaskDetail = props => {
+
+    console.log(props.cardObject);
     let cardTitle = props.cardObject.title;
     let cardDescription = props.cardObject.description;
     let cardDeadline;
 
     try {
-        cardDeadline = new Date(props.cardObject.due_date);
-        if (!cardDeadline instanceof Date) throw "error";
+        cardDeadline = moment(props.cardObject.metadata.due_date);
+        if (!props.cardObject.metadata.due_date) throw "error";
     } catch (err) {
-        cardDeadline = undefined;
+        cardDeadline = moment();
     }
 
     let cardAssignedTo = props.cardObject.assigned_to;
-    let cardPriority = props.cardObject.priority;
+    let cardPriority = props.cardObject.metadata.priority;
 
     return (
         <Modal isOpen={props.modalOpen} toggle={props.onToggleModal}>
@@ -40,7 +42,7 @@ const TaskDetail = props => {
                         <Label for="taskName">Task Name</Label>
                         <Input
                             type="text"
-                            name="taskName"
+                            name="title"
                             id="taskName"
                             placeholder="Enter task name"
                             onChange={props.onTextInputChange}
@@ -49,7 +51,7 @@ const TaskDetail = props => {
                         <Label for="taskDescription">Task Description</Label>
                         <Input
                             type="text"
-                            name="taskDescription"
+                            name="description"
                             id="taskDescription"
                             placeholder="Enter task description"
                             onChange={props.onTextInputChange}
@@ -57,17 +59,18 @@ const TaskDetail = props => {
                         />
                         <Label for="deadline">Deadline</Label>
                         <DatePicker
-                            name="deadline"
+                            name="due_date"
                             id="deadline"
-                            selected={moment()}
+                            value={`${moment(cardDeadline).format("MM/DD/YYYY")}`}
+                            selected={moment(cardDeadline)}
                             onChange={props.onTaskDeadlineChange}
                         />
                         <Label for="taskPriority">Priority</Label>
                         <Input
                             type="select"
-                            name="taskPriority"
+                            name="priority"
                             id="taskPriority"
-                            defaultValue="0"
+                            value={cardPriority}
                             onChange={props.onPriorityChange}
                         >
                             <option value="0">Low</option>
@@ -82,7 +85,7 @@ const TaskDetail = props => {
                 <Button color="secondary" onClick={props.onToggleModal}>
                     Cancel
                 </Button>
-                <Button color="primary" onClick={props.onToggleModal}>
+                <Button color="primary" onClick={props.saveTask}>
                     Save Task
                 </Button>
             </ModalFooter>

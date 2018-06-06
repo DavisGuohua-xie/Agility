@@ -34,6 +34,7 @@ const CustomLaneHeader = props => {
 };
 
 export const ProjectTasks = props => {
+    console.log(props.data);
     return (
         <div style={{ height: "calc(100% - 40px)" }}>
             <Container fluid style={{ height: "100%", padding: 0 }}>
@@ -66,6 +67,7 @@ export const ProjectTasks = props => {
                 onTextInputChange={props.onCardTextInputChange}
                 onTaskDeadlineChange={props.onTaskDeadlineChange}
                 onPriorityChange={props.onPriorityChange}
+                saveTask={props.saveTask}
             />
 
             <Modal

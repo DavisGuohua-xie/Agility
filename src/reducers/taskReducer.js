@@ -70,7 +70,6 @@ export default function taskReducer(state = initialState, action) {
                 state.board_data.filter(b => b.id === action.req.board_id)[0]
             );
 
-
             return state.merge({
                 board_data: [
                     ...state.board_data.filter(b => b.id !== action.req.board_id),
@@ -78,6 +77,31 @@ export default function taskReducer(state = initialState, action) {
                         ...editingBoard,
                         title: action.req.board.title,
                         is_done: action.req.board.is_done
+                    }
+                ]
+            });
+
+        case types.UPDATE_TASK_SUCCESS:
+            let board = Object.assign(
+                {},
+                state.board_data.filter(b => b.id === action.req.board_id)[0]
+            );
+
+            console.log(board);
+            console.log(action.req.task);
+
+            return state.merge({
+                board_data: [
+                    ...state.board_data.filter(b => b.id !== action.req.board_id),
+                    {
+                        ...board,
+                        cards: [
+                            ...board.cards.filter(task => task.id !== action.req.task_id),
+                            Object.assign({}, action.req.task, {
+                                id: action.req.task_id,
+                                laneId: action.req.board_id
+                            })
+                        ]
                     }
                 ]
             });

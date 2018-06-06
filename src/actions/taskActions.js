@@ -20,6 +20,7 @@ function createBoard(title, project_id, eventBus) {
         let board = new Board();
 
         board.set("title", title);
+        //TODO: board.set("is_done", false);
         board.set("task_list", []);
 
         board
@@ -154,31 +155,37 @@ function updateBoard(boardId, newBoard) {
     }
 }
 
-function updateTask(taskId, newTask) {
+function updateTask(taskId, boardId, newTask) {
     return dispatch => {
         dispatch(ajaxActions.ajaxBegin());
+        console.log(taskId);
+        console.log(boardId);
+        console.log(newTask);
         let Task = Parse.Object.extend("Task");
         let query = new Parse.Query(Task);
         query.equalTo("objectId", taskId);
         query.first().then(task => {
             task.set("title", newTask.title);
-            task.set("content", newTask.content);
-            task.set("due_date", newTask.due_date);
-            task.set("priority", newTask.priority);
-            task.set("completion_date", newTask.completion_date);
+            task.set("content", newTask.description);
+            task.set("due_date", newTask.metadata.due_date);
+            task.set("priority", newTask.metadata.priority);
+            task.set("completion_date", newTask.metadata.completion_date);
             task
                 .save()
                 .then(task => {
-                    dispatch(success(newTask));
+                    console.log("updated task");
+                    dispatch(success(newTask, taskId, boardId));
                 })
                 .catch(error => {
+                    console.log("failed");
+                    console.log(error);
                     dispatch(failure(error));
                 });
         });
     };
 
-    function success(req) {
-        return { type: types.UPDATE_TASK_SUCCESS, board: req };
+    function success(newTask, taskId, boardId) {
+        return { type: types.UPDATE_TASK_SUCCESS, req: {task: newTask, task_id: taskId, board_id: boardId} };
     }
     function failure(req) {
         return { type: types.UPDATE_TASK_FAILURE, req };
