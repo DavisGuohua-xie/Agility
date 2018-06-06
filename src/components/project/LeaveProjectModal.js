@@ -29,7 +29,7 @@ const LeaveProjectModal = props => {
                             Cancel
                         </Button>
                         <Button color="primary" onClick={props.handleLeaveProject}>
-                            Remove
+                            Leave
                         </Button>
                     </ModalFooter>
                 </Modal>
