@@ -364,13 +364,7 @@ class ProjectOverviewPage extends React.Component {
             case "calendar":
                 mainContent = (
                     <ProjectCalendar
-                        events={[
-                            {
-                                startDate: new Date(),
-                                endDate: new Date(moment().add(0, "days")),
-                                title: "Some title"
-                            }
-                        ]}
+                        events={[...this.props.board_data.map(board => board.cards)]}
                     />
                 );
                 break;
