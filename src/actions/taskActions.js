@@ -63,9 +63,19 @@ function createTask(card, board_id, username) {
         let Task = Parse.Object.extend("Task");
         let task = new Task();
 
+        let currTime = new Date();
+        let default_due = new Date();
+        default_due.setTime(default_due.getTime() + 7 * 86400000);
+
+        console.log(currTime.getTime());
+        console.log(default_due.getTime() - currTime.getTime());
+
         task.set("title", card.title);
         task.set("assigned_to", username);
         task.set("content", card.description);
+        task.set("started_at", currTime.getTime());
+        task.set("due_date", default_due.getTime());
+        task.set("priority", 1);
         // Set content ??
         // Set due date
         // Set completion date, sets to now by default, what to change to?
@@ -101,6 +111,7 @@ function createTask(card, board_id, username) {
             })
             .catch(error => {
                 dispatch(failure(error));
+                console.log(error);
             });
     };
 
@@ -142,6 +153,7 @@ function updateBoard(boardId, newBoard) {
         return { type: types.UPDATE_BOARD_FAILURE, req };
     }
 }
+
 function updateTask(taskId, newTask) {
     return dispatch => {
         dispatch(ajaxActions.ajaxBegin());
