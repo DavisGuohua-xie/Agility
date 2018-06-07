@@ -381,69 +381,65 @@ function getTaskList(boards) {
     });
 }
 
-function addMember(username, project_id, user_role) {
+function addMember (username, project_id, user_role) {
     return dispatch => {
         // call create member request
-        dispatch(request());
+        dispatch(request())
         let query = new Parse.Query(Parse.User);
         query.equalTo("username", username);
-        query
-            .first()
-            .then(user => {
-                let query = new Parse.Query(Parse.Object.extend("Project"));
-                query.equalTo("objectId", project_id);
-                query.first().then(project => {
-                    user.addUnique("projects", project);
-                    user
-                        .save(null, {
+        query.first().then(user => {
+            let query = new Parse.Query(Parse.Object.extend("Project"));
+            query.equalTo("objectId", project_id);
+            query.first().then(project => {
+                user.addUnique("projects", project);
+                user.save(null, {
+                    useMasterKey: true,
+                    success: function (res) {
+                        project.addUnique("members", user);
+                        let user_id = user.id;
+                        let roles = project.get("roles");
+                        roles[user_id] = user_role;
+                        project.set("roles", roles);
+                        project.save(null, {
                             useMasterKey: true,
-                            success: function(res) {
-                                project.add("members", user);
-                                let user_id = user.id;
-                                let roles = project.get("roles");
-                                roles[user_id] = user_role;
-                                project.set("roles", roles);
-                                project.save(null, {
-                                    useMasterKey: true,
-                                    success: function(res) {
-                                        let newMember = {
-                                            fname: user.get("first_name"),
-                                            lname: user.get("last_name"),
-                                            member_id: user.id,
-                                            username: username
-                                        };
-                                        dispatch(success(newMember));
-                                    },
-                                    error: function(res, err) {
-                                        console.log(err);
-                                        dispatch(failure());
-                                    }
-                                });
+                            success: function (res) {
+                                let newMember = {
+                                    fname: user.get("first_name"),
+                                    lname: user.get("last_name"),
+                                    member_id: user.id,
+                                    username: username
+                                }
+                                dispatch(success(newMember));
                             },
-                            error: function(res, err) {
+                            error: function (res, err) {
+                                console.log(err);
                                 dispatch(failure());
                             }
                         })
-                        .catch(error => {
-                            console.log(error);
-                            dispatch(failure);
-                        });
-                });
+                    },
+                    error: function (res, err) {
+                        dispatch(failure());
+                    }
+                }).catch(error => {
+                    console.log(error);
+                    dispatch(failure);
+                })
+
             })
-            .catch(error => {
-                console.log(error);
-                dispatch(failure());
-            });
-    };
+        }).catch( error => {
+            console.log(error);
+            dispatch(failure());
+        })
+    }
 
     function request() {
-        return { type: types.ADD_MEMBER_REQUEST };
+        return { type: types.ADD_MEMBER_REQUEST};
     }
     function success(newMember) {
-        return { type: types.ADD_MEMBER_SUCCESS, payload: newMember };
+        return { type: types.ADD_MEMBER_SUCCESS, payload: newMember};
     }
     function failure() {
-        return { type: types.ADD_MEMBER_FAILURE };
+        return { type: types.ADD_MEMBER_FAILURE};
     }
 }
 
