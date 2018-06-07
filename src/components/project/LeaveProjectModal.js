@@ -1,10 +1,6 @@
 import React from "react";
 import {
     Button,
-    Form,
-    FormGroup,
-    Input,
-    Label,
     Modal,
     ModalHeader,
     ModalBody,
@@ -29,7 +25,7 @@ const LeaveProjectModal = props => {
                             Cancel
                         </Button>
                         <Button color="primary" onClick={props.handleLeaveProject}>
-                            Remove
+                            Leave
                         </Button>
                     </ModalFooter>
                 </Modal>

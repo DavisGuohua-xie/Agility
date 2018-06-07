@@ -1,5 +1,5 @@
 import * as types from "./actionTypes";
-import * as ajaxActions from "./ajaxActions";
+//import * as ajaxActions from "./ajaxActions";
 
 import Chatkit from "@pusher/chatkit";
 import toastr from "../components/common/toastrConfig";
@@ -15,7 +15,7 @@ export const chatActions = {
     logoff
 };
 
-const MAX_MESSAGES_RETRIEVE = 100;
+//const MAX_MESSAGES_RETRIEVE = 100;
 
 let chatManager = null;
 let currUser = null;

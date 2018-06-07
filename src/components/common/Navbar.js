@@ -52,7 +52,7 @@ class NavBar extends React.Component {
         console.log(projName);
         return (
             <div>
-                <Navbar color="dark" dark expand="md" style={{ zIndex: zind }}>
+                <Navbar color="light" expand="md" style={{ zIndex: zind }} className={styles.mainNav}>
                     <Link to="/" className={`${styles.navbarBrand} navbar-brand`}>
                         Agility
                     </Link>

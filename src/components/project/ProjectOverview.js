@@ -1,6 +1,6 @@
 import React from "react";
 import { Line } from "react-chartjs-2";
-import { Row, Col, Container } from "reactstrap";
+import { Row, Container } from "reactstrap";
 
 import styles from "../../styles/ProjectOverview.module.css";
 import BoardDetail from "./BoardDetail";

@@ -1,6 +1,6 @@
 import * as types from "../actions/actionTypes";
 import initialState from "./initialState";
-let Immutable = require("seamless-immutable").static;
+//let Immutable = require("seamless-immutable").static;
 
 export default function taskReducer(state = initialState, action) {
     let board;
@@ -51,7 +51,7 @@ export default function taskReducer(state = initialState, action) {
             });
 
         case types.GET_PROJECT_SUCCESS: // save boards data here
-            let newState;
+            //let newState;
 
             //console.log(action.project_data.boards[0].cards);
 

@@ -335,7 +335,6 @@ function getMembersFromId(member_ids) {
 }
 
 function getTaskList(boards) {
-    let res = [];
     let boardQueries = [];
     boards.forEach(board => {
         let Board = Parse.Object.extend("Board");
@@ -352,7 +351,6 @@ function getTaskList(boards) {
         let taskListPromises = [];
         boardList.forEach(board => {
             let task_list = board.get("task_list");
-            let real_task_list = [];
 
             let promises = [];
 
@@ -383,7 +381,6 @@ function addMember (username, project_id, user_role) {
         let query = new Parse.Query(Parse.User);
         query.equalTo("username", username);
         query.first().then(user => {
-            console.log("IN ADD MEMBER ACTION")
             let query = new Parse.Query(Parse.Object.extend("Project"));
             query.equalTo("objectId", project_id);
             query.first().then(project => {
@@ -394,11 +391,8 @@ function addMember (username, project_id, user_role) {
                         project.add("members", user);
                         let user_id = user.id;
                         let roles = project.get("roles");
-                        console.log("IN ADD MEMBER ACTION")
                         roles[user_id] = user_role;
-                        console.log("IN ADD MEMBER ACTION")
                         project.set("roles", roles);
-                        console.log("IN ADD MEMBER ACTION")
                         project.save(null, {
                             useMasterKey: true,
                             success: function (res) {
@@ -453,7 +447,7 @@ function removeMember (username, project_id) {
                     success: function (res) {
                         let user_id = user.id;
                         let roles = project.get("roles");
-                        let user_role = roles[user_id];
+                        //let user_role = roles[user_id];
                         project.remove("members", user);
                         delete roles[user_id];
         
