@@ -12,6 +12,7 @@
 
 .navbarBrand {
     color: black;
+    font-weight: 700;
 }
 
 .navbarBrand:hover {
@@ -20,5 +21,23 @@
 }
 
 .mainNav {
-    background-image: url("../img/navbar_img.png") ;
+    background-image: url("../img/navbar-white.png");
+    box-shadow: 0 4px 2px -2px lightgray;
+}
+
+.mainNav::after {
+    opacity: 0.5;
+}
+
+.chatIcon:hover {
+    color: rgb(50, 50, 50);
+}
+
+.name {
+    color: black;
+    padding: 0;
+}
+
+.nameInProject {
+    margin-top: 5px;
 }

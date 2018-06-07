@@ -8,7 +8,7 @@ import toastr from "./common/toastrConfig";
 import { withRouter, Redirect } from "react-router";
 
 import { login, register } from "../actions/authActions";
-import {resetPassword} from '../actions/accountActions'
+import { resetPassword } from "../actions/accountActions";
 
 //import {UserModel} from '../models/UserModel'
 
@@ -28,7 +28,7 @@ export default class LoginPage extends Component {
         };
 
         this.handleLogin = this.handleLogin.bind(this);
-        this.handlePasswordReset = this.handlePasswordReset.bind(this)
+        this.handlePasswordReset = this.handlePasswordReset.bind(this);
         this.handleCreateAccount = this.handleCreateAccount.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleToggleForgot = this.handleToggleForgot.bind(this);
@@ -42,8 +42,9 @@ export default class LoginPage extends Component {
         let password = this.state.password;
 
         if (username && password) {
-            this.props._login(username, password,
-              ()=>{console.log("success");});
+            this.props._login(username, password, () => {
+                console.log("success");
+            });
         } else {
             toastr.error("Please enter a username and password!", "Login failed");
         }
@@ -59,24 +60,19 @@ export default class LoginPage extends Component {
         let lname = this.state.lname;
 
         if (username && password && email && fname && lname) {
-            this.props._register(
-                username,
-                password,
-                email,
-                fname,
-                lname,
-                ()=>{this.setState({
-                  loggedIn: true
-                })}
-            );
+            this.props._register(username, password, email, fname, lname, () => {
+                this.setState({
+                    loggedIn: true
+                });
+            });
         } else {
             toastr.error("Enter all required information!", "Registration failed");
         }
     }
 
-    handlePasswordReset(){
-      let email =  this.state.recoverUsername
-      this.props._resetPassword(email)
+    handlePasswordReset() {
+        let email = this.state.recoverUsername;
+        this.props._resetPassword(email);
     }
 
     handleInputChange(e) {
@@ -98,34 +94,35 @@ export default class LoginPage extends Component {
     }
 
     render() {
-      return !this.props.logged_in ?
-        (<LoginForm1
-            onPasswordReset={this.handlePasswordReset}
-            onInputChange={this.handleInputChange}
-            onLogin={this.handleLogin}
-            onCreateAccount={this.handleCreateAccount}
-            onToggleForgot={this.handleToggleForgot}
-            isOpenForgot={this.state.isOpenForgot}
-            onToggleReg={this.handleToggleReg}
-            isOpenReg={this.state.isOpenReg}
-            ajaxRequested={this.props.logging_in}
-        />) : <Redirect to="/"/>;
-  }
+        return !this.props.logged_in ? (
+            <LoginForm1
+                onPasswordReset={this.handlePasswordReset}
+                onInputChange={this.handleInputChange}
+                onLogin={this.handleLogin}
+                onCreateAccount={this.handleCreateAccount}
+                onToggleForgot={this.handleToggleForgot}
+                isOpenForgot={this.state.isOpenForgot}
+                onToggleReg={this.handleToggleReg}
+                isOpenReg={this.state.isOpenReg}
+                ajaxRequested={this.props.logging_in}
+            />
+        ) : (
+            <Redirect to="/" />
+        );
+    }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        _login(username, password, success){
-          dispatch(login(username, password, success))
-        }
-        ,_register(username, pass,email, fname, lname, success){
-          dispatch(register(fname, lname, username, email, pass, success))
+        _login(username, password, success) {
+            dispatch(login(username, password, success));
         },
-        _resetPassword(email){
-          dispatch(resetPassword(email))
+        _register(username, pass, email, fname, lname, success) {
+            dispatch(register(fname, lname, username, email, pass, success));
+        },
+        _resetPassword(email) {
+            dispatch(resetPassword(email));
         }
-
-
     };
 }
 

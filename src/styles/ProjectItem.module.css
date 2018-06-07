@@ -16,9 +16,9 @@
 	-webkit-transition: all 0.3s;
 	-moz-transition: all 0.3s;
 	transition: all 0.3s;
-	background: #226FBE;
-	color: #fff;
-	box-shadow: 0 6px rgb(21, 71, 121);
+	background: #2C8589;
+	color: whitesmoke;
+	box-shadow: 0 6px #003E41;
 	-webkit-transition: none;
 	-moz-transition: none;
 	transition: none;
@@ -47,12 +47,12 @@
 }
 
 .projectItem:hover {
-	box-shadow: 0 4px rgb(21, 71, 121);
+	box-shadow: 0 4px #003E41;
 	top: 2px;
 }
 
 .projectItem:active {
-	box-shadow: 0 0 rgb(21, 71, 121);
+	box-shadow: 0 0 #003E41;
 	top: 6px;
 }
 
