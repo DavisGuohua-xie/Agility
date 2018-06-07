@@ -49,7 +49,7 @@ export const StickyNote = props => {
                     {new Date(props.metadata.due_date).toLocaleDateString()}
                 </div>
             </header>
-            <div style={{ fontSize: 20, color: "#BD3B36" }}>
+            <div style={{ fontSize: 16, color: "#BD3B36" }}>
                 <div style={{ padding: "10px 10px",whiteSpace: "pre-wrap",
                         wordWrap: "break-word" }}>
                     <i>{props.description}</i>
