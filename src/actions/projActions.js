@@ -388,7 +388,7 @@ function addMember (username, project_id, user_role) {
                 user.save(null, {
                     useMasterKey: true,
                     success: function (res) {
-                        project.add("members", user);
+                        project.addUnique("members", user);
                         let user_id = user.id;
                         let roles = project.get("roles");
                         roles[user_id] = user_role;

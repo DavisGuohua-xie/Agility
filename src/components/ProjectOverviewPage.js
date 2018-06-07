@@ -154,22 +154,36 @@ class ProjectOverviewPage extends React.Component {
         )
             toastr.error("Invalid role entered.");
         else {
-            this.toggleAddMemberModal();
             let project_id = this.state.projectID;
             let username = this.state.newUserName;
-            let new_role = this.state.newRole;
-            if (this.hasAuthority(username, project_id) === false) toastr.error("You don't have the authority to add members!");
-            else {
-                let query = new Parse.Query(Parse.User);
-                query.equalTo("username", username);
-                query.first().then(user => {
-                if (user === undefined) toastr.error("This user doesn't exist!");
-                else {
-                    let currentUser = Parse.User.current();
-                    this.props.actions.addMember(username, project_id, new_role);
-                    //this.toggleAddMemberModal();
+            if (username === Parse.User.current().get("username")) {
+                toastr.error("You can not add yourself!");
+                return;
+            }
+            let teammates = this.props.project_data.members;
+            let duplicate = false;
+            teammates.forEach(element => {
+                if (element.username === username) {
+                    toastr.error("This user is already in the team!");
+                    duplicate = true;
                 }
             });
+            if (!duplicate) {
+                let new_role = this.state.newRole;
+                let members = this.props.project_data.members;
+                if (this.hasAuthority(username, project_id) === false) toastr.error("You don't have the authority to add members!");
+                else {
+                    let query = new Parse.Query(Parse.User);
+                    query.equalTo("username", username);
+                    query.first().then(user => {
+                        if (user === undefined) toastr.error("This user doesn't exist!");
+                        else {
+                            let currentUser = Parse.User.current();
+                            this.props.actions.addMember(username, project_id, new_role);
+                            this.toggleAddMemberModal();
+                        }
+                    });
+                }
             }
         }
     }

@@ -37,7 +37,7 @@ const AddMemberModal = props => {
                                     type="text"
                                     name="role"
                                     id="role"
-                                    placeholder="Software Architect, Algorithm Specialist, etc."
+                                    placeholder="CEO, TeamMember, TeamProject, or Customer"
                                     onChange={props.onNewRole}
                                 />
                             </FormGroup>
