@@ -154,28 +154,38 @@ class ProjectOverviewPage extends React.Component {
         )
             toastr.error("Invalid role entered.");
         else {
-            this.toggleAddMemberModal();
             let project_id = this.state.projectID;
             let username = this.state.newUserName;
-            let new_role = this.state.newRole;
-            if (this.hasAuthority(username, project_id) === false)
-                toastr.error("You don't have the authority to add members!");
-            else {
-                let query = new Parse.Query(Parse.User);
-                query.equalTo("username", username);
-                query.first().then(user => {
-                    if (user === undefined) toastr.error("This user doesn't exist!");
-                    else {
-                        var addRequest =
-                            this.props.addRequest === undefined ? 0 : this.props.addRequest;
-                        this.props.actions.addMember(username, project_id, new_role);
-                        console.log(addRequest);
-                        //this.toggleAddMemberModal();
-                    }
-                });
+            if (username === Parse.User.current().get("username")) {
+                toastr.error("You can not add yourself!");
+                return;
+            }
+            let teammates = this.props.project_data.members;
+            let duplicate = false;
+            teammates.forEach(element => {
+                if (element.username === username) {
+                    toastr.error("This user is already in the team!");
+                    duplicate = true;
+                }
+            });
+            if (!duplicate) {
+                let new_role = this.state.newRole;
+                let members = this.props.project_data.members;
+                if (this.hasAuthority(username, project_id) === false) toastr.error("You don't have the authority to add members!");
+                else {
+                    let query = new Parse.Query(Parse.User);
+                    query.equalTo("username", username);
+                    query.first().then(user => {
+                        if (user === undefined) toastr.error("This user doesn't exist!");
+                        else {
+                            let currentUser = Parse.User.current();
+                            this.props.actions.addMember(username, project_id, new_role);
+                            this.toggleAddMemberModal();
+                        }
+                    });
+                }
             }
         }
-        console.log(this.props.feedback);
     }
 
     handleNewRole(e) {
@@ -206,23 +216,9 @@ class ProjectOverviewPage extends React.Component {
             query.first().then(user => {
                 if (user === undefined) toastr.error("This user doesn't exist!");
                 else {
-                    var user_valid = false;
-                    let members = this.props.project_data.members;
-                    for (var i = 0; i < members.length; i++) {
-                        console.log(members[i]);
-                        if (members[i].username === username) {
-                            user_valid = true;
-                            break;
-                        }
-                    }
-                    if (!user_valid) toastr.error("This user is not a member of this project!");
-                    else {
-                        this.toggleRemoveMemberModal();
-                        var removeRequest =
-                            this.props.removeRequest === undefined ? 0 : this.props.removeRequest;
-                        this.props.actions.removeMember(username, project_id);
-                        console.log(removeRequest);
-                    }
+                    this.toggleRemoveMemberModal();
+                    let currentUser = Parse.User.current();
+                    this.props.actions.removeMember(username, project_id);
                 }
             });
         }
@@ -236,9 +232,7 @@ class ProjectOverviewPage extends React.Component {
             query.equalTo("objectId", project_id);
             query.first().then(project => {
                 let roles = project.get("roles");
-                console.log(roles[user.id]);
                 if (roles[user.id] === "ProjectManager" || roles[user.id] === "CEO") {
-                    console.log("here");
                     return true;
                 } else return false;
             });
@@ -255,7 +249,7 @@ class ProjectOverviewPage extends React.Component {
         let currentUser = Parse.User.current();
         this.props.actions.removeMember(currentUser.get("username"), this.state.projectID);
         this.toggleLeaveProjectModal();
-        this.props.history.push("/");
+        //this.props.history.push("/");
         toastr.success("You have left the project.");
     }
 
@@ -271,7 +265,6 @@ class ProjectOverviewPage extends React.Component {
         // TODO: generate list of project members for DM-ing
 
         var members = this.props.project_data === undefined ? [] : this.props.project_data.members;
-
         return (
             <ul className={styles.sidebarUL}>
                 {members.map((person, index) => (
