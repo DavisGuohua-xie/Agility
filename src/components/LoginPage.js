@@ -42,9 +42,7 @@ export default class LoginPage extends Component {
         let password = this.state.password;
 
         if (username && password) {
-            this.props._login(username, password, () => {
-                console.log("success");
-            });
+            this.props._login(username, password);
         } else {
             toastr.error("Please enter a username and password!", "Login failed");
         }
@@ -60,11 +58,7 @@ export default class LoginPage extends Component {
         let lname = this.state.lname;
 
         if (username && password && email && fname && lname) {
-            this.props._register(username, password, email, fname, lname, () => {
-                this.setState({
-                    loggedIn: true
-                });
-            });
+            this.props._register(username, password, email, fname, lname);
         } else {
             toastr.error("Enter all required information!", "Registration failed");
         }
