@@ -410,7 +410,7 @@ class ProjectOverviewPage extends React.Component {
                         sidebar: {
                             backgroundColor: "#ECECEA", /*"linear-gradient(rgba(224, 254, 255, 1), rgba(255,255,255,0))"*/
                             width: 200,
-                            zIndex: 99999
+                            zIndex: 999
                         }
                     }}
                 >
