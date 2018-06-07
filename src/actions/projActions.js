@@ -180,7 +180,7 @@ function getProject(project_id) {
                                 let roles = project.get("roles");
                                 let member_role;
 
-                                switch(roles[member_id]) {
+                                switch(roles[member.id]) {
                                     case "ProjectManager":
                                         member_role = "Project Manager";
                                         break;
@@ -191,7 +191,7 @@ function getProject(project_id) {
                                         member_role = "CEO";
                                         break;
                                     default:
-                                        member_role = "Project Member";
+                                        member_role = "Member";
                                         break;
                                 }
 
