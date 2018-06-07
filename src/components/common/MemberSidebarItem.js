@@ -17,8 +17,12 @@ const MemberSidebarItem = props => {
             <span className={styles.memberName} data-username={props.username}>
                 {props.fname} {props.lname}
             </span>
+            <span>
+                <br />
+                <i>{props.role}</i>
+            </span>
         </li>
     );
-};
+}
 
 export default MemberSidebarItem;
