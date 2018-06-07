@@ -8,8 +8,7 @@ import {
     Modal,
     ModalHeader,
     ModalBody,
-    ModalFooter,
-    Container
+    ModalFooter
 } from "reactstrap";
 
 import DatePicker from "react-datepicker";
@@ -30,7 +29,7 @@ const TaskDetail = props => {
         cardDeadline = moment();
     }
 
-    let cardAssignedTo = props.cardObject.assigned_to;
+    //let cardAssignedTo = props.cardObject.assigned_to;
     let cardPriority = props.cardObject.metadata.priority;
 
     return (
@@ -47,6 +46,7 @@ const TaskDetail = props => {
                             placeholder="Enter task name"
                             onChange={props.onTextInputChange}
                             value={cardTitle}
+                            style={{ marginBottom: 10 }}
                         />
                         <Label for="taskDescription">Task Description</Label>
                         <Input
@@ -56,6 +56,7 @@ const TaskDetail = props => {
                             placeholder="Enter task description"
                             onChange={props.onTextInputChange}
                             value={cardDescription}
+                            style={{ marginBottom: 10 }}
                         />
                         <Label for="deadline">Deadline</Label>
                         <DatePicker
@@ -64,6 +65,7 @@ const TaskDetail = props => {
                             value={`${moment(cardDeadline).format("MM/DD/YYYY")}`}
                             selected={moment(cardDeadline)}
                             onChange={props.onTaskDeadlineChange}
+                            className="form-control"
                         />
                         <Label for="taskPriority">Priority</Label>
                         <Input

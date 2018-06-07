@@ -9,13 +9,13 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withRouter, Redirect } from "react-router";
 import { projActions } from "../actions/projActions";
-import { Parse } from "parse";
-import { UserModel } from "../models/UserModel";
+//import { Parse } from "parse";
+//import { UserModel } from "../models/UserModel";
 
 import { NavBar } from "./common/Navbar";
 import { ProjectListComponent } from "./home/ProjectListComponent";
 
-import v4 from "uuid";
+//import v4 from "uuid";
 
 class Homepage extends React.Component {
     constructor(props) {
@@ -34,7 +34,7 @@ class Homepage extends React.Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (props.projects != state.projects) return { projects: props.projects };
+        if (props.projects !== state.projects) return { projects: props.projects };
         return null;
     }
 

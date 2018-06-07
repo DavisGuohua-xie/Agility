@@ -7,8 +7,6 @@ import { accountActions } from "../actions/accountActions";
 import { NavBar } from "./common/Navbar";
 import SettingsLayout from "./settings/SettingsLayout";
 import Parse from "parse";
-import {UserModel} from "../models/UserModel";
-import { consolidateStreamedStyles } from "styled-components";
 import toastr from "../components/common/toastrConfig";
 
 class SettingsPage extends React.Component {
@@ -71,7 +69,7 @@ class SettingsPage extends React.Component {
         req.notification = this.state.notification;
 
         if (this.state.password !== this.state.confpassword) {
-            
+
             toastr.error("Passwords are not the same.", "Saving failed!");
             return;
         }

@@ -9,8 +9,6 @@ import {
     ModalHeader,
     ModalBody,
     ModalFooter,
-    Row,
-    Container
 } from "reactstrap";
 
 const RemoveMemberModal = props => {

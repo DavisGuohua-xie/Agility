@@ -4,11 +4,11 @@ import { connect } from "react-redux";
 
 import { bindActionCreators } from "redux";
 
-import { withRouter, Redirect } from "react-router";
+import { withRouter } from "react-router";
 
 import Sidebar from "react-sidebar";
-import Parse from "parse";
-import Chatkit from "@pusher/chatkit";
+//import Parse from "parse";
+//import Chatkit from "@pusher/chatkit";
 import ReactLoading from "react-loading";
 import toastr from "./common/toastrConfig";
 
@@ -17,13 +17,13 @@ import { chatActions } from "../actions/chatActions";
 import { NavBar } from "./common/Navbar";
 import ChatLayout from "./chat/ChatLayout";
 
-import MemberSidebarItem from "./common/MemberSidebarItem";
+//import MemberSidebarItem from "./common/MemberSidebarItem";
 
-import styles from "../styles/ChatLayout.module.css";
+//import styles from "../styles/ChatLayout.module.css";
 import ChatSidebar from "./chat/ChatSidebar";
 
 const mql = window.matchMedia(`(min-width: 900px)`);
-let chatManager = undefined;
+//let chatManager = undefined;
 
 class ChatPage extends Component {
     constructor(props) {
@@ -102,7 +102,7 @@ class ChatPage extends Component {
     }
 
     switchToChannel(e) {
-        let channelId = parseInt(e.target.dataset.channelid);
+        let channelId = parseInt(e.target.dataset.channelid, 10);
         this.props.chatActions.switchToChannel(channelId, this.props.currentChannelId);
         this.setState({
             currentChannel: { id: channelId }
@@ -128,7 +128,7 @@ class ChatPage extends Component {
 
         console.log(JSON.parse(JSON.stringify(this.props.projectMembers)));
 
-        if (members.length == 0 || this.state.newChannelName.length == 0) {
+        if (members.length === 0 || this.state.newChannelName.length === 0) {
             toastr.error("Specify channel name and/or members", "Can't create channel");
             return;
         }

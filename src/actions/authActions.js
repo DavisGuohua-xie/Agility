@@ -1,4 +1,4 @@
-import { authAPI } from "../server/authAPI";
+//import { authAPI } from "../server/authAPI";
 import { sendSignupEmail } from "../server/emailAPI";
 import { UserModel } from "../models/UserModel";
 import toastr from "../components/common/toastrConfig";

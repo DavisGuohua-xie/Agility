@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Parse } from "parse";
-import { UserModel } from "../../models/UserModel";
+//import { UserModel } from "../../models/UserModel";
 
 import NewProjectModal from "./NewProjectModal";
 
