@@ -377,7 +377,7 @@ function getTaskList(boards) {
 function addMember (username, project_id, user_role) {
     return dispatch => {
         // call create member request
-        dispatch(request());
+        dispatch(request())
         let query = new Parse.Query(Parse.User);
         query.equalTo("username", username);
         query.first().then(user => {
@@ -396,7 +396,13 @@ function addMember (username, project_id, user_role) {
                         project.save(null, {
                             useMasterKey: true,
                             success: function (res) {
-                                dispatch(success(project.get("members")));
+                                let newMember = {
+                                    fname: user.get("first_name"),
+                                    lname: user.get("last_name"),
+                                    member_id: user.id,
+                                    username: username
+                                }
+                                dispatch(success(newMember));
                             },
                             error: function (res, err) {
                                 console.log(err);
@@ -422,8 +428,8 @@ function addMember (username, project_id, user_role) {
     function request() {
         return { type: types.ADD_MEMBER_REQUEST};
     }
-    function success(newMembers) {
-        return { type: types.ADD_MEMBER_SUCCESS, payload: newMembers};
+    function success(newMember) {
+        return { type: types.ADD_MEMBER_SUCCESS, payload: newMember};
     }
     function failure() {
         return { type: types.ADD_MEMBER_FAILURE};
@@ -455,7 +461,7 @@ function removeMember (username, project_id) {
                         project.save(null, {
                             useMasterKey: true,
                             success: function (res) {
-                                dispatch(success(project.get("members")));
+                                dispatch(success(user.id));
                             },
                             error: function (res, err) {
                                 console.log(err);
@@ -484,10 +490,10 @@ function removeMember (username, project_id) {
             type: types.REMOVE_MEMBER_REQUEST
         };
     }
-    function success(newMembers) {
+    function success(removed_id) {
         return { 
             type: types.REMOVE_MEMBER_SUCCESS,
-            payload: newMembers
+            payload: removed_id
         };
     }
     function failure() {

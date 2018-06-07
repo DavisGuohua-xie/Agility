@@ -165,15 +165,13 @@ class ProjectOverviewPage extends React.Component {
                 query.first().then(user => {
                 if (user === undefined) toastr.error("This user doesn't exist!");
                 else {
-                    var addRequest = this.props.addRequest === undefined ? 0 : this.props.addRequest;
+                    let currentUser = Parse.User.current();
                     this.props.actions.addMember(username, project_id, new_role);
-                    console.log(addRequest);
                     //this.toggleAddMemberModal();
                 }
             });
             }
         }
-        console.log(this.props.feedback);
     }
 
     handleNewRole(e) {
@@ -215,9 +213,8 @@ class ProjectOverviewPage extends React.Component {
                 if (!user_valid) toastr.error("This user is not a member of this project!");
                 else {
                     this.toggleRemoveMemberModal();
-                    var removeRequest = this.props.removeRequest === undefined ? 0 : this.props.removeRequest;
+                    let currentUser = Parse.User.current();
                     this.props.actions.removeMember(username, project_id);
-                    console.log(removeRequest);
                 }
             }
         })
@@ -233,9 +230,7 @@ class ProjectOverviewPage extends React.Component {
             query.equalTo("objectId", project_id);
             query.first().then(project => {
                 let roles = project.get("roles");
-                console.log(roles[user.id]);
                 if (roles[user.id] === "ProjectManager" || roles[user.id] === "CEO") {
-                    console.log("here");
                     return true;
                 }
                 else return false;
@@ -269,7 +264,6 @@ class ProjectOverviewPage extends React.Component {
         // TODO: generate list of project members for DM-ing
 
         var members = this.props.project_data === undefined ? [] : this.props.project_data.members;
-
         return (
             <ul className={styles.sidebarUL}>
                 {members.map((person, index) => (
