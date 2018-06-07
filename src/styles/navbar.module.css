@@ -23,6 +23,8 @@
 .mainNav {
     background-image: url("../img/navbar_offwhite.png");
     box-shadow: 0 4px 2px -2px lightgray;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .mainNav::after {
