@@ -34,6 +34,7 @@ class ProjectTaskComponent extends React.Component {
         this.handleBoardTypeChange = this.handleBoardTypeChange.bind(this);
         this.toggleEditCardModal = this.toggleEditCardModal.bind(this);
         this.handleCardInfoChange = this.handleCardInfoChange.bind(this);
+        this.handleDragEnd = this.handleDragEnd.bind(this);
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -153,6 +154,14 @@ class ProjectTaskComponent extends React.Component {
         this.toggleEditCardModal();
     }
 
+    handleDragEnd(taskID, sourceBoardID, targetBoardID, position) {
+        console.log(sourceBoardID);
+        console.log(targetBoardID);
+        console.log(taskID);
+        console.log(position);
+        this.props.actions.moveTask(sourceBoardID, targetBoardID, taskID, position);
+    }
+
     /***********************EVERYTHING ABOUT BOARDS***************************/
 
     handleLaneClick(e) {
@@ -229,6 +238,7 @@ class ProjectTaskComponent extends React.Component {
                 onLaneClick={this.handleLaneClick}
                 onCardAdd={this.handleCardAdd}
                 onCardClick={this.handleCardClick}
+                handleDragEnd={this.handleDragEnd}
                 modalOpen={this.state.modalOpen}
                 onBoardNameChange={this.handleBoardNameChange}
                 onCreateBoard={this.handleCreateBoard}

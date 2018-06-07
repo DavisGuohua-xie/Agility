@@ -186,47 +186,54 @@ function updateTask(taskId, boardId, newTask) {
     };
 
     function success(newTask, taskId, boardId) {
-        return { type: types.UPDATE_TASK_SUCCESS, req: {task: newTask, task_id: taskId, board_id: boardId} };
+        return {
+            type: types.UPDATE_TASK_SUCCESS,
+            req: { task: newTask, task_id: taskId, board_id: boardId }
+        };
     }
     function failure(req) {
         return { type: types.UPDATE_TASK_FAILURE, req };
     }
 }
 
-
-function moveTask(oldboard_id, newboard_id, task_id) {
+function moveTask(oldboard_id, newboard_id, task_id, position) {
     return dispatch => {
         let Board = Parse.Object.extend("Board");
-        let query = Parse.Query(Board);
+        let query = new Parse.Query(Board);
 
         query.equalTo("objectId", oldboard_id);
-        query.first().then(oldboard => {
-            oldboard.remove("task_list", task_id);
-            
-            oldboard.save().then(() => {
-                let query = Parse.Query(Board);
+        query
+            .first()
+            .then(oldboard => {
+                var Task = Parse.Object.extend("Task");
+                var task = new Task();
 
-                query.equalTo("objectId", newboard_id);
-                query.first().then(newboard => {
+                task.id = task_id;
+                oldboard.remove("task_list", task);
 
-                    var Task = Parse.Object.extend("Task");
-                    var task = new Task();
+                oldboard.save().then(() => {
+                    let query = new Parse.Query(Board);
 
-                    task.id = task_id;
-                    newboard.add("task_list", task);
+                    query.equalTo("objectId", newboard_id);
+                    query.first().then(newboard => {
+                        newboard.add("task_list", task);
 
-                    newboard.save().then(() => {
-                        dispatch(success(task_id, newboard_id))
-                    })
-                })
+                        newboard.save().then(() => {
+                            dispatch(success(task_id, newboard_id, oldboard_id, position));
+                        });
+                    });
+                });
+            })
+            .catch(error => {
+                dispatch(failure(error));
             });
-        }).catch(error => {
-            dispatch(failure(error));
-        })
-    }
+    };
 
-    function success(taskId, boardId) {
-        return { type: types.MOVE_TASK_SUCCESS, req: {task_id: taskId, board_id: boardId} };
+    function success(taskId, boardId, oldId, position) {
+        return {
+            type: types.MOVE_TASK_SUCCESS,
+            req: { task_id: taskId, new_id: boardId, old_id: oldId, position }
+        };
     }
     function failure(req) {
         return { type: types.MOVE_TASK_FAILURE, req };

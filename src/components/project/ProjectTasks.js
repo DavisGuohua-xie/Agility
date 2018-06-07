@@ -42,10 +42,12 @@ export const ProjectTasks = props => {
                     data={props.data}
                     eventBusHandle={props.eventBusHandle}
                     collapsibleLanes
+                    draggable
                     editable
                     onLaneClick={props.onLaneClick}
                     onCardClick={props.onCardClick}
                     onCardAdd={props.onCardAdd}
+                    handleDragEnd={props.handleDragEnd}
                     customLaneHeader={<CustomLaneHeader onToggleModal={props.onToggleEditModal} />}
                     customCardLayout
                     style={{
