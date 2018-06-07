@@ -5,6 +5,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Parse } from "parse";
+import toastr from "../common/toastrConfig";
 //import { UserModel } from "../../models/UserModel";
 
 import NewProjectModal from "./NewProjectModal";
@@ -64,7 +65,9 @@ class ProjectListComponent extends React.Component {
                 this.state.newMembers
             );
         } else {
-            console.log("no project name inputted");
+            console.log(" project name specified");
+            toastr.error("Could not create project","No project name specified.")
+
         }
     }
 
