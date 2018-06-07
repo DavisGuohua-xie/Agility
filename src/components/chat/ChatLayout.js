@@ -51,7 +51,7 @@ const ChatLayout = props => {
                     />
                     <div className="input-group-append">
                         <button
-                            className="btn btn-outline-primary"
+                            className="btn btn-primary"
                             type="button"
                             onClick={props.onSubmit}
                         >

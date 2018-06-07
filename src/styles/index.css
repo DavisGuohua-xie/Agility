@@ -1,10 +1,37 @@
+:root {
+  --main-color: #E0FEFF;
+  --complementary-color: #FFEBE0;
+}
+
 body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+  height: 100%;
+  width: 100%;
+  font-family: "Odin", "Segoe", sans-serif;
+  background-color: #ECECEA !important;
 }
 
-html, body {
+body::after {
+  content: "";
+  display: block;
+  position: absolute;
+  z-index: -1;   
+  width: 100%;
+  height: 100%;
+  background-image: url('../img/background2.png');
+  background-position-x: right;
+  background-position-y: bottom;
+  background-repeat: no-repeat;
+  opacity: 0.3;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+html {
   height: 100%;
   width: 100%;
 }
@@ -31,4 +58,14 @@ div#app, div#root {
     width: 100%;
     height: 100%;
     padding: 6px 12px;
+}
+
+.btn-primary {
+  background-color: #D4981C !important;
+  border-color: #D4981C !important;
+  color: white !important;
+}
+
+.btn-primary:hover {
+  background-color: #6B4800 !important;
 }
