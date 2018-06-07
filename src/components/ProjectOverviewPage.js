@@ -170,7 +170,6 @@ class ProjectOverviewPage extends React.Component {
             });
             if (!duplicate) {
                 let new_role = this.state.newRole;
-                let members = this.props.project_data.members;
                 if (this.hasAuthority(username, project_id) === false) toastr.error("You don't have the authority to add members!");
                 else {
                     let query = new Parse.Query(Parse.User);
@@ -178,7 +177,6 @@ class ProjectOverviewPage extends React.Component {
                     query.first().then(user => {
                         if (user === undefined) toastr.error("This user doesn't exist!");
                         else {
-                            let currentUser = Parse.User.current();
                             this.props.actions.addMember(username, project_id, new_role);
                             this.toggleAddMemberModal();
                         }
@@ -217,7 +215,6 @@ class ProjectOverviewPage extends React.Component {
                 if (user === undefined) toastr.error("This user doesn't exist!");
                 else {
                     this.toggleRemoveMemberModal();
-                    let currentUser = Parse.User.current();
                     this.props.actions.removeMember(username, project_id);
                 }
             });

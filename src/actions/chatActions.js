@@ -177,7 +177,7 @@ function createChannel(members, name, creatorId, isPrivate, currentChannelId, pr
                 console.log("in response");
                 if (response.status >= 400) {
                     console.error(response);
-                    throw "error";
+                    throw {error: "error"};
                 }
 
                 return response.json();
@@ -228,7 +228,7 @@ export default function createChannelNewProject() {
         })
     }).then(response => {
         console.log("in response");
-        if (response.status >= 400) throw "error";
+        if (response.status >= 400) throw {error: "error"};
 
         return response.json();
     });
@@ -308,12 +308,4 @@ function saveAllChatData(userChannels, currChannel) {
 
 function saveMessageSuccess(message, sender) {
     return { type: types.SAVE_MESSAGE_SUCCESS, req: { message, sender } };
-}
-
-function retrieveChannelsRequest(currentUser) {
-    return { type: types.RETRIEVE_CHANNELS_REQUEST, req: currentUser };
-}
-
-function retrieveChannelsSuccess(currentUser) {
-    return { type: types.RETRIEVE_CHANNELS_SUCCESS, req: currentUser };
 }

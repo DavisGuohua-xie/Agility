@@ -15,17 +15,6 @@ let PASSWORD = "password";
 let EMAIL = "email";
 let ID = "_id";
 let CURRENT_USER = "current_user";
-
-//Default completion handlers..
-var defaultSuccessHandler = function(data) {
-    console.log("Succesfully got back data");
-};
-
-var defaultErrorHandler = function(data, error) {
-    console.log("data: " + data + "Could not be saved! \n");
-    console.log("[ERROR]", error);
-};
-
 //UserModel does not extends Parse.User but is more like a wrapper
 export class UserModel {
     constructor(currentUser) {
@@ -83,8 +72,8 @@ export class UserModel {
         return this.user.get(EMAIL);
     }
 
-    getUser(){
-      return this.user
+    getUser() {
+        return this.user;
     }
 
     //Setters/Modifiers
@@ -125,28 +114,30 @@ export class UserModel {
         });
     }
 
-
     //Returns a promise with a usermodel if successful or else rejects with error
     static current(successHandler, errorHandler) {
         var parseUser = Parse.User.current();
 
-        if (parseUser === null) return Promise.reject(new Error('Parse.User.current() is empty!'));
+        if (parseUser === null) return Promise.reject(new Error("Parse.User.current() is empty!"));
 
         var userQuery = new Parse.Query(Parse.User);
         userQuery.equalTo("username", parseUser.get("username"));
         userQuery.include(PROJECTS);
-      return  userQuery.find().then(  function(results) {
-          var currUser = results[0];
-          console.log(results);
-          var loggedIn = new UserModel(currUser);
-          //Set the parse user to be populated object
-          loggedIn.user = currUser;
-          //Update local storage
-          localStorage[CURRENT_USER] = JSON.stringify(loggedIn);
-         return Promise.resolve(loggedIn)
-       }
-       ).catch((error) => {return Promise.reject(error)})
-
+        return userQuery
+            .find()
+            .then(function(results) {
+                var currUser = results[0];
+                console.log(results);
+                var loggedIn = new UserModel(currUser);
+                //Set the parse user to be populated object
+                loggedIn.user = currUser;
+                //Update local storage
+                localStorage[CURRENT_USER] = JSON.stringify(loggedIn);
+                return Promise.resolve(loggedIn);
+            })
+            .catch(error => {
+                return Promise.reject(error);
+            });
     }
 
     static logout() {
@@ -158,33 +149,33 @@ export class UserModel {
         // this.firstName = firstName;
         this.user.set(FIRST_NAME, firstName);
         console.log("setFirstName()");
-    return    this.saveData(this.user, successHandler, errorHandler);
+        return this.saveData(this.user, successHandler, errorHandler);
     }
 
     setLastName(lastName, successHandler, errorHandler) {
         // this.lastName = lastName;
 
         this.user.set(LAST_NAME, lastName);
-    return    this.saveData(this.user, successHandler, errorHandler);
+        return this.saveData(this.user, successHandler, errorHandler);
     }
 
     setEmail(email, successHandler, errorHandler) {
         // this.lastName = lastName;
 
         this.user.set(EMAIL, email);
-    return    this.saveData(this.user, successHandler, errorHandler);
+        return this.saveData(this.user, successHandler, errorHandler);
     }
 
     setPass(pass, successHandler, errorHandler) {
         // this.lastName = lastName;
 
         this.user.set(PASSWORD, pass);
-    return    this.saveData(this.user, successHandler, errorHandler);
+        return this.saveData(this.user, successHandler, errorHandler);
     }
 
     setNotification(freq, successHandler, errorHandler) {
         this.user.set(NOTIFICATION, freq);
-    return    this.saveData(this.user, successHandler, errorHandler);
+        return this.saveData(this.user, successHandler, errorHandler);
     }
 
     addProject(project, successHandler, errorHandler) {
@@ -193,14 +184,14 @@ export class UserModel {
         projects.push(project);
 
         this.user.set(PROJECTS, projects);
-      return  this.saveData(this.user, successHandler, errorHandler);
+        return this.saveData(this.user, successHandler, errorHandler);
     }
 
     removeProjectByIndex(index, successHandler, errorHandler) {
         var projects = this.user.get(PROJECTS);
         projects.splice(index, 1);
         this.user.set(PROJECTS, projects);
-      return  this.saveData(this.user, successHandler, errorHandler);
+        return this.saveData(this.user, successHandler, errorHandler);
     }
 
     removeProjectByProject(project, successHandler, errorHandler) {
@@ -214,7 +205,7 @@ export class UserModel {
         });
 
         this.user.set(PROJECTS, projects);
-    return    this.saveData(this.user, successHandler, errorHandler);
+        return this.saveData(this.user, successHandler, errorHandler);
     }
 
     changeNotification(newNotification, successHandler, errorHandler) {
@@ -223,7 +214,7 @@ export class UserModel {
 
         this.user.set(NOTIFICATION, newNotification);
 
-      return  this.saveData(this.user, successHandler, errorHandler);
+        return this.saveData(this.user, successHandler, errorHandler);
     }
 
     saveData(pfobject, successHandler, errorHandler) {
@@ -235,8 +226,18 @@ export class UserModel {
             errorHandler = this.defaultErrorHandler;
         }
 
-      return  pfobject.save();
+        return pfobject.save();
     }
+
+    //Default completion handlers..
+    defaultSuccessHandler = function(data) {
+        console.log("Succesfully got back data");
+    };
+
+    defaultErrorHandler = function(data, error) {
+        console.log("data: " + data + "Could not be saved! \n");
+        console.log("[ERROR]", error);
+    };
 }
 
 Parse.Object.registerSubclass("User", UserModel);

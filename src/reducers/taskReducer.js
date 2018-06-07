@@ -3,7 +3,6 @@ import initialState from "./initialState";
 //let Immutable = require("seamless-immutable").static;
 
 export default function taskReducer(state = initialState, action) {
-    let board;
     switch (action.type) {
         case types.CREATE_BOARD_REQUEST:
             return state.merge({
@@ -12,7 +11,7 @@ export default function taskReducer(state = initialState, action) {
             });
 
         case types.CREATE_BOARD_SUCCESS:
-            board = JSON.parse(JSON.stringify(action.board));
+            let board = JSON.parse(JSON.stringify(action.board));
 
             return state.merge({
                 create_board_request: false,
@@ -82,21 +81,21 @@ export default function taskReducer(state = initialState, action) {
             });
 
         case types.UPDATE_TASK_SUCCESS:
-            let board = Object.assign(
+            let board1 = Object.assign(
                 {},
                 state.board_data.filter(b => b.id === action.req.board_id)[0]
             );
 
-            console.log(board);
+            console.log(board1);
             console.log(action.req.task);
 
             return state.merge({
                 board_data: [
                     ...state.board_data.filter(b => b.id !== action.req.board_id),
                     {
-                        ...board,
+                        ...board1,
                         cards: [
-                            ...board.cards.filter(task => task.id !== action.req.task_id),
+                            ...board1.cards.filter(task => task.id !== action.req.task_id),
                             Object.assign({}, action.req.task, {
                                 id: action.req.task_id,
                                 laneId: action.req.board_id
