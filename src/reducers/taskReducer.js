@@ -112,6 +112,12 @@ export default function taskReducer(state = initialState, action) {
         case types.MOVE_TASK_FAILURE:
             return state;
 
+        case types.DELETE_TASK_SUCCESS:
+            return state;
+
+        case types.DELETE_TASK_FAILURE:
+            return state;
+
         default:
             return state;
     }

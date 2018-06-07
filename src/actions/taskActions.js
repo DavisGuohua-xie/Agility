@@ -9,7 +9,8 @@ export const taskActions = {
     createTask,
     updateBoard,
     updateTask,
-    moveTask
+    moveTask,
+    deleteTask
 };
 
 function createBoard(title, project_id, eventBus) {
@@ -231,4 +232,41 @@ function moveTask(oldboard_id, newboard_id, task_id) {
     function failure(req) {
         return { type: types.MOVE_TASK_FAILURE, req };
     }
+}
+
+function deleteTask(board_id, task_id) {
+    return dispatch => {
+
+        let Board = Parse.Object.extend("Board");
+        let query = Parse.Query(Board);
+
+        query.equalTo("objectId", board_id);
+        query.first().then(board => {
+            board.remove("task_list", task_id);
+            board.save().then(() => {
+
+            var Task = Parse.Object.extend("Task");
+            var query = new Parse.Query(Task);
+
+            query.get(task_id).then(task => {
+                task.destroy({
+                    success: () => {
+                        dispatch(success());
+                    },
+                    error: error => {
+                        dispatch(failure(error));
+                    }
+                });
+            })     
+            })
+        });
+    }
+
+    function success() {
+        return { type: types.DELETE_TASK_SUCCESS };
+    }
+    function failure(req) {
+        return { type: types.DELETE_TASK_FAILURE, req };
+    }
+
 }
