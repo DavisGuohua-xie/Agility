@@ -11,10 +11,14 @@
 }
 
 .navbarBrand {
-    color: #fff;
+    color: black;
 }
 
 .navbarBrand:hover {
-    color: #fff;
+    color: black;
     text-decoration: none;
+}
+
+.mainNav {
+    background-image: url("../img/navbar_img.png") ;
 }
