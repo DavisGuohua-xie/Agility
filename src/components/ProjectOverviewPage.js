@@ -262,7 +262,7 @@ class ProjectOverviewPage extends React.Component {
         let currentUser =  Parse.User.current();
         this.props.actions.removeMember(currentUser.get("username"), this.state.projectID);
         this.toggleLeaveProjectModal();
-        this.props.history.push("/");
+        //this.props.history.push("/");
         toastr.success("You have left the project.");
     }
 

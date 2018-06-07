@@ -471,6 +471,10 @@ function removeMember(username, project_id) {
                                 project.save(null, {
                                     useMasterKey: true,
                                     success: function(res) {
+
+                                        if (user.id === Parse.User.current().id) {
+                                            history.push("/");
+                                        }
                                         dispatch(success(user.id));
                                     },
                                     error: function(res, err) {
