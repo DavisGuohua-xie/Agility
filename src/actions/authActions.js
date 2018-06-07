@@ -40,7 +40,6 @@ export const login = (username, password, success) => {
                 //Navigate to
                 // console.log('[USER]: ', newUserModel.getProjects())
                 // console.log(success)
-                success();
             },
             function(error) {
                 //No longer logging in anymore

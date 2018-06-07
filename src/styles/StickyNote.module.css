@@ -7,32 +7,36 @@
 
 .lightGreen {
     background-color: lightgreen;
+    transition: filter .15s ease-in-out;
 }
 
 .lightGreen:hover {
-    background-color: #74bd74;
+    filter: brightness(90%);
 }
 
 .lightBlue {
+    transition: filter .15s ease-in-out;
     background-color: lightblue;
 }
 
 .lightBlue:hover {
-    background-color: rgb(136, 207, 231);
+    filter: brightness(90%);
 }
 
 .lightYellow {
+    transition: filter .15s ease-in-out;
     background-color: lightyellow;
 }
 
 .lightYellow:hover {
-    background-color: rgb(255, 255, 164);
+    filter: brightness(90%);
 }
 
 .lightCoral {
+    transition: filter .15s ease-in-out;
     background-color: lightcoral;
 }
 
 .lightCoral:hover {
-    background-color: coral;
+    filter: brightness(90%);
 }

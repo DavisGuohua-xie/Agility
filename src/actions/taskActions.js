@@ -8,7 +8,9 @@ export const taskActions = {
     createBoard,
     createTask,
     updateBoard,
-    updateTask
+    updateTask,
+    moveTask,
+    deleteTask
 };
 
 function createBoard(title, project_id, eventBus) {
@@ -185,9 +187,93 @@ function updateTask(taskId, boardId, newTask) {
     };
 
     function success(newTask, taskId, boardId) {
-        return { type: types.UPDATE_TASK_SUCCESS, req: {task: newTask, task_id: taskId, board_id: boardId} };
+        return {
+            type: types.UPDATE_TASK_SUCCESS,
+            req: { task: newTask, task_id: taskId, board_id: boardId }
+        };
     }
     function failure(req) {
         return { type: types.UPDATE_TASK_FAILURE, req };
     }
+}
+
+function moveTask(oldboard_id, newboard_id, task_id, position) {
+    return dispatch => {
+        let Board = Parse.Object.extend("Board");
+        let query = new Parse.Query(Board);
+
+        query.equalTo("objectId", oldboard_id);
+        query
+            .first()
+            .then(oldboard => {
+                var Task = Parse.Object.extend("Task");
+                var task = new Task();
+
+                task.id = task_id;
+                oldboard.remove("task_list", task);
+
+                oldboard.save().then(() => {
+                    let query = new Parse.Query(Board);
+
+                    query.equalTo("objectId", newboard_id);
+                    query.first().then(newboard => {
+                        newboard.add("task_list", task);
+
+                        newboard.save().then(() => {
+                            dispatch(success(task_id, newboard_id, oldboard_id, position));
+                        });
+                    });
+                });
+            })
+            .catch(error => {
+                dispatch(failure(error));
+            });
+    };
+
+    function success(taskId, boardId, oldId, position) {
+        return {
+            type: types.MOVE_TASK_SUCCESS,
+            req: { task_id: taskId, new_id: boardId, old_id: oldId, position }
+        };
+    }
+    function failure(req) {
+        return { type: types.MOVE_TASK_FAILURE, req };
+    }
+}
+
+function deleteTask(board_id, task_id) {
+    return dispatch => {
+
+        let Board = Parse.Object.extend("Board");
+        let query = Parse.Query(Board);
+
+        query.equalTo("objectId", board_id);
+        query.first().then(board => {
+            board.remove("task_list", task_id);
+            board.save().then(() => {
+
+            var Task = Parse.Object.extend("Task");
+            var query = new Parse.Query(Task);
+
+            query.get(task_id).then(task => {
+                task.destroy({
+                    success: () => {
+                        dispatch(success());
+                    },
+                    error: error => {
+                        dispatch(failure(error));
+                    }
+                });
+            })     
+            })
+        });
+    }
+
+    function success() {
+        return { type: types.DELETE_TASK_SUCCESS };
+    }
+    function failure(req) {
+        return { type: types.DELETE_TASK_FAILURE, req };
+    }
+
 }

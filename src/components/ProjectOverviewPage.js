@@ -10,7 +10,7 @@ import Sidebar from "react-sidebar";
 
 import { projActions } from "../actions/projActions";
 
-import {taskActions} from "../actions/taskActions";
+import { taskActions } from "../actions/taskActions";
 
 import { NavBar } from "./common/Navbar";
 
@@ -104,7 +104,7 @@ class ProjectOverviewPage extends React.Component {
 
     componentDidMount() {
         mql.addListener(this.mediaQueryChanged);
-        this.setState({ mql: mql, sidebarDocked: mql.matches});
+        this.setState({ mql: mql, sidebarDocked: mql.matches });
         this.props.actions.getProject(this.props.match.params.projID);
     }
 
@@ -209,31 +209,19 @@ class ProjectOverviewPage extends React.Component {
         let username = this.state.removeName;
         let project_id = this.state.projectID;
         let query = new Parse.Query(Parse.User);
-        if (this.hasAuthority(username, project_id) === false) toastr.error("You don't have the authority to remove members!");
+        if (this.hasAuthority(username, project_id) === false)
+            toastr.error("You don't have the authority to remove members!");
         else {
             query.equalTo("username", username);
             query.first().then(user => {
-            if (user === undefined) toastr.error("This user doesn't exist!");
-            else {
-                var user_valid = false;
-                let members = this.props.project_data.members;
-                for (var i = 0; i < members.length; i++) {
-                    console.log(members[i]);
-                    if (members[i].username === username) {
-                        user_valid = true;
-                        break;
-                    }
-                }
-                if (!user_valid) toastr.error("This user is not a member of this project!");
+                if (user === undefined) toastr.error("This user doesn't exist!");
                 else {
                     this.toggleRemoveMemberModal();
                     let currentUser = Parse.User.current();
                     this.props.actions.removeMember(username, project_id);
                 }
-            }
-        })
+            });
         }
-        
     }
 
     hasAuthority(username, project_id) {
@@ -246,9 +234,8 @@ class ProjectOverviewPage extends React.Component {
                 let roles = project.get("roles");
                 if (roles[user.id] === "ProjectManager" || roles[user.id] === "CEO") {
                     return true;
-                }
-                else return false;
-            })
+                } else return false;
+            });
         });
     }
 
@@ -259,10 +246,10 @@ class ProjectOverviewPage extends React.Component {
     }
 
     handleLeaveProject() {
-        let currentUser =  Parse.User.current();
+        let currentUser = Parse.User.current();
         this.props.actions.removeMember(currentUser.get("username"), this.state.projectID);
         this.toggleLeaveProjectModal();
-        this.props.history.push("/");
+        //this.props.history.push("/");
         toastr.success("You have left the project.");
     }
 
@@ -285,6 +272,7 @@ class ProjectOverviewPage extends React.Component {
                         fname={person.fname}
                         lname={person.lname}
                         onSidebarMemberClick={this.handleSidebarMemberClick}
+                        role={person.role}
                         username={person.username}
                         key={index}
                     />
@@ -390,14 +378,14 @@ class ProjectOverviewPage extends React.Component {
                     onNewRole={this.handleNewRole}
                     onAddMember={this.handleAddMember}
                 />
-                <RemoveMemberModal 
+                <RemoveMemberModal
                     removeMemberModalOpen={this.state.removeMemberModalOpen}
                     toggleRemoveMemberModal={this.toggleRemoveMemberModal}
                     className={this.props.className}
                     onRemoveName={this.handleRemoveName}
                     onRemoveMember={this.handleRemoveMember}
                 />
-                <LeaveProjectModal 
+                <LeaveProjectModal
                     leaveProjectModalOpen={this.state.leaveProjectModalOpen}
                     toggleLeaveProjectModal={this.toggleLeaveProjectModal}
                     className={this.props.className}
@@ -420,7 +408,11 @@ class ProjectOverviewPage extends React.Component {
                         root: { top: "56px", overflowY: "auto" },
                         content: { overflowY: "auto", height: "100%" },
                         overlay: { top: "56px" },
-                        sidebar: { backgroundColor: "white", width: 200, zIndex: 99999 }
+                        sidebar: {
+                            backgroundColor: "#ECECEA", /*"linear-gradient(rgba(224, 254, 255, 1), rgba(255,255,255,0))"*/
+                            width: 200,
+                            zIndex: 999
+                        }
                     }}
                 >
                     <OverviewSubnav
@@ -450,7 +442,7 @@ function mapStateToProps(state, ownProps) {
     return {
         ajaxCalls: state.ajaxCallsInProgress,
         project_data: state.projectReducer.project_data,
-        board_data: state.taskReducer.board_data,
+        board_data: state.taskReducer.board_data
     };
 }
 
