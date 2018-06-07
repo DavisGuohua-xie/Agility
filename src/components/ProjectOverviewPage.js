@@ -272,6 +272,7 @@ class ProjectOverviewPage extends React.Component {
                         fname={person.fname}
                         lname={person.lname}
                         onSidebarMemberClick={this.handleSidebarMemberClick}
+                        role={person.role}
                         username={person.username}
                         key={index}
                     />

@@ -175,11 +175,32 @@ function getProject(project_id) {
                         getMembersFromId(member_ids).then(result => {
                             var members = [];
                             result.forEach(member => {
+
+
+                                let roles = project.get("roles");
+                                let member_role;
+
+                                switch(roles[member_id]) {
+                                    case "ProjectManager":
+                                        member_role = "Project Manager";
+                                        break;
+                                    case "Customer":
+                                        member_role = "Customer";
+                                        break;
+                                    case "CEO":
+                                        member_role = "CEO";
+                                        break;
+                                    default:
+                                        member_role = "Project Member";
+                                        break;
+                                }
+
                                 members.push({
                                     fname: member.get("first_name"),
                                     lname: member.get("last_name"),
                                     member_id: member.id,
-                                    username: member.get("username")
+                                    username: member.get("username"),
+                                    role: member_role
                                 });
                             });
                             res["members"] = members;
