@@ -107,7 +107,62 @@ export default function taskReducer(state = initialState, action) {
             });
 
         case types.MOVE_TASK_SUCCESS:
-            return state;
+            let new_id = action.req.new_id;
+            let old_id = action.req.old_id;
+            let task_id = action.req.task_id;
+            let position = action.req.position;
+
+            let taskObj = Object.assign(
+                {},
+                state.board_data
+                    .filter(b => b.id === old_id)[0]
+                    .cards.filter(c => c.id === task_id)[0],
+                { laneId: new_id } // assign new board id
+            );
+
+            console.log("in movetask reducer");
+            console.log(new_id);
+            console.log(old_id);
+            console.log(state.board_data);
+            state.board_data.forEach((board, index) => {
+                if (board.id !== new_id || board.id !== old_id) return;
+
+                if (board.id === old_id) {
+                    console.log("updated old board");
+                    console.log({
+                        ...board,
+                        cards: board.cards.filter(task => task.id !== task_id)
+                    });
+                    return;
+                }
+
+                let newarr = board.cards.slice();
+                newarr.splice(position, 0, taskObj);
+                console.log("updated new board");
+                console.log({ ...board, cards: newarr });
+                return;
+            });
+
+            return state.merge({
+                board_data: state.board_data.map((board, index) => {
+                    if (board.id !== new_id || board.id !== old_id) return board;
+
+                    if (board.id === old_id) {
+                        console.log("updated old board");
+                        console.log({
+                            ...board,
+                            cards: board.cards.filter(task => task.id !== task_id)
+                        });
+                        return { ...board, cards: board.cards.filter(task => task.id !== task_id) };
+                    }
+
+                    let newarr = board.cards.slice();
+                    newarr.splice(position, 0, taskObj);
+                    console.log("updated new board");
+                    console.log({ ...board, cards: newarr });
+                    return { ...board, cards: newarr };
+                })
+            });
 
         case types.MOVE_TASK_FAILURE:
             return state;
