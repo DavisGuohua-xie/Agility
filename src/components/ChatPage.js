@@ -223,7 +223,7 @@ class ChatPage extends Component {
                         root: { top: "56px", overflowY: "auto" },
                         content: { overflowY: "auto" },
                         overlay: { top: "56px" },
-                        sidebar: { backgroundColor: "white", width: 200, zIndex: 3 }
+                        sidebar: { backgroundColor: "#ECECEA", width: 200, zIndex: 3 }
                     }}
                 >
                     {this.props.metadata_loading ? (

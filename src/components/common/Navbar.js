@@ -18,9 +18,11 @@ import { bindActionCreators } from "redux";
 import { withRouter } from "react-router";
 import { authActions } from "../../actions/authActions";
 
+import Avatar from "react-avatar";
+
 import styles from "../../styles/navbar.module.css";
 
-import history from '../../history';
+import history from "../../history";
 
 class NavBar extends React.Component {
     constructor(props) {
@@ -52,7 +54,12 @@ class NavBar extends React.Component {
         console.log(projName);
         return (
             <div>
-                <Navbar color="light" expand="md" style={{ zIndex: zind }} className={styles.mainNav}>
+                <Navbar
+                    color="light"
+                    expand="md"
+                    style={{ zIndex: zind }}
+                    className={styles.mainNav}
+                >
                     <Link to="/" className={`${styles.navbarBrand} navbar-brand`}>
                         Agility
                     </Link>
@@ -61,7 +68,16 @@ class NavBar extends React.Component {
                     <Nav className={styles.navbarCenter} navbar>
                         {projName && (
                             <NavItem>
-                                <Link to={`/${this.state.projectID}/overview`} className="nav-link">
+                                <Link
+                                    to={`/${this.state.projectID}/overview`}
+                                    style={{
+                                        color: "black",
+                                        fontWeight: 700,
+                                        textTransform: "uppercase",
+                                        fontSize: "1.2em"
+                                    }}
+                                    className="nav-link"
+                                >
                                     {projName}
                                 </Link>
                             </NavItem>
@@ -72,14 +88,28 @@ class NavBar extends React.Component {
                         <Nav className="ml-auto" navbar>
                             {projName && (
                                 <NavItem>
-                                    <Link to={`/${this.state.projectID}/chat`} className="nav-link">
-                                        Chat
+                                    <Link
+                                        to={`/${this.state.projectID}/chat`}
+                                        style={{ color: "black" }}
+                                        className="nav-link"
+                                        title="Chat"
+                                    >
+                                        <i className={`fas fa-envelope ${styles.chatIcon}`} />
                                     </Link>
                                 </NavItem>
                             )}
                             <UncontrolledDropdown nav inNavbar>
-                                <DropdownToggle nav caret>
-                                    {this.props.name}
+                                <DropdownToggle
+                                    nav
+                                    className={`${styles.name} ${styles.nameInProject}`}
+                                >
+                                    <Avatar
+                                        name={this.props.name + " " + this.props.lname}
+                                        round={true}
+                                        maxInitials={2}
+                                        size={30}
+                                        textSizeRatio={2}
+                                    />
                                 </DropdownToggle>
                                 <DropdownMenu right>
                                     <DropdownItem className={styles.dropdownItem}>
@@ -115,7 +145,8 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state, ownProps) {
     return {
-        name: state.authReducer.first_name
+        name: state.authReducer.first_name,
+        lname: state.authReducer.last_name
         //projName: state.projReducer.curr_proj
     };
 }
