@@ -4,6 +4,7 @@ import Parse from "parse";
 import createChannelNewProject from "./chatActions";
 import history from "../history";
 import { UserModel } from "../models/UserModel";
+import toastr from "../components/common/toastrConfig";
 
 export const projActions = {
     createProject,
@@ -19,31 +20,37 @@ function createProject(projectName, projectManager, projectMembers) {
         console.log("creating project" + projectName + "...");
         dispatch(request(projectName));
 
-        let Project = Parse.Object.extend("Project");
-        let project = new Project();
+        getMembers(projectMembers).then(members => {
+            for (var i = 0; i < members.length; i++) {
+                if (members[i].length === 0) {
+                    throw Error("One of your users does not exist.");
+                }
+            }
 
-        project.set("name", projectName);
-        project.set("boards", []);
-        project.set("channels", []);
-        project.set("tasks", []);
-        project.set("updates", []);
+            let Project = Parse.Object.extend("Project");
+            let project = new Project();
 
-        createChannelNewProject()
-            .then(newChannel => {
-                return project.set("channels", [newChannel.id]);
-            })
-            .then(whatever => {
-                project.save(null, {
-                    success: function(project) {
-                        saveMembersToProject(project, projectManager, projectMembers);
-                        dispatch(success(project));
-                    },
-                    error: function(project, error) {
-                        dispatch(failure(error));
-                        console.log(error);
-                    }
+            project.set("name", projectName);
+            project.set("boards", []);
+            project.set("channels", []);
+            project.set("tasks", []);
+            project.set("updates", []);
+
+            createChannelNewProject()
+                .then(newChannel => {
+                    return project.set("channels", [newChannel.id]);
+                })
+                .then(whatever => {
+                    project.save().then(() => {
+                        saveMembersToProject(project, projectManager, projectMembers).then(() => {
+                            dispatch(success(project));
+                        });
+                    });
                 });
-            });
+        }).catch(error => {
+            dispatch(failure(error));
+            toastr.error(error, "Failed creating project!")
+        });
     };
 
     function request(req) {
@@ -436,67 +443,70 @@ function addMember (username, project_id, user_role) {
     }
 }
 
-function removeMember (username, project_id) {
+function removeMember(username, project_id) {
     return dispatch => {
         dispatch(request());
         let query = new Parse.Query(Parse.User);
         query.equalTo("username", username);
-        query.first().then(user => {
-            let query = new Parse.Query(Parse.Object.extend("Project"));
-            console.log(query);
-            query.equalTo("objectId", project_id);
+        query
+            .first()
+            .then(user => {
+                let query = new Parse.Query(Parse.Object.extend("Project"));
+                console.log(query);
+                query.equalTo("objectId", project_id);
 
-            query.first().then(project => {
-                user.remove("projects", project);
-                user.save(null, {
-                    useMasterKey: true,
-                    success: function (res) {
-                        let user_id = user.id;
-                        let roles = project.get("roles");
-                        //let user_role = roles[user_id];
-                        project.remove("members", user);
-                        delete roles[user_id];
-        
-                        project.set("roles", roles);
-                        project.save(null, {
+                query.first().then(project => {
+                    user.remove("projects", project);
+                    user
+                        .save(null, {
                             useMasterKey: true,
-                            success: function (res) {
-                                dispatch(success(user.id));
+                            success: function(res) {
+                                let user_id = user.id;
+                                let roles = project.get("roles");
+                                //let user_role = roles[user_id];
+                                project.remove("members", user);
+                                delete roles[user_id];
+
+                                project.set("roles", roles);
+                                project.save(null, {
+                                    useMasterKey: true,
+                                    success: function(res) {
+                                        dispatch(success(user.id));
+                                    },
+                                    error: function(res, err) {
+                                        console.log(err);
+                                        dispatch(failure());
+                                    }
+                                });
                             },
-                            error: function (res, err) {
-                                console.log(err);
+                            error: function(res, err) {
                                 dispatch(failure());
                             }
                         })
-                    },
-                    error: function (res, err) {
-                        dispatch(failure());
-                    }
-                }).catch(error => {
-                    console.log(error);
-                    dispatch(failure());
-                })
- 
+                        .catch(error => {
+                            console.log(error);
+                            dispatch(failure());
+                        });
+                });
             })
-        }).catch( error => {
-            console.log(error);
-            dispatch(failure(error));
-        })
-
-    }
+            .catch(error => {
+                console.log(error);
+                dispatch(failure(error));
+            });
+    };
 
     function request() {
-        return { 
+        return {
             type: types.REMOVE_MEMBER_REQUEST
         };
     }
     function success(removed_id) {
-        return { 
+        return {
             type: types.REMOVE_MEMBER_SUCCESS,
             payload: removed_id
         };
     }
     function failure() {
-        return { type: types.REMOVE_MEMBER_FAILURE};
+        return { type: types.REMOVE_MEMBER_FAILURE };
     }
 }
