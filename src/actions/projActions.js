@@ -191,7 +191,7 @@ function getProject(project_id) {
                                         member_role = "CEO";
                                         break;
                                     default:
-                                        member_role = "Member";
+                                        member_role = "Team Member";
                                         break;
                                 }
 
