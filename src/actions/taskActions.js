@@ -229,6 +229,6 @@ function moveTask(oldboard_id, newboard_id, task_id) {
         return { type: types.MOVE_TASK_SUCCESS, req: {task_id: taskId, board_id: boardId} };
     }
     function failure(req) {
-        return { type: types.MOVEE_TASK_FAILURE, req };
+        return { type: types.MOVE_TASK_FAILURE, req };
     }
 }
