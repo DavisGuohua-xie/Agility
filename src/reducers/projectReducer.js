@@ -64,15 +64,17 @@ export default function projectReducer(state = initialState, action) {
             });
 
         case types.ADD_MEMBER_REQUEST:
-            return state.merge({
-                add_member_request: true
-            });
+            return state;
 
-        case types.ADD_MEMBER_SUCCESS:
-            return state.merge({
+        case types.ADD_MEMBER_SUCCESS: {
+            let newMembers = Object.assign([], state.project_data.members);
+            newMembers.push(action.payload);
+            return {...state,
+            project_data: {
                 ...state.project_data,
-                members: [...state.project_data.members, action.payload]
-            });
+                members: newMembers
+            }}
+        }
 
         case types.ADD_MEMBER_FAILURE:
             return state.merge({
@@ -80,14 +82,21 @@ export default function projectReducer(state = initialState, action) {
             });
 
         case types.REMOVE_MEMBER_REQUEST:
-            return state.merge({
-                remove_member_request: true
-            });
+            return state;
+
         case types.REMOVE_MEMBER_SUCCESS:
-            return state.merge({
-                ...state.project_data,
-                members: [...state.project_data.members, action.payload]
-            });
+            let newMembers = Object.assign([], state.project_data.members);
+            for (var i = 0; i < newMembers.length; i++) {
+                if (newMembers[i].member_id === action.payload) {
+                    newMembers.splice(i, 1);
+                    break;
+                }
+            }
+            return {...state,
+                project_data: {
+                    ...state.project_data,
+                    members: newMembers
+            }}
 
         case types.REMOVE_MEMBER_FAILURE:
             return state.merge({
