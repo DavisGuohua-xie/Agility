@@ -57,7 +57,7 @@ class SettingsPage extends React.Component {
         req.email = this.state.email;
 
         if (this.state.fname === '' || this.state.lname === '' || this.state.email === '') {
-            toastr.error("Required field left blank.", "Savig failed!");
+            toastr.error("Required field left blank.", "Saving failed!");
             return;
         }
 

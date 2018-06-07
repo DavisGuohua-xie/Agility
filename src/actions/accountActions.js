@@ -94,7 +94,7 @@ function saveUserInfo(userInfo) {
 
         currentUser.fetch().then(user => {
             user.set("first_name", userInfo.first_name);
-            user.set("last_name", userInfo.first_name);
+            user.set("last_name", userInfo.last_name);
 
             if (userInfo.password !== '') {
                 user.set("password", userInfo.password)
