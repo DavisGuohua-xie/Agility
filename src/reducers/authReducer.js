@@ -33,9 +33,7 @@ export default function authReducer(state = initialState, action) {
             });
 
         case C.REGISTRATION_SUCCESS:
-            return state.merge({
-              logged_in: true
-            })
+            return state.merge({  ...action.userModel, logged_in: true });
 
         case C.REGISTRATION_FAILURE:
             return state.merge({

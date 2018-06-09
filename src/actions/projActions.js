@@ -13,7 +13,9 @@ export const projActions = {
     addChannelToProject,
     addMember,
     removeMember
+
 };
+
 
 function createProject(projectName, projectManager, projectMembers) {
     return dispatch => {
