@@ -103,6 +103,10 @@ class ProjectOverviewPage extends React.Component {
     }
 
     componentDidMount() {
+        if (!this.props.logged_in) {
+            this.props.history.replace("/login");
+            return;
+        }
         mql.addListener(this.mediaQueryChanged);
         this.setState({ mql: mql, sidebarDocked: mql.matches });
         this.props.actions.getProject(this.props.match.params.projID);
@@ -170,7 +174,8 @@ class ProjectOverviewPage extends React.Component {
             });
             if (!duplicate) {
                 let new_role = this.state.newRole;
-                if (this.hasAuthority(username, project_id) === false) toastr.error("You don't have the authority to add members!");
+                if (this.hasAuthority(username, project_id) === false)
+                    toastr.error("You don't have the authority to add members!");
                 else {
                     let query = new Parse.Query(Parse.User);
                     query.equalTo("username", username);
@@ -334,6 +339,7 @@ class ProjectOverviewPage extends React.Component {
                         onAddMember={this.toggleAddMemberModal}
                         onRemoveMember={this.toggleRemoveMemberModal}
                         onLeaveProject={this.toggleLeaveProjectModal}
+                        role={this.props.role}
                     />
                 );
                 break;
@@ -406,7 +412,8 @@ class ProjectOverviewPage extends React.Component {
                         content: { overflowY: "auto", height: "100%" },
                         overlay: { top: "56px" },
                         sidebar: {
-                            backgroundColor: "#ECECEA", /*"linear-gradient(rgba(224, 254, 255, 1), rgba(255,255,255,0))"*/
+                            backgroundColor:
+                                "#ECECEA" /*"linear-gradient(rgba(224, 254, 255, 1), rgba(255,255,255,0))"*/,
                             width: 200,
                             zIndex: 999
                         }
@@ -436,12 +443,24 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state, ownProps) {
     console.log(state);
+    if (!state.authReducer.username) return { logged_in: false };
     return {
+        logged_in: state.authReducer.logged_in,
         ajaxCalls: state.ajaxCallsInProgress,
         project_data: state.projectReducer.project_data,
-        board_data: state.taskReducer.board_data
+        board_data: state.taskReducer.board_data,
+        role: state.projectReducer.project_data
+            ? state.projectReducer.project_data.members.filter(
+                  user => user.username === state.authReducer.username
+              )[0].role
+            : null
     };
 }
 
-const connectedPage = withRouter(connect(mapStateToProps, mapDispatchToProps)(ProjectOverviewPage));
+const connectedPage = withRouter(
+    connect(
+        mapStateToProps,
+        mapDispatchToProps
+    )(ProjectOverviewPage)
+);
 export { connectedPage as ProjectOverviewPage };
