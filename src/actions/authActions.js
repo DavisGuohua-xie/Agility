@@ -73,7 +73,7 @@ export const register = (firstname, lastname, username, email, password, success
         () => {
             newUser.setFirstName(firstname);
             newUser.setLastName(lastname);
-            dispatch(successRegister());
+            dispatch(successRegister(newUser));
             dispatch(cancelRegistration());
             dispatch(sendWelcomeMessage(email, username));
 
@@ -121,9 +121,10 @@ const signUpEmailSuccess = () => {
         type: C.SEND_SIGNUP_EMAIL_SUCCESS
     };
 };
-const successRegister = () => {
+const successRegister = (newUser) => {
     return {
-        type: C.REGISTRATION_SUCCESS
+        type: C.REGISTRATION_SUCCESS,
+        userModel: getUserInfo(newUser)
     };
 };
 
