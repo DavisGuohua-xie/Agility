@@ -25,8 +25,6 @@ const NewProjectMember = props => {
                 >
                     <option value="0">Project Member</option>
                     <option value="1">Project Manager</option>
-                    <option value="2">Customer</option>
-                    <option value="3">CEO</option>
                 </Input>
             </Col>
             <Col md={{ offset: 1, size: 1 }} sm="1" xs="1">

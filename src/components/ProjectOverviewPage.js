@@ -79,7 +79,7 @@ class ProjectOverviewPage extends React.Component {
             removeMemberModalOpen: false,
             leaveProjectModalOpen: false,
             newUserName: "",
-            newRole: "",
+            newRole: "TeamMember",
             removeName: ""
         };
 
@@ -190,7 +190,7 @@ class ProjectOverviewPage extends React.Component {
         this.setState({
             newRole: e.target.value
         });
-        console.log(this.state.newRole);
+        console.log(e.target.value);
     }
 
     toggleRemoveMemberModal() {
