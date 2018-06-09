@@ -60,3 +60,47 @@ Now execute `yarn start` and open `localhost:3000` in your browser to see the we
 `src/store`: Define `redux` store configuration
 
 `src/styles`: All CSS goes here. Make sure local CSS has extension `*.module.css`
+
+
+
+
+
+
+## Credits
+
+- [redux](https://github.com/reduxjs/redux) - Predictable state container for JavaScript apps
+- [react-loading](https://github.com/fakiolinho/react-loading) - React component for loading animations
+- [reactstrap](https://github.com/reactstrap/reactstrap) - Simple React Bootstrap 4 components
+- [react-avatar](https://github.com/Sitebase/react-avatar) - Universal avatar makes it possible to fetch/generate an avatar based on the information you have about that user.
+- [react-router-dom](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-dom) - DOM bindings for React Router.
+- [toastr](https://github.com/CodeSeven/toastr) - Simple javascript toast notifications
+- [prop-types](https://github.com/facebook/prop-types) - Runtime type checking for React props and similar objects
+- [react-redux](https://github.com/reduxjs/react-redux) - Official React bindings for Redux
+- [parse](https://github.com/parse-community/Parse-SDK-JS) - Parse SDK for JavaScript
+- [moment](https://github.com/moment/moment) - Parse, validate, manipulate, and display dates in javascript.
+- [react-big-calendar](https://github.com/intljusticemission/react-big-calendar) - gcal/outlook like calendar component
+- [react-chartjs-2](https://github.com/jerairrest/react-chartjs-2) - React wrapper for Chart.js
+- [react-trello](https://github.com/rcdexta/react-trello) - Pluggable components to add a trello-like kanban board to your application
+- [lodash](https://github.com/lodash/lodash) - A modern JavaScript utility library delivering modularity, performance, & extras.
+- [chatkit-client-js](https://github.com/pusher/chatkit-client-js) - JavaScript SDK for Pusher Chatkit 
+- [express](https://github.com/expressjs/express) - Fast, unopinionated, minimalist web framework for node.
+- [body-parser](https://github.com/ReactTraining/react-router) - Node.js body parsing middleware
+- [cors](https://github.com/expressjs/cors) - Node.js CORS middleware
+- [history](https://github.com/ReactTraining/history) - Manage session history with JavaScript
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
