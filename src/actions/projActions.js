@@ -12,8 +12,26 @@ export const projActions = {
     getProject,
     addChannelToProject,
     addMember,
-    removeMember
+    removeMember,
+    hasAuthority
 };
+
+function hasAuthority(username, project_id) {
+    let query = new Parse.Query(Parse.User);
+    query.equalTo("username", username);
+    query.first().then(user => {
+        let query = new Parse.Query(Parse.Object.extend("Project"));
+        query.equalTo("objectId", project_id);
+        query.first().then(project => {
+            let roles = project.get("roles");
+            if (roles[user.id] === "ProjectManager" || roles[user.id] === "CEO") {
+                return true;
+            } else return false;
+        });
+    });
+}
+
+
 
 function createProject(projectName, projectManager, projectMembers) {
     return dispatch => {
