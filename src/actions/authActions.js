@@ -43,7 +43,7 @@ export const login = (username, password, success) => {
             },
             function(error) {
                 //No longer logging in anymore
-                toastr.error("Incorrect login credentials", "Login failed");
+                toastr.error("Incorrect login credentials.", "Login failed");
                 dispatch(cancelLogin());
                 dispatch(loginError(error));
             }
@@ -65,6 +65,7 @@ export const login = (username, password, success) => {
 export const register = (firstname, lastname, username, email, password, success) => dispatch => {
     dispatch(registerUser());
     var newUser = new UserModel();
+    toastr.info("Creating account...");
 
     newUser.createAccount(
         username,
@@ -76,10 +77,12 @@ export const register = (firstname, lastname, username, email, password, success
             dispatch(successRegister());
             dispatch(cancelRegistration());
             dispatch(sendWelcomeMessage(email, username));
+            toastr.success("Welcome email sent!", "Registration Successful");
 
             success(newUser);
         },
         (user, error) => {
+            toastr.error("Could not register new account");
             dispatch(failedRegister(error));
             dispatch(cancelRegistration());
         }

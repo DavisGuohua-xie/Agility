@@ -3,6 +3,7 @@ import * as types from "./actionTypes";
 
 import Chatkit from "@pusher/chatkit";
 import toastr from "../components/common/toastrConfig";
+import {projActions} from './projActions';
 
 export const chatActions = {
     instantiateChatkit,
@@ -194,7 +195,7 @@ function createChannel(members, name, creatorId, isPrivate, currentChannelId, pr
                 });
             })
             .then(roomObj => {
-                //TODO: add new group channel to project on Parse
+                dispatch(projActions.addChannelToProject(roomObj.id, projId));
             })
             .catch(error => {
                 toastr.error("Could not create private room");
