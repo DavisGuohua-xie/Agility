@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 
 import { bindActionCreators } from "redux";
 
-import { withRouter } from "react-router";
+import { withRouter, Redirect } from "react-router";
 
 import Sidebar from "react-sidebar";
 //import Parse from "parse";
@@ -58,11 +58,12 @@ class ChatPage extends Component {
         this.switchToChannel = this.switchToChannel.bind(this);
         this.handleMemberClick = this.handleMemberClick.bind(this);
 
-        console.log(this.props.chatActions);
+        console.log(props);
     }
 
     componentDidMount() {
         if (!this.props.logged_in) {
+            console.log("not logged in");
             this.props.history.replace("/login");
             return;
         }
@@ -204,7 +205,7 @@ class ChatPage extends Component {
     }
 
     render() {
-        return (
+        return this.props.logged_in ? (
             <div style={{ height: "100%" }}>
                 <NavBar projName={this.props.project_name} projID={this.state.projectID} zIndex={2} />
                 <Sidebar
@@ -252,7 +253,7 @@ class ChatPage extends Component {
                     )}
                 </Sidebar>
             </div>
-        );
+        ) : <Redirect to="/login"/>;
     }
 }
 
@@ -264,7 +265,7 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state, ownProps) {
     console.log(state);
-    // TODO: need to get list of channel objects from store state
+    if(!state.authReducer.username) return {logged_in: false};
 
     let id_to_name_map = {};
 

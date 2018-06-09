@@ -35,6 +35,10 @@ export default class LoginPage extends Component {
         this.handleToggleReg = this.handleToggleReg.bind(this);
     }
 
+    componentDidMount() {
+        localStorage.clear(); // clear out all previous userdata
+    }
+
     handleLogin(e) {
         e.preventDefault();
 

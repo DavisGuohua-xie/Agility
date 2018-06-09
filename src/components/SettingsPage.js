@@ -6,14 +6,13 @@ import { accountActions } from "../actions/accountActions";
 
 import { NavBar } from "./common/Navbar";
 import SettingsLayout from "./settings/SettingsLayout";
-import Parse from "parse";
 import toastr from "../components/common/toastrConfig";
 
 class SettingsPage extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {        
+        this.state = {
             fname: "",
             lname: "",
             email: "",
@@ -24,13 +23,14 @@ class SettingsPage extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSave = this.handleSave.bind(this);
 
-        var currentUser = Parse.User.current();
-        if (!currentUser) {
-            this.props.history.push("/login");
-        }
+        
     }
 
     componentDidMount() {
+        if (!this.props.logged_in) {
+            this.props.history.replace("/login");
+            return;
+        }
         this.props.actions.getUserInfo();
     }
 
@@ -50,13 +50,13 @@ class SettingsPage extends React.Component {
         e.preventDefault();
         console.log("saving...");
 
-        let req = {}
+        let req = {};
 
         req.first_name = this.state.fname;
         req.last_name = this.state.lname;
         req.email = this.state.email;
 
-        if (this.state.fname === '' || this.state.lname === '' || this.state.email === '') {
+        if (this.state.fname === "" || this.state.lname === "" || this.state.email === "") {
             toastr.error("Required field left blank.", "Saving failed!");
             return;
         }
@@ -69,7 +69,6 @@ class SettingsPage extends React.Component {
         req.notification = this.state.notification;
 
         if (this.state.password !== this.state.confpassword) {
-
             toastr.error("Passwords are not the same.", "Saving failed!");
             return;
         }
@@ -87,10 +86,18 @@ class SettingsPage extends React.Component {
     render() {
         return (
             <div>
-            <NavBar history={this.props.history} />
-            <SettingsLayout fname={this.state.fname} lname={this.state.lname} email={this.state.email} username={this.state.username} notification={this.state.notification} onValueChange={this.handleChange} onSave={this.handleSave} />
-            </div> //
-            );
+                <NavBar history={this.props.history} />
+                <SettingsLayout
+                    fname={this.state.fname}
+                    lname={this.state.lname}
+                    email={this.state.email}
+                    username={this.state.username}
+                    notification={this.state.notification}
+                    onValueChange={this.handleChange}
+                    onSave={this.handleSave}
+                />
+            </div>
+        );
     }
 }
 
@@ -102,10 +109,16 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state, ownProps) {
     return {
+        logged_in: state.authReducer.logged_in,
         loading: state.ajaxCallsInProgress > 0,
         user_info: state.accountReducer.user_info
     };
 }
 
-const connectedHomepage = withRouter(connect(mapStateToProps, mapDispatchToProps)(SettingsPage));
+const connectedHomepage = withRouter(
+    connect(
+        mapStateToProps,
+        mapDispatchToProps
+    )(SettingsPage)
+);
 export { connectedHomepage as SettingsPage };

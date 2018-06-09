@@ -177,7 +177,7 @@ function createChannel(members, name, creatorId, isPrivate, currentChannelId, pr
                 console.log("in response");
                 if (response.status >= 400) {
                     console.error(response);
-                    throw {error: "error"};
+                    throw { error: "error" };
                 }
 
                 return response.json();
@@ -204,6 +204,7 @@ function createChannel(members, name, creatorId, isPrivate, currentChannelId, pr
 
 function logoff() {
     return dispatch => {
+        if (!currUser) return;
         Object.keys(currUser.roomSubscriptions).forEach(channelId => {
             unsubscribeFromChannel(channelId);
         });
@@ -228,7 +229,7 @@ export default function createChannelNewProject() {
         })
     }).then(response => {
         console.log("in response");
-        if (response.status >= 400) throw {error: "error"};
+        if (response.status >= 400) throw { error: "error" };
 
         return response.json();
     });
