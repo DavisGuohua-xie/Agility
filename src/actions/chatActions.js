@@ -21,7 +21,7 @@ let chatManager = null;
 let currUser = null;
 let roomSubs = [];
 
-const SERVER_URL = "http://localhost:3001";
+const SERVER_URL = "https://chatkit-server.herokuapp.com";
 
 function instantiateChatkit(chatkitUsername) {
     return dispatch => {
