@@ -59,6 +59,7 @@ export default class LoginPage extends Component {
 
         if (username && password && email && fname && lname) {
             this.props._register(username, password, email, fname, lname);
+            this.handleToggleReg();
         } else {
             toastr.error("Enter all required information!", "Registration failed");
         }
@@ -67,6 +68,7 @@ export default class LoginPage extends Component {
     handlePasswordReset() {
         let email = this.state.recoverUsername;
         this.props._resetPassword(email);
+        this.handleToggleForgot();
     }
 
     handleInputChange(e) {
@@ -129,5 +131,10 @@ function mapStateToProps(state, ownProps) {
     };
 }
 
-const connectedLoginPage = withRouter(connect(mapStateToProps, mapDispatchToProps)(LoginPage));
+const connectedLoginPage = withRouter(
+    connect(
+        mapStateToProps,
+        mapDispatchToProps
+    )(LoginPage)
+);
 export { connectedLoginPage as LoginPage };
