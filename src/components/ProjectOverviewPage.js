@@ -97,7 +97,6 @@ class ProjectOverviewPage extends React.Component {
         this.handleRemoveMember = this.handleRemoveMember.bind(this);
         this.handleRemoveName = this.handleRemoveName.bind(this);
         this.updateBoard = this.updateBoard.bind(this);
-        //this.hasAuthority = this.hasAuthority.bind(this);
         this.toggleLeaveProjectModal = this.toggleLeaveProjectModal.bind(this);
         this.handleLeaveProject = this.handleLeaveProject.bind(this);
     }
@@ -174,9 +173,6 @@ class ProjectOverviewPage extends React.Component {
             });
             if (!duplicate) {
                 let new_role = this.state.newRole;
-                if (this.props.actions.hasAuthority(username, project_id) === false)
-                    toastr.error("You don't have the authority to add members!");
-                else {
                     let query = new Parse.Query(Parse.User);
                     query.equalTo("username", username);
                     query.first().then(user => {
@@ -186,7 +182,7 @@ class ProjectOverviewPage extends React.Component {
                             this.toggleAddMemberModal();
                         }
                     });
-                }
+
             }
         }
     }
@@ -212,9 +208,7 @@ class ProjectOverviewPage extends React.Component {
         let username = this.state.removeName;
         let project_id = this.state.projectID;
         let query = new Parse.Query(Parse.User);
-        if (this.props.actions.hasAuthority(username, project_id) === false)
-            toastr.error("You don't have the authority to remove members!");
-        else {
+
             query.equalTo("username", username);
             query.first().then(user => {
                 if (user === undefined) toastr.error("This user doesn't exist!");
@@ -223,7 +217,7 @@ class ProjectOverviewPage extends React.Component {
                     this.props.actions.removeMember(username, project_id);
                 }
             });
-        }
+
     }
 
 
