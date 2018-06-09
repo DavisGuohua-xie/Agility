@@ -69,11 +69,12 @@ export default function projectReducer(state = initialState, action) {
         case types.ADD_MEMBER_SUCCESS: {
             let newMembers = Object.assign([], state.project_data.members);
             newMembers.push(action.payload);
-            return {...state,
-            project_data: {
-                ...state.project_data,
-                members: newMembers
-            }}
+            return state.merge({
+                project_data: {
+                    ...state.project_data,
+                    members: newMembers
+                }
+            });
         }
 
         case types.ADD_MEMBER_FAILURE:
@@ -92,11 +93,12 @@ export default function projectReducer(state = initialState, action) {
                     break;
                 }
             }
-            return {...state,
+            return state.merge({
                 project_data: {
                     ...state.project_data,
                     members: newMembers
-            }}
+                }
+            });
 
         case types.REMOVE_MEMBER_FAILURE:
             return state.merge({
