@@ -1,7 +1,7 @@
 
 import ParseConfig from './parsecfg'
 
-const SERVER_URL = "http://agiledirtybit.herokuapp.com"
+const SERVER_URL = "https://agiledirtybit.herokuapp.com"
 const EMAIL_ENDPOINT = `${SERVER_URL}/email`
 const PARSE_SERVER = `${SERVER_URL}/parse`
 const RESET_EMAIL_ENDPOINT = `${PARSE_SERVER}/requestPasswordReset`
