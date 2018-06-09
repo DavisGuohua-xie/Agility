@@ -191,7 +191,6 @@ class ProjectOverviewPage extends React.Component {
         this.setState({
             newRole: e.target.value
         });
-        console.log(e.target.value);
     }
 
     toggleRemoveMemberModal() {
@@ -244,8 +243,6 @@ class ProjectOverviewPage extends React.Component {
     }
 
     generateSidebar() {
-        // TODO: generate list of project members for DM-ing
-
         var members = this.props.project_data === undefined ? [] : this.props.project_data.members;
         return (
             <ul className={styles.sidebarUL}>
@@ -273,13 +270,10 @@ class ProjectOverviewPage extends React.Component {
 
     updateBoard(boardId, newBoard) {
         // Need to update board "type"! How?
-        //board.save();
-        console.log(boardId, newBoard);
         this.props.taskActions.updateBoard(boardId, newBoard);
     }
 
     updateTask(taskId, newTask) {
-        console.log(taskId, newTask);
         this.props.taskActions.updateTask(taskId, newTask);
     }
 
@@ -298,9 +292,7 @@ class ProjectOverviewPage extends React.Component {
             this.props.board_data === undefined
                 ? { lanes: [] }
                 : { lanes: JSON.parse(JSON.stringify(this.props.board_data)) };
-        console.log(task_list);
 
-        //console.log(this.state);
         let sidebarContent = this.generateSidebar();
         let mainContent;
         let projectManage = null;
@@ -422,7 +414,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state, ownProps) {
-    console.log(state);
     if (!state.authReducer.username) return { logged_in: false };
     return {
         logged_in: state.authReducer.logged_in,

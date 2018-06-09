@@ -147,7 +147,6 @@ function mapStateToProps(state, ownProps) {
     return {
         name: state.authReducer.first_name,
         lname: state.authReducer.last_name
-        //projName: state.projReducer.curr_proj
     };
 }
 

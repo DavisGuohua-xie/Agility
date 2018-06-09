@@ -23,7 +23,6 @@ app.post("/users", (req, res) => {
     console.log(username);
     chatkit
         .createUser({
-            // TODO: check if user exists
             id: username,
             name: firstName + " " + lastName
         })

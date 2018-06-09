@@ -1,3 +1,4 @@
+
 import React from "react";
 
 import styles from "../../styles/Login.module.css";
@@ -21,7 +22,6 @@ const LoginForm1 = props => {
         <div className={styles.container}>
             <div className={styles.center}>
                 <img className={styles.logo} src={logo} alt=""/>
-                {/*<h2 className={styles.loginHeader}>Agility</h2>*/}
 
                 <Form onSubmit={props.onLogin}>
                     <FormGroup className={styles.formgroup}>

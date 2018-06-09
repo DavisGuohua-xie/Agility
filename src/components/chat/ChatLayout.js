@@ -7,9 +7,7 @@ import { ChatMessage } from "./ChatMessage";
 import styles from "../../styles/ChatLayout.module.css";
 import NewChannelModal from "./NewChannelModal";
 
-/*
- * TODO: This component is expecting a list of messages from ChatPage.js as 'messageList' prop.
- */
+
 const ChatLayout = props => {
     console.log(`docked: ${props.docked}`);
     return (

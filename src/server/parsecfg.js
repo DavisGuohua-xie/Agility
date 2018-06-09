@@ -1,3 +1,5 @@
+
+//Should be using environemnet variables.
 var parsecfg = {
     APP_ID: "myAppId",
     MASTER_KEY: "MASTER_KEY",

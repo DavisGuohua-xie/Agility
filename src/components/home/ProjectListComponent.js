@@ -6,14 +6,10 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Parse } from "parse";
 import toastr from "../common/toastrConfig";
-//import { UserModel } from "../../models/UserModel";
 
 import NewProjectModal from "./NewProjectModal";
 
 const PROJECT_MEMBER = 0;
-//const PROJECT_MANAGER = 1;
-//const CUSTOMER = 2;
-//const CEO = 3;
 
 class ProjectListComponent extends React.Component {
     constructor(props) {

@@ -1,6 +1,5 @@
 import * as types from "../actions/actionTypes";
 import initialState from "./initialState";
-//let Immutable = require("seamless-immutable").static;
 
 export default function taskReducer(state = initialState, action) {
     switch (action.type) {
@@ -50,9 +49,8 @@ export default function taskReducer(state = initialState, action) {
             });
 
         case types.GET_PROJECT_SUCCESS: // save boards data here
-            //let newState;
 
-            //console.log(action.project_data.boards[0].cards);
+
 
             return state.merge({
                 board_data: JSON.parse(JSON.stringify(action.project_data.boards))
@@ -134,8 +132,7 @@ export default function taskReducer(state = initialState, action) {
                         return { ...board, cards: board.cards.filter(task => task.id !== task_id) };
                     }
 
-                    // let newarr = board.cards.slice();
-                    // newarr.splice(position, 0, taskObj);
+
                     return { ...board, cards: [...board.cards, taskObj] };
                 })
             });
