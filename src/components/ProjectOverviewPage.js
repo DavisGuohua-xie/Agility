@@ -173,16 +173,15 @@ class ProjectOverviewPage extends React.Component {
             });
             if (!duplicate) {
                 let new_role = this.state.newRole;
-                    let query = new Parse.Query(Parse.User);
-                    query.equalTo("username", username);
-                    query.first().then(user => {
-                        if (user === undefined) toastr.error("This user doesn't exist!");
-                        else {
-                            this.props.actions.addMember(username, project_id, new_role);
-                            this.toggleAddMemberModal();
-                        }
-                    });
-
+                let query = new Parse.Query(Parse.User);
+                query.equalTo("username", username);
+                query.first().then(user => {
+                    if (user === undefined) toastr.error("This user doesn't exist!");
+                    else {
+                        this.props.actions.addMember(username, project_id, new_role);
+                        this.toggleAddMemberModal();
+                    }
+                });
             }
         }
     }
@@ -209,18 +208,15 @@ class ProjectOverviewPage extends React.Component {
         let project_id = this.state.projectID;
         let query = new Parse.Query(Parse.User);
 
-            query.equalTo("username", username);
-            query.first().then(user => {
-                if (user === undefined) toastr.error("This user doesn't exist!");
-                else {
-                    this.toggleRemoveMemberModal();
-                    this.props.actions.removeMember(username, project_id);
-                }
-            });
-
+        query.equalTo("username", username);
+        query.first().then(user => {
+            if (user === undefined) toastr.error("This user doesn't exist!");
+            else {
+                this.toggleRemoveMemberModal();
+                this.props.actions.removeMember(username, project_id);
+            }
+        });
     }
-
-
 
     toggleLeaveProjectModal() {
         this.setState({
@@ -424,16 +420,17 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state, ownProps) {
     console.log(state);
     if (!state.authReducer.username) return { logged_in: false };
+
+    let curruser = state.projectReducer.project_data.members.filter(
+        user => user.username === state.authReducer.username
+    )[0];
+    role = curruser ? curruser.role : null;
     return {
         logged_in: state.authReducer.logged_in,
         ajaxCalls: state.ajaxCallsInProgress,
         project_data: state.projectReducer.project_data,
         board_data: state.taskReducer.board_data,
-        role: state.projectReducer.project_data
-            ? state.projectReducer.project_data.members.filter(
-                  user => user.username === state.authReducer.username
-              )[0].role
-            : null
+        role: null
     };
 }
 
