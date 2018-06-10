@@ -424,13 +424,13 @@ function mapStateToProps(state, ownProps) {
     let curruser = state.projectReducer.project_data.members.filter(
         user => user.username === state.authReducer.username
     )[0];
-    role = curruser ? curruser.role : null;
+    let role = curruser ? curruser.role : null;
     return {
         logged_in: state.authReducer.logged_in,
         ajaxCalls: state.ajaxCallsInProgress,
         project_data: state.projectReducer.project_data,
         board_data: state.taskReducer.board_data,
-        role: null
+        role: role
     };
 }
 
