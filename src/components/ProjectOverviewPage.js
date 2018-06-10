@@ -426,7 +426,7 @@ function mapStateToProps(state, ownProps) {
 
     if (state.projectReducer.project_data) {
         if (state.projectReducer.project_data.members) {
-            currUser = state.projectReducer.project_data.members.filter(
+            curruser = state.projectReducer.project_data.members.filter(
                 user => user.username === state.authReducer.username
             )[0];
             role = curruser ? curruser.role : null;
