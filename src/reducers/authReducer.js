@@ -15,7 +15,7 @@ export default function authReducer(state = initialState, action) {
                 logging_in: false
             });
         case C.LOGIN_SUCCESS: // Add current user to the store
-            return state.merge({  ...action.userModel, logged_in: true });
+            return state.merge({ ...action.userModel, logged_in: true });
 
         case C.LOGIN_FAILURE: //Add error to list of current errors
             return state.merge({
@@ -33,7 +33,7 @@ export default function authReducer(state = initialState, action) {
             });
 
         case C.REGISTRATION_SUCCESS:
-            return state.merge({  ...action.userModel, logged_in: true });
+            return state.merge({ ...action.userModel, logged_in: true });
 
         case C.REGISTRATION_FAILURE:
             return state.merge({
@@ -51,19 +51,27 @@ export default function authReducer(state = initialState, action) {
             });
         case C.SEND_SIGNUP_EMAIL_FAILURE:
             return state.merge({
-              errors: [...state.errors, action.error],
-              sentWelcome: false,
-              sendingSignup: false
-            })
+                errors: [...state.errors, action.error],
+                sentWelcome: false,
+                sendingSignup: false
+            });
         case C.SEND_SIGNUP_EMAIL:
-             return state.merge({
-               sendingSignup: true
-             })
+            return state.merge({
+                sendingSignup: true
+            });
         case C.SEND_SIGNUP_EMAIL_SUCCESS:
-             return state.merge({
-               sendingSignup: false,
-               sentWelcome: true
-             })
+            return state.merge({
+                sendingSignup: false,
+                sentWelcome: true
+            });
+
+        case C.SAVE_USERINFO_SUCCESS:
+            return state.merge({
+                email: action.req.userInfo.email,
+                first_name: action.req.userInfo.first_name,
+                last_name: action.req.userInfo.last_name,
+                notification: action.req.userInfo.notification
+            });
 
         default:
             return state;

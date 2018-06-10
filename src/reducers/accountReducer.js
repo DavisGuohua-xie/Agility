@@ -1,7 +1,6 @@
 import * as types from "../actions/actionTypes";
 import initialState from "./initialState";
 
-
 export default function accountReducer(state = initialState, action) {
     switch (action.type) {
         case types.GET_USERINFO_REQUEST:
@@ -20,7 +19,7 @@ export default function accountReducer(state = initialState, action) {
                 userinfo_error: action.error
             });
 
-            case types.SAVE_USERINFO_REQUEST:
+        case types.SAVE_USERINFO_REQUEST:
             return state.merge({
                 save_userinfo_request: true
             });
@@ -28,6 +27,13 @@ export default function accountReducer(state = initialState, action) {
         case types.SAVE_USERINFO_SUCCESS:
             return state.merge({
                 save_userinfo_request: false,
+                user_info: {
+                    email: action.req.userInfo.email,
+                    first_name: action.req.userInfo.first_name,
+                    last_name: action.req.userInfo.last_name,
+                    notification: action.req.userInfo.notification,
+                    username: state.user_info.username
+                }
             });
         case types.SAVE_USERINFO_FAILURE:
             return state.merge({
@@ -35,23 +41,22 @@ export default function accountReducer(state = initialState, action) {
                 save_userinfo_error: action.error
             });
         case types.RESET_PASSWORD_REQUEST:
-           return state.merge({
-             sending_password_reset: true,
-           });
+            return state.merge({
+                sending_password_reset: true
+            });
 
         case types.RESET_PASSWORD_FAILURE:
-           return state.merge({
-             sending_password_reset: false,
-             password_email_sent: false
-           })
-           
+            return state.merge({
+                sending_password_reset: false,
+                password_email_sent: false
+            });
+
         case types.RESET_PASSWORD_SUCCESS:
             return state.merge({
-              sending_password_reset: false,
-              password_email_sent: true
-            })
+                sending_password_reset: false,
+                password_email_sent: true
+            });
         default:
             return state;
-
     }
 }

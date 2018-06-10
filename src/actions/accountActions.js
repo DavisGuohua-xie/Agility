@@ -100,7 +100,7 @@ function saveUserInfo(userInfo) {
 
             user.save()
                 .then(() => {
-                    dispatch(success());
+                    dispatch(success(userInfo));
                     toastr.success("Profile saved.", "Success!");
                 })
                 .catch(error => {
@@ -113,8 +113,8 @@ function saveUserInfo(userInfo) {
     function request() {
         return { type: C.SAVE_USERINFO_REQUEST };
     }
-    function success() {
-        return { type: C.SAVE_USERINFO_SUCCESS, save_userinfo_success: true };
+    function success(userInfo) {
+        return { type: C.SAVE_USERINFO_SUCCESS, req: {save_userinfo_success: true, userInfo} };
     }
     function failure(err) {
         return { type: C.SAVE_USERINFO_FAILURE, error: err };
