@@ -27,7 +27,7 @@ const SERVER_URL = "https://chatkit-server.herokuapp.com";
 function instantiateChatkit(chatkitUsername) {
     return dispatch => {
         chatManager = new Chatkit.ChatManager({
-            instanceLocator: "v1:us1:dae44b3a-7d46-4d6b-8894-1302096c409d",
+            instanceLocator: process.env.CHATKIT_INSTANCE_LOCATOR,
             userId: chatkitUsername,
             tokenProvider: new Chatkit.TokenProvider({
                 url: `${SERVER_URL}/authenticate`
