@@ -100,7 +100,27 @@ alt="Agile Video Tour" width="240" height="180" border="10" /></a>
 
 
 
+## Created By:  DirtyBit
 
+[Devin James Moore](https://github.com/djm016)
+
+[John Chong Jun Ooi](https://github.com/john-best)
+
+[Guohua "Davis" Xie](https://github.com/DavisGuohua-xie)
+
+[Boyuan Yu](https://github.com/DavisGuohua-xie) 
+
+[Akshara Rao Balachandra](https://github.com/androidpcguy)	
+
+[Eduardo Carrillo](https://github.com/eddiecurio)
+
+[David Alejandro Gonzalez-Maldonado]: (https://github.com/davidgm96)
+
+[Shengkai He](https://github.com/softtrymee)	
+
+[Ishan Timalsina](https://github.com/ishantimalsina) 		
+
+[Alon Ankonina](https://github.com/alonanko)
 
 
 
