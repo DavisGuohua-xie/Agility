@@ -55,17 +55,16 @@ class NavBar extends React.Component {
         return (
             <div>
                 <Navbar
-                    color="light"
                     expand="md"
                     style={{ zIndex: zind }}
-                    className={styles.mainNav}
+                    className={`${styles.mainNav} navbar-light`}
                 >
                     <Link to="/" className={`${styles.navbarBrand} navbar-brand`}>
                         Agility
                     </Link>
                     <NavbarToggler onClick={this.toggle} />
 
-                    <Nav className={styles.navbarCenter} navbar>
+                    <Nav className={`${styles.navbarCenter}`} navbar >
                         {projName && (
                             <NavItem>
                                 <Link
