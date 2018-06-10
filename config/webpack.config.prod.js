@@ -101,7 +101,12 @@ module.exports = {
       // To fix this, we prevent you from importing files out of src/ -- if you'd like to,
       // please link the files into your node_modules/ and let module-resolution kick in.
       // Make sure your source files are compiled, as they will not be processed in any way.
-      new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
+      new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),,
+      new webpack.ProvidePlugin({
+        '$': "jquery",
+        'jQuery': "jquery",
+        'Popper': 'popper.js'
+      })
     ],
   },
   module: {
@@ -152,6 +157,11 @@ module.exports = {
               
               compact: true,
             },
+          },
+          
+          {
+            test: /(\.module\.css)$/, 
+            loader: 'style-loader!css-loader?modules&importLoaders=2&sourceMap&localIdentName=[local]---[hash:base64:5]'
           },
           // The notation here is somewhat confusing.
           // "postcss" loader applies autoprefixer to our CSS.
