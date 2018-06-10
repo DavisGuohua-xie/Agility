@@ -17,6 +17,8 @@ class SettingsPage extends React.Component {
             lname: "",
             email: "",
             username: "",
+            password: "",
+            confpassword: "",
             notification: -1
         };
 
