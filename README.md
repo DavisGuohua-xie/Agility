@@ -63,6 +63,13 @@ Now execute `yarn start` and open `localhost:3000` in your browser to see the we
 
 
 
+## Video Tour
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=rk8Ba9kR3LQ
+" target="_blank"><img src="http://img.youtube.com/vi/rk8Ba9kR3LQ/0.jpg" 
+alt="Agile Video Tour" width="240" height="180" border="10" /></a>
+
+
 
 
 
