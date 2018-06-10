@@ -1,6 +1,6 @@
 import * as types from "../actions/actionTypes";
 import initialState from "./initialState";
-//let Immutable = require("seamless-immutable").static;
+let Immutable = require("seamless-immutable").static;
 
 export default function taskReducer(state = initialState, action) {
     switch (action.type) {
@@ -80,30 +80,35 @@ export default function taskReducer(state = initialState, action) {
                 ]
             });
 
-        case types.UPDATE_TASK_SUCCESS:
+        case types.UPDATE_TASK_SUCCESS: {
             let board1 = Object.assign(
                 {},
                 state.board_data.filter(b => b.id === action.req.board_id)[0]
             );
 
-            console.log(board1);
             console.log(action.req.task);
 
-            return state.merge({
-                board_data: [
-                    ...state.board_data.filter(b => b.id !== action.req.board_id),
-                    {
-                        ...board1,
-                        cards: [
-                            ...board1.cards.filter(task => task.id !== action.req.task_id),
-                            Object.assign({}, action.req.task, {
-                                id: action.req.task_id,
-                                laneId: action.req.board_id
-                            })
-                        ]
-                    }
-                ]
+            let mutableBoardData = Immutable.asMutable(state.board_data, { deep: true });
+
+            let newBoardData = mutableBoardData.map(board => {
+                if (board.id !== action.req.board_id) return board;
+
+                let newTaskArr = board.cards.map(task => {
+                    if (task.id !== action.req.task_id) return task;
+
+                    return Object.assign({}, action.req.task, {
+                        id: action.req.task_id,
+                        laneId: action.req.board_id
+                    });
+                });
+
+                return { ...board, cards: newTaskArr };
             });
+
+            return state.merge({
+                board_data: newBoardData
+            });
+        }
 
         case types.MOVE_TASK_SUCCESS:
             let new_id = action.req.new_id;
