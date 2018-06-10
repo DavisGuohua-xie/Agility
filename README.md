@@ -1,4 +1,4 @@
-# README
+ # Agility 
 
 ## Prerequisites
 
@@ -63,6 +63,13 @@ Now execute `yarn start` and open `localhost:3000` in your browser to see the we
 
 
 
+## Video Tour
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=rk8Ba9kR3LQ
+" target="_blank"><img src="http://img.youtube.com/vi/rk8Ba9kR3LQ/0.jpg" 
+alt="Agile Video Tour" width="240" height="180" border="10" /></a>
+
+
 
 
 
@@ -93,7 +100,27 @@ Now execute `yarn start` and open `localhost:3000` in your browser to see the we
 
 
 
+## Team Dirty Bit
 
+[Devin James Moore](https://github.com/djm016)
+
+[John Chong Jun Ooi](https://github.com/john-best)
+
+[Guohua "Davis" Xie](https://github.com/DavisGuohua-xie)
+
+[Boyuan Yu](https://github.com/DavisGuohua-xie) 
+
+[Akshara Rao Balachandra](https://github.com/androidpcguy)	
+
+[Eduardo Carrillo](https://github.com/eddiecurio)
+
+[David Alejandro Gonzalez-Maldonado]: (https://github.com/davidgm96)
+
+[Shengkai He](https://github.com/softtrymee)	
+
+[Ishan Timalsina](https://github.com/ishantimalsina) 		
+
+[Alon Ankonina](https://github.com/alonanko)
 
 
 
