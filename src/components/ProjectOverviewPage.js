@@ -242,7 +242,7 @@ class ProjectOverviewPage extends React.Component {
     generateSidebar() {
         // TODO: generate list of project members for DM-ing
 
-        var members = this.props.project_data === undefined ? [] : this.props.project_data.members;
+        let members = this.props.project_data === undefined ? [] : this.props.project_data.members;
         return (
             <ul className={styles.sidebarUL}>
                 {members.map((person, index) => (
@@ -421,10 +421,18 @@ function mapStateToProps(state, ownProps) {
     console.log(state);
     if (!state.authReducer.username) return { logged_in: false };
 
-    let curruser = state.projectReducer.project_data.members.filter(
-        user => user.username === state.authReducer.username
-    )[0];
-    let role = curruser ? curruser.role : null;
+    let curruser;
+    let role = null;
+
+    if (state.projectReducer.project_data) {
+        if (state.projectReducer.project_data.members) {
+            currUser = state.projectReducer.project_data.members.filter(
+                user => user.username === state.authReducer.username
+            )[0];
+            role = curruser ? curruser.role : null;
+        }
+    }
+
     return {
         logged_in: state.authReducer.logged_in,
         ajaxCalls: state.ajaxCallsInProgress,
