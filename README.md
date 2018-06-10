@@ -1,4 +1,4 @@
-# README
+ # Agility 
 
 ## Prerequisites
 
@@ -100,7 +100,7 @@ alt="Agile Video Tour" width="240" height="180" border="10" /></a>
 
 
 
-## Created By:  DirtyBit
+## Team Dirty Bit
 
 [Devin James Moore](https://github.com/djm016)
 
