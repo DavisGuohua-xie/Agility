@@ -36,12 +36,6 @@ export const ProjectOverview = props => {
         <div className={styles.layoutContainer}>
             <div className={styles.mainContent}>
                 <Container fluid>
-                    <Row>
-                        <div className="col-lg-8 col-md-12 col-sm-12 offset-lg-2">
-                            <Line data={data} options={{ maintainAspectRatio: true }} />
-                        </div>
-                    </Row>
-
                     <Row style={{ marginTop: "30px" }}>
                         {props.taskList.map((board, index) => (
                             <BoardDetail
