@@ -175,6 +175,8 @@ export default function taskReducer(state = initialState, action) {
 
         case types.DELETE_TASK_FAILURE:
             return state;
+        case types.LOGOUT_SUCCESS:
+            return state.without(Object.keys(state));
 
         default:
             return state;

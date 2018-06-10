@@ -177,6 +177,8 @@ class ProjectTaskComponent extends React.Component {
             this.state.eventBus
         );
 
+        this.setState({ newBoard: "" });
+
         this.props.onToggleModal();
     }
 
@@ -267,5 +269,10 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-const connectedPage = withRouter(connect(null, mapDispatchToProps)(ProjectTaskComponent));
+const connectedPage = withRouter(
+    connect(
+        null,
+        mapDispatchToProps
+    )(ProjectTaskComponent)
+);
 export { connectedPage as ProjectTaskComponent };

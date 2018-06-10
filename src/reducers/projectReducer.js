@@ -104,7 +104,8 @@ export default function projectReducer(state = initialState, action) {
             return state.merge({
                 remove_member_request: false
             });
-
+        case types.LOGOUT_SUCCESS:
+            return state.without(Object.keys(state));
         default:
             return state;
     }

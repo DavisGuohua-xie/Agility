@@ -72,6 +72,8 @@ export default function chatReducer(state = initialState, action) {
             return state.merge({
                 channelList: [...state.channelList, action.req]
             });
+        case types.LOGOUT_SUCCESS:
+            return state.without(Object.keys(state));
         default:
             return state;
     }
