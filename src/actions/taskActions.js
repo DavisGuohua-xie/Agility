@@ -217,7 +217,11 @@ function moveTask(oldboard_id, newboard_id, task_id, position) {
 
                     query.equalTo("objectId", newboard_id);
                     query.first().then(newboard => {
-                        newboard.add("task_list", task);
+
+                        let cards = newboard.get("task_list");
+                        cards.splice(position, 0, task);
+
+                        newboard.set("task_list", cards);
 
                         newboard.save().then(() => {
                             dispatch(success(task_id, newboard_id, oldboard_id, position));

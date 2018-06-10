@@ -63,22 +63,28 @@ export default function taskReducer(state = initialState, action) {
                 board_data: []
             });
 
-        case types.UPDATE_BOARD_SUCCESS:
+        case types.UPDATE_BOARD_SUCCESS: {
             let editingBoard = Object.assign(
                 {},
                 state.board_data.filter(b => b.id === action.req.board_id)[0]
             );
 
-            return state.merge({
-                board_data: [
-                    ...state.board_data.filter(b => b.id !== action.req.board_id),
-                    {
-                        ...editingBoard,
-                        title: action.req.board.title,
-                        is_done: action.req.board.is_done
-                    }
-                ]
+            let mutableBoardData = Immutable.asMutable(state.board_data, { deep: true });
+
+            let newBoardData = mutableBoardData.map(board => {
+                if (board.id !== action.req.board_id) return board; // don't mess with other boards
+
+                return {
+                    ...board,
+                    title: action.req.board.title,
+                    is_done: action.req.board.is_done
+                };
             });
+
+            return state.merge({
+                board_data: newBoardData
+            });
+        }
 
         case types.UPDATE_TASK_SUCCESS: {
             let board1 = Object.assign(
@@ -132,17 +138,33 @@ export default function taskReducer(state = initialState, action) {
             console.log("---------------------------------");
 
             return state.merge({
-                board_data: state.board_data.map((board, index) => {
-                    if (board.id !== new_id && board.id !== old_id) return board;
+                board_data: Immutable.asMutable(state.board_data, { deep: true }).map(
+                    (board, index) => {
+                        if (board.id !== new_id && board.id !== old_id) return board;
 
-                    if (board.id === old_id) {
-                        return { ...board, cards: board.cards.filter(task => task.id !== task_id) };
+                        if (board.id === new_id && board.id === old_id) {
+                            // moving within same board
+                            let newcardarr = board.cards.filter(task => task.id !== task_id);
+                            newcardarr.splice(position, 0, taskObj);
+
+                            return {
+                                ...board,
+                                cards: newcardarr
+                            };
+                        }
+
+                        if (board.id === old_id) {
+                            return {
+                                ...board,
+                                cards: board.cards.filter(task => task.id !== task_id)
+                            };
+                        }
+
+                        let newarr = board.cards.slice();
+                        newarr.splice(position, 0, taskObj);
+                        return { ...board, cards: newarr };
                     }
-
-                    // let newarr = board.cards.slice();
-                    // newarr.splice(position, 0, taskObj);
-                    return { ...board, cards: [...board.cards, taskObj] };
-                })
+                )
             });
 
         case types.MOVE_TASK_FAILURE:
